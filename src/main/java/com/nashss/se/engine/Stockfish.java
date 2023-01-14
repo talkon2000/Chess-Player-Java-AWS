@@ -9,7 +9,7 @@ import java.util.Arrays;
 /**
  * A simple and efficient client to run Stockfish from Java
  *
- * @author Rahul A R
+ * @author Rahul A R and modified by Josh Taylor
  *
  */
 public class Stockfish {
@@ -32,7 +32,7 @@ public class Stockfish {
                     engineProcess.getInputStream()));
             processWriter = new OutputStreamWriter(
                     engineProcess.getOutputStream());
-        } catch (Exception e) {
+        } catch (IOException e) {
             e.printStackTrace();
             return false;
         }
@@ -88,7 +88,7 @@ public class Stockfish {
                 else
                     output.append(text).append("\n");
             }
-        } catch (Exception e) {
+        } catch (IOException | InterruptedException e) {
             e.printStackTrace();
         }
         return output.toString();
@@ -160,7 +160,6 @@ public class Stockfish {
         sendCommand("go movetime " + waitTime);
 
         String[] dump = getOutput(waitTime + 20).split("\n");
-        System.out.println(Arrays.toString(dump));
         for (int i = dump.length - 1; i >= 0; i--) {
             if (dump[i].startsWith("info depth ")) {
                 return Float.parseFloat(dump[i].split("score cp ")[1].split(" ")[0]) / 100;
