@@ -1,10 +1,13 @@
 package com.nashss.se.engine;
 
+import javax.inject.Inject;
 import java.io.BufferedReader;
 import java.io.IOException;
 import java.io.InputStreamReader;
 import java.io.OutputStreamWriter;
 import java.util.Arrays;
+import java.util.List;
+import java.util.stream.Collectors;
 
 /**
  * A simple and efficient client to run Stockfish from Java
@@ -18,6 +21,9 @@ public class Stockfish {
     private OutputStreamWriter processWriter;
 
     private static final String PATH = "engine/stockfish/stockfish.exe";
+
+    @Inject
+    public Stockfish() {}
 
     /**
      * Starts Stockfish engine as a process and initializes it.
@@ -120,10 +126,14 @@ public class Stockfish {
      *                 or "fem " followed by a position in FEM notation
      * @return String of moves
      */
-    public String getLegalMoves(String position) {
+    public List<String> getLegalMoves(String position) {
         sendCommand("position " + position);
         sendCommand("go perft 1");
-        return getOutput(10);
+        String output = getOutput(10);
+        return Arrays.stream(output.split("\n"))
+                .map(s -> s.split(":")[0])
+                .filter(s -> !s.isBlank() && !s.contains("Nodes"))
+                .collect(Collectors.toList());
     }
 
     /**
