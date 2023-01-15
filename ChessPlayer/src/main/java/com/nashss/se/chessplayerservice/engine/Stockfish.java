@@ -22,7 +22,9 @@ public class Stockfish {
     private BufferedReader processReader;
     private OutputStreamWriter processWriter;
 
-    private final static String PATH = "/var/task/./lib/stockfish-ubuntu-20.04-x86-64";
+//    private final static String START_PATH = "/var/task/./lib/stockfish-ubuntu-20.04-x86-64";
+//    private final static String PATH = "/tmp/bin/stockfish-ubuntu-20.04-x86-64";
+      private final static String PATH = "bin/stockfish-ubuntu-20.04-x86-64";
 
     /**
      * Starts Stockfish engine as a process and initializes it.
@@ -32,8 +34,20 @@ public class Stockfish {
      */
     public boolean startEngine() {
         try {
-            Runtime.getRuntime().exec("chmod 755 " + PATH);
-            System.out.println(new File(PATH).canExecute());
+            /*Runtime runtime = Runtime.getRuntime();
+
+            runtime.exec("chmod +x /var/task/./lib/stockfish-ubuntu-20.04-x86-64");
+            BufferedReader reader = new BufferedReader(new InputStreamReader(runtime.exec("ls -l /var/task/./lib/").getInputStream()));
+
+            while (true) {
+                String text = reader.readLine();
+                if (text.contains("stockfish")) {
+                    System.out.println(text);
+                    break;
+                }
+            }
+
+            System.out.println(new File(PATH).canExecute());*/
             Process engineProcess = Runtime.getRuntime().exec(PATH);
             processReader = new BufferedReader(new InputStreamReader(
                     engineProcess.getInputStream()));

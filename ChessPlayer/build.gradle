@@ -10,9 +10,9 @@ repositories {
 }
 
 dependencies {
-    implementation files('../engine/stockfish/stockfish.exe')
-    implementation fileTree('../engine/stockfish/src') {include '*.h' }
-    implementation fileTree('../engine/stockfish/src') {include '*.cpp'}
+    implementation files('../bin/stockfish-ubuntu-20.04-x86-64')
+    //implementation fileTree('../engine/stockfish/src') {include '*.h' }
+    //implementation fileTree('../engine/stockfish/src') {include '*.cpp'}
 
     implementation 'org.apache.commons:commons-text:1.9'
     implementation 'commons-io:commons-io:2.11.0'
