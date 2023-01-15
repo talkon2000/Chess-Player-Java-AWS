@@ -22,7 +22,7 @@ public class Stockfish {
     private BufferedReader processReader;
     private OutputStreamWriter processWriter;
 
-    private final static String PATH = "/var/task/./lib/stockfish.exe";
+    private final static String PATH = "/var/task/./lib/stockfish-ubuntu-20.04-x86-64";
 
     /**
      * Starts Stockfish engine as a process and initializes it.
