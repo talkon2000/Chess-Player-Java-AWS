@@ -25,7 +25,7 @@ public class Runner {
         stockfish.getOutput(10);
 
 
-        System.out.println(stockfish.getBestMove(STARTING_POS, 1000));
+        System.out.println(stockfish.getBestMove(STARTING_POS, 1000) + "\n");
 
         String newPos = STARTING_POS + " moves " + "d2d3 e7e6 d3d4 f8b4";
         List<String> validMoves = stockfish.getLegalMoves(newPos);

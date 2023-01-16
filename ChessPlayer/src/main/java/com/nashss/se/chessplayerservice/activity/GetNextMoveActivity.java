@@ -1,5 +1,6 @@
 package com.nashss.se.chessplayerservice.activity;
 
+import com.nashss.se.chessplayerservice.Runner;
 import com.nashss.se.chessplayerservice.activity.request.GetNextMoveRequest;
 import com.nashss.se.chessplayerservice.activity.response.GetNextMoveResponse;
 import com.nashss.se.chessplayerservice.dynamodb.dao.GameDao;
@@ -30,10 +31,16 @@ public class GetNextMoveActivity {
         }
 
         Game game = gameDao.get(request.getGameId());
-/*        if (stockfish.startEngine()) {
+        Runner.main(new String[0]);
+        if (stockfish.startEngine()) {
+            System.out.println("good");
+        }
+        else {
+            System.out.println("bad");
             throw new StockfishException("Engine failed to start");
-        }*/
-        stockfish.startEngine();
+        }
+        stockfish.sendCommand("uci");
+        stockfish.getOutput(10);
         String engineMove = stockfish.getBestMove(game.getMoves(), 500);
         List<String> validMoves = stockfish.getLegalMoves(game.getMoves());
 

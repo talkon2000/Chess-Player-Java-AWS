@@ -44,7 +44,6 @@ Resources:
       Environment:
         Variables:
           JAVA_TOOL_OPTIONS: -XX:+TieredCompilation -XX:TieredStopAtLevel=1
-          PATH: 
       Events:
         ChessPlayerClient:
           Type: Api

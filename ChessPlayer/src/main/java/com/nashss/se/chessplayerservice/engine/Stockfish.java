@@ -1,15 +1,13 @@
 package com.nashss.se.chessplayerservice.engine;
 
-
-import org.apache.commons.io.FileUtils;
-
 import java.io.*;
+import java.nio.file.Files;
+import java.nio.file.Path;
 import java.util.Arrays;
-import java.util.Collection;
-import java.util.Iterator;
 import java.util.List;
 import java.util.stream.Collectors;
-import java.util.stream.Stream;
+
+import static java.nio.file.StandardCopyOption.REPLACE_EXISTING;
 
 /**
  * A simple and efficient client to run Stockfish from Java
@@ -18,13 +16,10 @@ import java.util.stream.Stream;
  *
  */
 public class Stockfish {
-
     private BufferedReader processReader;
     private OutputStreamWriter processWriter;
 
-//    private final static String START_PATH = "/var/task/./lib/stockfish-ubuntu-20.04-x86-64";
-//    private final static String PATH = "/tmp/bin/stockfish-ubuntu-20.04-x86-64";
-      private final static String PATH = "bin/stockfish-ubuntu-20.04-x86-64";
+    private final String PATH = getEngineLocation();
 
     /**
      * Starts Stockfish engine as a process and initializes it.
@@ -34,25 +29,18 @@ public class Stockfish {
      */
     public boolean startEngine() {
         try {
-            /*Runtime runtime = Runtime.getRuntime();
-
-            runtime.exec("chmod +x /var/task/./lib/stockfish-ubuntu-20.04-x86-64");
-            BufferedReader reader = new BufferedReader(new InputStreamReader(runtime.exec("ls -l /var/task/./lib/").getInputStream()));
-
-            while (true) {
-                String text = reader.readLine();
-                if (text.contains("stockfish")) {
-                    System.out.println(text);
-                    break;
-                }
-            }
-
-            System.out.println(new File(PATH).canExecute());*/
             Process engineProcess = Runtime.getRuntime().exec(PATH);
             processReader = new BufferedReader(new InputStreamReader(
-                    engineProcess.getInputStream()));
+                    engineProcess.getErrorStream()));
             processWriter = new OutputStreamWriter(
                     engineProcess.getOutputStream());
+            while (true) {
+                String text = processReader.readLine();
+                if (text == null) {
+                    break;
+                }
+                System.out.println(text);
+            }
         } catch (IOException e) {
             e.printStackTrace();
             return false;
@@ -85,6 +73,7 @@ public class Stockfish {
             processWriter.flush();
         } catch (IOException e) {
             e.printStackTrace();
+            throw new RuntimeException(e);
         }
     }
 
@@ -129,7 +118,9 @@ public class Stockfish {
     public String getBestMove(String position, int waitTime) {
         sendCommand("position " + position);
         sendCommand("go movetime " + waitTime);
-        return getOutput(waitTime + 20).split("bestmove ")[1].split("ponder")[0];
+        String output = getOutput(waitTime + 20);
+        System.out.println(output);
+        return output.split("bestmove ")[1].split("ponder")[0];
     }
 
     /**
@@ -192,4 +183,51 @@ public class Stockfish {
         }
         return 0.0f;
     }
+
+    private String getEngineLocation() {
+        // If running locally
+        if (new File("engine/stockfish-ubuntu-20.04-x86-64").canExecute()) {
+            return "engine/stockfish-ubuntu-20.04-x86-64";
+        }
+
+        String origPath = "/var/task/./lib/stockfish-ubuntu-20.04-x86-64-modern";
+        String newPath = "/tmp/stockfish-ubuntu-20.04-x86-64";
+
+        try {
+            Files.copy(
+                    Path.of(origPath),
+                    Path.of(newPath),
+                    REPLACE_EXISTING);
+            Runtime.getRuntime().exec("chmod 777 " + newPath);
+            BufferedReader reader =
+            new BufferedReader(new InputStreamReader(Runtime.getRuntime().exec("ls -l " + newPath).getInputStream()));
+            while (true) {
+                String text = reader.readLine();
+                if (text.contains("stockfish")) {
+                    System.out.println(text);
+                    break;
+                }
+            }
+        } catch (IOException e) {
+            System.out.println("Engine could not be moved");
+            throw new RuntimeException(e);
+        }
+
+        /*try {
+            BufferedReader reader =
+                    new BufferedReader(new InputStreamReader(Runtime.getRuntime().exec("ps").getInputStream()));
+            while (true) {
+                String text = reader.readLine();
+                if (text == null) {
+                    break;
+                }
+                System.out.println(text);
+            }
+        } catch (IOException e) {
+            throw new RuntimeException(e);
+        }*/
+
+        return newPath;
+    }
+
 }
