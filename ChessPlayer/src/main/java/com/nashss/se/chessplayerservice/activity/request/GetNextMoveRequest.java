@@ -1,5 +1,9 @@
 package com.nashss.se.chessplayerservice.activity.request;
 
+import com.fasterxml.jackson.databind.annotation.JsonDeserialize;
+import com.fasterxml.jackson.databind.annotation.JsonPOJOBuilder;
+
+@JsonDeserialize(builder = GetNextMoveRequest.Builder.class)
 public class GetNextMoveRequest {
 
     private final String move;
@@ -22,6 +26,7 @@ public class GetNextMoveRequest {
         return new Builder();
     }
 
+    @JsonPOJOBuilder
     public static class Builder {
         private String move;
         private String gameId;

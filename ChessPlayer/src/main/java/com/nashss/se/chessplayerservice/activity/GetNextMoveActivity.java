@@ -31,7 +31,6 @@ public class GetNextMoveActivity {
         }
 
         Game game = gameDao.get(request.getGameId());
-        Runner.main(new String[0]);
         if (stockfish.startEngine()) {
             System.out.println("good");
         }
@@ -39,6 +38,7 @@ public class GetNextMoveActivity {
             System.out.println("bad");
             throw new StockfishException("Engine failed to start");
         }
+
         stockfish.sendCommand("uci");
         stockfish.getOutput(10);
         String engineMove = stockfish.getBestMove(game.getMoves(), 500);

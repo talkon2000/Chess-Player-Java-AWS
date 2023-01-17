@@ -10,7 +10,7 @@ repositories {
 }
 
 dependencies {
-    implementation fileTree('../engine/')
+    implementation fileTree("../engine/")
 
     implementation 'org.apache.commons:commons-text:1.9'
     implementation 'commons-io:commons-io:2.11.0'

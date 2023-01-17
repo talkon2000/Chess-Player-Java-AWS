@@ -1,9 +1,12 @@
 package com.nashss.se.chessplayerservice.engine;
 
+import org.apache.commons.io.FileUtils;
+
 import java.io.*;
 import java.nio.file.Files;
 import java.nio.file.Path;
 import java.util.Arrays;
+import java.util.Collection;
 import java.util.List;
 import java.util.stream.Collectors;
 
@@ -31,16 +34,9 @@ public class Stockfish {
         try {
             Process engineProcess = Runtime.getRuntime().exec(PATH);
             processReader = new BufferedReader(new InputStreamReader(
-                    engineProcess.getErrorStream()));
+                    engineProcess.getInputStream()));
             processWriter = new OutputStreamWriter(
                     engineProcess.getOutputStream());
-            while (true) {
-                String text = processReader.readLine();
-                if (text == null) {
-                    break;
-                }
-                System.out.println(text);
-            }
         } catch (IOException e) {
             e.printStackTrace();
             return false;
@@ -119,7 +115,6 @@ public class Stockfish {
         sendCommand("position " + position);
         sendCommand("go movetime " + waitTime);
         String output = getOutput(waitTime + 20);
-        System.out.println(output);
         return output.split("bestmove ")[1].split("ponder")[0];
     }
 
@@ -186,48 +181,26 @@ public class Stockfish {
 
     private String getEngineLocation() {
         // If running locally
-        if (new File("engine/stockfish-ubuntu-20.04-x86-64").canExecute()) {
-            return "engine/stockfish-ubuntu-20.04-x86-64";
+        if (new File("engine/stockfish").canExecute()) {
+            return "engine/stockfish";
         }
 
-        String origPath = "/var/task/./lib/stockfish-ubuntu-20.04-x86-64-modern";
-        String newPath = "/tmp/stockfish-ubuntu-20.04-x86-64";
+        String origPath = "/var/task/./lib/stockfish";
+        String newPath = "/tmp/stockfish";
 
+        Runtime runtime = Runtime.getRuntime();
         try {
             Files.copy(
                     Path.of(origPath),
                     Path.of(newPath),
                     REPLACE_EXISTING);
-            Runtime.getRuntime().exec("chmod 777 " + newPath);
-            BufferedReader reader =
-            new BufferedReader(new InputStreamReader(Runtime.getRuntime().exec("ls -l " + newPath).getInputStream()));
-            while (true) {
-                String text = reader.readLine();
-                if (text.contains("stockfish")) {
-                    System.out.println(text);
-                    break;
-                }
-            }
+            runtime.exec("chmod 755 " + newPath);
+
         } catch (IOException e) {
             System.out.println("Engine could not be moved");
             throw new RuntimeException(e);
         }
 
-        /*try {
-            BufferedReader reader =
-                    new BufferedReader(new InputStreamReader(Runtime.getRuntime().exec("ps").getInputStream()));
-            while (true) {
-                String text = reader.readLine();
-                if (text == null) {
-                    break;
-                }
-                System.out.println(text);
-            }
-        } catch (IOException e) {
-            throw new RuntimeException(e);
-        }*/
-
         return newPath;
     }
-
 }

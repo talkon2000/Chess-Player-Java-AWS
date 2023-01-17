@@ -4,11 +4,19 @@ import java.util.List;
 
 public class GetNextMoveResponse {
     private final List<String> validMoves;
-    private final String move;
+    private final String bestMove;
 
-    private GetNextMoveResponse(List<String> validMoves, String move) {
+    private GetNextMoveResponse(List<String> validMoves, String bestMove) {
         this.validMoves = validMoves;
-        this.move = move;
+        this.bestMove = bestMove;
+    }
+
+    public List<String> getValidMoves() {
+        return List.copyOf(validMoves);
+    }
+
+    public String getBestMove() {
+        return bestMove;
     }
 
     public static Builder builder() {
@@ -17,20 +25,20 @@ public class GetNextMoveResponse {
 
     public static class Builder {
         private List<String> validMoves;
-        private String move;
+        private String bestMove;
 
-        public Builder withValidMoves(List<String> validMoves) {
-            this.validMoves = validMoves;
+        public Builder withValidMoves(final List<String> validMoves) {
+            this.validMoves = List.copyOf(validMoves);
             return this;
         }
 
-        public Builder withMove(String move) {
-            this.move = move;
+        public Builder withMove(final String move) {
+            this.bestMove = move;
             return this;
         }
 
         public GetNextMoveResponse build() {
-            return new GetNextMoveResponse(validMoves, move);
+            return new GetNextMoveResponse(validMoves, bestMove);
         }
     }
 }
