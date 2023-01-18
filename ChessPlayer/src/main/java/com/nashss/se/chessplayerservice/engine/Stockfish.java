@@ -7,6 +7,7 @@ import java.nio.file.Files;
 import java.nio.file.Path;
 import java.util.Arrays;
 import java.util.Collection;
+import java.util.Iterator;
 import java.util.List;
 import java.util.stream.Collectors;
 
@@ -181,10 +182,20 @@ public class Stockfish {
 
     private String getEngineLocation() {
         // If running locally
-        if (new File("engine/stockfish").canExecute()) {
-            return "engine/stockfish";
+        String path = "engine/stockfish";
+        if (new File(path).canExecute()) {
+            System.out.println("local");
+            return path;
         }
 
+        // If running in Lambda
+        path = "/var/task/./lib/stockfish";
+        if (new File(path).canExecute()) {
+            System.out.println("lambda");
+            return path;
+        }
+
+        // If running in docker
         String origPath = "/var/task/./lib/stockfish";
         String newPath = "/tmp/stockfish";
 
@@ -194,8 +205,8 @@ public class Stockfish {
                     Path.of(origPath),
                     Path.of(newPath),
                     REPLACE_EXISTING);
+            System.out.println("chmod in docker");
             runtime.exec("chmod 755 " + newPath);
-
         } catch (IOException e) {
             System.out.println("Engine could not be moved");
             throw new RuntimeException(e);
