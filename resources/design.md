@@ -32,9 +32,7 @@ If I have extra time after completing the problem(s) above, I would like to expl
 
 As mentioned in the problem statement, I want to implement a Player vs Player feature if I have enough time.
 
-## 3. Plant UML
-
-## 4. Dynamo DB tables
+## 3. Dynamo DB tables
 
 ### Users Table
 * Attributes:
@@ -58,7 +56,7 @@ As mentioned in the problem statement, I want to implement a Player vs Player fe
   * moves : String
   * botDifficulty : Number
 
-## 5. API Endpoints
+## 4. API Endpoints
 
 ### CreateNewGameEndpoint
 * Creates a new game with a unique gameId in the Games table, then returns the gameId
@@ -100,6 +98,6 @@ As mentioned in the problem statement, I want to implement a Player vs Player fe
 * Response: {user: \<user object>}
 * Might respond with an error if username or email are invalid Strings, if rating is invalid or reduced below 0, or if active is set to something other than true/false
 
-## Wireframe frontend
+## 5. Wireframe frontend
 
 ![](wireframe.png)
