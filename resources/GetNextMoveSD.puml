@@ -1,0 +1,16 @@
+@startuml
+'https://plantuml.com/sequence-diagram
+
+autonumber
+actor User
+participant Client
+participant GetNextMoveEndpoint
+database "Games Table"
+
+User -> Client: Makes a move
+Client -> GetNextMoveEndpoint: Move and Game Id
+GetNextMoveEndpoint --> GetNextMoveEndpoint: Computes next move and valid moves
+GetNextMoveEndpoint --> "Games Table": Updates Moves in the table
+GetNextMoveEndpoint --> Client: Next move and valid moves
+Client -> User: Draws move
+@enduml
