@@ -1,0 +1,145 @@
+@startuml
+'https://plantuml.com/class-diagram
+
+class Game {
+String gameId
+String active
+String whiteUserId
+String blackUserId
+String moves
+Integer botDifficulty
+getters()
+}
+class User {
+String userId
+Integer rating
+String username
+Set<String> games
+String email
+String active
+getters()
+}
+
+class GameDao
+class UserDao
+
+class CreateNewGameRequest {
+String whiteUserId
+String blackUserId
+Integer botDifficulty
+builder()
+getters()
+}
+class CreateNewGameResponse {
+String gameId
+builder()
+getters()
+}
+class CreateNewGameActivity {
+GameDao dao
+handleRequest() : CreateNewGameResponse
+}
+class CreateNewGameLambda
+
+CreateNewGameRequest -> CreateNewGameActivity
+CreateNewGameActivity -> CreateNewGameResponse
+CreateNewGameLambda --> CreateNewGameActivity : handles request
+CreateNewGameActivity --> GameDao
+
+class GetNextMoveRequest {
+String move
+String gameId
+builder()
+getters()
+}
+class GetNextMoveResponse {
+String move
+String[] validMoves
+String winner
+builder()
+getters()
+}
+class GetNextMoveActivity {
+GameDao dao
+handleRequest() : GetNextMoveResponse
+}
+class GetNextMoveLambda
+
+GetNextMoveRequest -> GetNextMoveActivity
+GetNextMoveActivity -> GetNextMoveResponse
+GetNextMoveLambda --> GetNextMoveActivity : handles request
+GetNextMoveActivity --> GameDao2
+
+class SearchUsersRequest {
+String searchString
+builder()
+getters()
+}
+class SearchUsersResponse {
+User user
+builder()
+getters()
+}
+class SearchUsersActivity {
+UserDao dao
+handleRequest() : SearchUsersResponse
+}
+class SearchUsersLambda
+
+SearchUsersRequest -> SearchUsersActivity
+SearchUsersActivity -> SearchUsersResponse
+SearchUsersLambda --> SearchUsersActivity : handles request
+SearchUsersActivity --> UserDao
+
+class GetPreviousGamesRequest {
+String userId
+builder()
+getters()
+}
+class GetPreviousGamesResponse {
+Set<String> gameIds
+builder()
+getters()
+}
+class GetPreviousGamesActivity {
+GameDao dao
+handleRequest() : GetPreviousGamesResponse
+}
+class GetPreviousGamesLambda
+
+GetPreviousGamesRequest -> GetPreviousGamesActivity
+GetPreviousGamesActivity -> GetPreviousGamesResponse
+GetPreviousGamesLambda --> GetPreviousGamesActivity : handles request
+GetPreviousGamesActivity --> GameDao3
+
+class UpdateUserRequest {
+String userId
+Integer rating
+String username
+String email
+builder()
+getters()
+}
+class UpdateUserResponse {
+User user
+builder()
+getters()
+}
+class UpdateUserActivity {
+UserDao dao
+handleRequest() : UpdateUserResponse
+}
+class UpdateUserLambda
+
+UpdateUserRequest -> UpdateUserActivity
+UpdateUserActivity -> UpdateUserResponse
+UpdateUserLambda --> UpdateUserActivity : handles request
+UpdateUserActivity --> UserDao2
+
+interface LambdaRunner
+LambdaRunner ..> CreateNewGameLambda
+LambdaRunner ..> GetNextMoveLambda
+LambdaRunner ..> SearchUsersLambda
+LambdaRunner ..> GetPreviousGamesLambda
+LambdaRunner ..> UpdateUserLambda
+@enduml
