@@ -17,22 +17,24 @@ If I have extra time after completing the problem(s) above, I would like to expl
 
 ## 2. User Stories
 
-1. As a user, I need to be *unable* to make an invalid move. 
-2. As a user, I need to be able to send and receive chess moves from my opponent. 
-3. As a user, I need to know when the game is over (checkmate or stalemate). 
-4. As a user, I would like to be able to set the difficulty of my opponent, or have the opponent be of similar rating to me. 
-5. As a user, I would like to gain or lose rating based on wins and losses. The change in rating should be relative to the difficulty of my opponent. 
-6. As a user, I need to be able to log in and have my rating saved. 
-7. As a user, I would like to receive email confirmation when I create my account.
-8. As a user, I would like to be able to view my past games and replay them move by move. 
-9. As a user, I would like to be able to resume my in-progress game if I lose internet or close my browser.
-10. As a user, I would like to be able to see which pieces my opponent and I have taken.
-11. As a user, I would like to be able to search for other users by username.
-12. As a user, I would like to be able to search for other users by email.
+1. As a user, I need to be able to send and receive chess moves from my opponent, so that I can play the game.
+2. As a user, I need to be *unable* to make an invalid move, so that I don't break the rules. 
+3. As a user, I need to know when the game is over (checkmate or stalemate), so I know if I won or lost (or drew). 
+4. As a user, I would like to be able to set the difficulty of my opponent, or have the opponent be of similar rating to me, so that I can challenge myself.
+5. As a user, I need to be able to log in and have my rating saved, so that I know how good I am.
+6. As a user, I would like to receive email confirmation when I create my account, so that I have a record of it.
+7. As a user, I would like to gain or lose rating based on wins and losses, so that I can have an accurate rating. The change in rating should be relative to the difficulty of my opponent.
+8. As a user, I would like to be able to view my past games and replay them move by move, so that I can go over my games and look for mistakes. 
+9. As a user, I would like to be able to resume my in-progress game if I lose internet or close my browser, so that I don't lose my progress.
+10. As a user, I would like to be able to see which pieces my opponent and I have taken, so that I can keep track of who is winning.
+11. As a user, I would like to be able to search for other users by username, so I can find my friends.
+12. As a user, I would like to be able to search for other users by email, so I can find my friends.
 
 As mentioned in the problem statement, I want to implement a Player vs Player feature if I have enough time.
 
 ## 3. Plant UML
+
+[Plant UML Class Diagram](./ChessCD.puml)
 
 ## 4. Dynamo DB tables
 
@@ -79,7 +81,7 @@ As mentioned in the problem statement, I want to implement a Player vs Player fe
 ![](GetNextMoveSD.png)
 
 ### SearchUsersEndpoint
-* Searches the Users table username and email GSI's to try to find the desired player
+* Searches the Users table's username and email GSIs to try to find the desired player
 * GET
 * /users/{searchString}
 * Response: {user: \<user object>}
@@ -89,7 +91,7 @@ As mentioned in the problem statement, I want to implement a Player vs Player fe
 * Returns a list of all previous games the user has played
 * GET
 * /getPreviousGames/{userId}
-* Response: {games: [game1: \<game object>, ...]}
+* Response: {gameIds: [gameId1, ...]}
 
 ### UpdateUserEndpoint
 * Updates a user entry in the Users table, usually used to update rating (accepts '+value' or '-value' rating arguments)
@@ -100,6 +102,6 @@ As mentioned in the problem statement, I want to implement a Player vs Player fe
 * Response: {user: \<user object>}
 * Might respond with an error if username or email are invalid Strings, if rating is invalid or reduced below 0, or if active is set to something other than true/false
 
-## Wireframe frontend
+## 6. Wireframe frontend
 
 ![](wireframe.png)
