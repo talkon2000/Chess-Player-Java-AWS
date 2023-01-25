@@ -9,11 +9,12 @@ import com.amazonaws.services.dynamodbv2.datamodeling.DynamoDBTable;
 public class Game {
 
     private String gameId;
+    private String active;
+    private String winner;
     private String moves;
     private String whitePlayerId;
     private String blackPlayerId;
     private Integer botDifficulty;
-    private String active;
 
     @DynamoDBHashKey(attributeName = "gameId")
     public String getGameId() {
@@ -24,13 +25,22 @@ public class Game {
         this.gameId = gameId;
     }
 
-    @DynamoDBRangeKey(attributeName = "active")
+    @DynamoDBAttribute(attributeName = "active")
     public String getActive() {
         return active;
     }
 
     public void setActive(String active) {
         this.active = active;
+    }
+
+    @DynamoDBAttribute(attributeName = "winner")
+    public String getWinner() {
+        return winner;
+    }
+
+    public void setWinner(String winner) {
+        this.winner = winner;
     }
 
     @DynamoDBAttribute(attributeName = "moves")

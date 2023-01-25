@@ -14,7 +14,7 @@ public class GetNextMoveResponse {
     }
 
     public List<String> getValidMoves() {
-        return List.copyOf(validMoves);
+        return (validMoves == null) ? null : List.copyOf(validMoves);
     }
 
     public String getBestMove() {
@@ -35,7 +35,7 @@ public class GetNextMoveResponse {
         private String winner;
 
         public Builder withValidMoves(final List<String> validMoves) {
-            this.validMoves = List.copyOf(validMoves);
+            this.validMoves = validMoves == null ? null : List.copyOf(validMoves);
             return this;
         }
 

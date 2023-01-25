@@ -32,8 +32,18 @@ public class Runner {
 
         validMoves.forEach(System.out::println);
         System.out.println(validMoves.size());
-        stockfish.drawBoard(newPos);
-        System.out.println(stockfish.getEvalScore(newPos, 1000));
+        stockfish.drawBoard("fen 8/8/8/8/8/8/1r6/kr5K w - - 1 1");
+        System.out.println(stockfish.getEvalScore(newPos));
+
+        System.out.println(stockfish.getLegalMoves("fen 8/8/8/8/8/8/1r6/k1r4K w - - 1 1").isEmpty());
+        stockfish.sendCommand("position fen 8/8/8/8/8/8/1rr5/k6K b - - 1 1");
+        stockfish.sendCommand("d");
+        String[] dump = stockfish.getOutput(10).split("\n");
+        for (String line : dump) {
+            if (line.startsWith("Checkers: ")) {
+                System.out.println(line);
+            }
+        }
         stockfish.stopEngine();
     }
 }

@@ -16,8 +16,8 @@ public class GameDao {
         this.dynamoDBMapper = dynamoDBMapper;
     }
 
-    public Game load(String gameId, String active) {
-        return dynamoDBMapper.load(Game.class, gameId, active);
+    public Game load(String gameId) {
+        return dynamoDBMapper.load(Game.class, gameId);
     }
 
     public void save(Game game) {

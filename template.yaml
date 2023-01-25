@@ -146,12 +146,8 @@ Resources:
       AttributeDefinitions:
         - AttributeName: "gameId"
           AttributeType: "S"
-        - AttributeName: "active"
-          AttributeType: "S"
       KeySchema:
         - AttributeName: "gameId"
           KeyType: "HASH"
-        - AttributeName: "active"
-          KeyType: "RANGE"
       BillingMode: "PAY_PER_REQUEST"
       TableName: "Games"

@@ -160,20 +160,19 @@ public class Stockfish {
      *                 "startpos moves " followed by moves in pure algebraic notation
      *                 without from-to delimiters (example: d2d4)
      *                 or "fem " followed by a position in FEM notation
-     * @param waitTime in milliseconds
      * @return evalScore
      */
-    public float getEvalScore(String position, int waitTime) {
+    public String getEvalScore(String position) {
         sendCommand("position " + position);
-        sendCommand("go movetime " + waitTime);
+        sendCommand("eval");
 
-        String[] dump = getOutput(waitTime + 20).split("\n");
+        String[] dump = getOutput(20).split("\n");
         for (int i = dump.length - 1; i >= 0; i--) {
-            if (dump[i].startsWith("info depth ")) {
-                return Float.parseFloat(dump[i].split("score cp ")[1].split(" ")[0]) / 100;
+            if (dump[i].startsWith("Final evaluation")) {
+                return dump[i];
             }
         }
-        return 0.0f;
+        return "";
     }
 
     private String getEngineLocation() {
