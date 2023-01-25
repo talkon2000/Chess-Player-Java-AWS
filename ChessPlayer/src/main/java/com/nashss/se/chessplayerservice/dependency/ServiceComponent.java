@@ -6,7 +6,7 @@ import dagger.Component;
 import javax.inject.Singleton;
 
 @Singleton
-@Component
+@Component(modules = {DaoModule.class, StockfishModule.class})
 public interface ServiceComponent {
 
     GetNextMoveActivity provideGetNextMoveActivity();

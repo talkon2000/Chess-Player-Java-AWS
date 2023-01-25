@@ -1,13 +1,9 @@
 package com.nashss.se.chessplayerservice.engine;
 
-import org.apache.commons.io.FileUtils;
-
 import java.io.*;
 import java.nio.file.Files;
 import java.nio.file.Path;
 import java.util.Arrays;
-import java.util.Collection;
-import java.util.Iterator;
 import java.util.List;
 import java.util.stream.Collectors;
 
@@ -116,7 +112,7 @@ public class Stockfish {
         sendCommand("position " + position);
         sendCommand("go movetime " + waitTime);
         String output = getOutput(waitTime + 20);
-        return output.split("bestmove ")[1].split("ponder")[0];
+        return output.split("bestmove ")[1].split(" ponder")[0];
     }
 
     /**
