@@ -54,7 +54,8 @@ As mentioned in the problem statement, I want to implement a Player vs Player fe
 ### Games Table
 * Attributes:
   * gameId : String -> Partition key
-  * active : String -> Sort key
+  * active : String
+  * winner : String
   * whiteUserId : String
   * blackUserId : String
   * moves : String

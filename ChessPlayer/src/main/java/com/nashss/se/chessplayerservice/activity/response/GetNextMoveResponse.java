@@ -5,18 +5,24 @@ import java.util.List;
 public class GetNextMoveResponse {
     private final List<String> validMoves;
     private final String bestMove;
+    private final String winner;
 
-    private GetNextMoveResponse(List<String> validMoves, String bestMove) {
+    private GetNextMoveResponse(List<String> validMoves, String bestMove, String winner) {
         this.validMoves = validMoves;
         this.bestMove = bestMove;
+        this.winner = winner;
     }
 
     public List<String> getValidMoves() {
-        return List.copyOf(validMoves);
+        return (validMoves == null) ? null : List.copyOf(validMoves);
     }
 
     public String getBestMove() {
         return bestMove;
+    }
+
+    public String getWinner() {
+        return winner;
     }
 
     public static Builder builder() {
@@ -26,9 +32,10 @@ public class GetNextMoveResponse {
     public static class Builder {
         private List<String> validMoves;
         private String bestMove;
+        private String winner;
 
         public Builder withValidMoves(final List<String> validMoves) {
-            this.validMoves = List.copyOf(validMoves);
+            this.validMoves = validMoves == null ? null : List.copyOf(validMoves);
             return this;
         }
 
@@ -37,8 +44,13 @@ public class GetNextMoveResponse {
             return this;
         }
 
+        public Builder withWinner(final String winner) {
+            this.winner = winner;
+            return this;
+        }
+
         public GetNextMoveResponse build() {
-            return new GetNextMoveResponse(validMoves, bestMove);
+            return new GetNextMoveResponse(validMoves, bestMove, winner);
         }
     }
 }
