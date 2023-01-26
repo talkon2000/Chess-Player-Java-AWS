@@ -10,7 +10,9 @@ import com.nashss.se.chessplayerservice.exceptions.InvalidRequestException;
 import com.nashss.se.chessplayerservice.exceptions.StockfishException;
 
 import javax.inject.Inject;
+import java.util.HashMap;
 import java.util.List;
+import java.util.Map;
 
 public class GetNextMoveActivity {
 
@@ -68,24 +70,60 @@ public class GetNextMoveActivity {
     }
 
     private void gameOverChecker(Game game) {
-        // VALID VALUES ARE WHITE, BLACK, DRAW, OR NULL
-        String pos = "fen " + game.getMoves();
-        List<String> legalMoves = stockfish.getLegalMoves(pos);
+        List<String> legalMoves = stockfish.getLegalMoves("fen " + game.getMoves());
 
         // Initialize inCheck to false
         boolean inCheck = false;
+        int fiftyMoveRule = 0;
+        String pieces = "";
         stockfish.sendCommand("d");
         String[] dump = stockfish.getOutput(10).split("\n");
         for (String line : dump) {
             // Get new simplified notation
+            // 5th field of fen string is 50 move rule
             if (line.startsWith("Fen: ")) {
-                game.setMoves(line.split("Fen: ")[1]);
+                String fen = line.split("Fen: ")[1];
+                game.setMoves(fen);
+                pieces = fen.split(" ")[0];
+                fiftyMoveRule = Integer.parseInt(fen.split(" ")[4]);
             }
             if (line.startsWith("Checkers: ")) {
                 // See if position is in check
                 line = line.replace("Checkers: ", "").trim();
                 if (!line.isBlank()) {
                     inCheck = true;
+                }
+            }
+        }
+
+        // Logic to determine if enough material is present
+        List<Character> pieceList = List.of('p', 'P', 'q', 'Q', 'r', 'R');
+        StringBuilder whitePieces = new StringBuilder();
+        StringBuilder blackPieces = new StringBuilder();
+        boolean enoughMaterial = false;
+        // loop to collect all the relevant pieces
+        for (Character c : pieces.toCharArray()) {
+            // ignore fen notation breaks for rows
+            if (c.equals('/') || c.toString().equalsIgnoreCase("k")) {
+                continue;
+            }
+            // if a pawn, queen, or rook is found, there is enough material
+            if (pieceList.contains(c)) {
+                enoughMaterial = true;
+                break;
+            }
+            if (Character.isLowerCase(c)) {
+                blackPieces.append(c);
+                if (blackPieces.length() > 1) {
+                    enoughMaterial = true;
+                    break;
+                }
+            }
+            else {
+                whitePieces.append(c);
+                if (whitePieces.length() > 1) {
+                    enoughMaterial = true;
+                    break;
                 }
             }
         }
@@ -101,6 +139,19 @@ public class GetNextMoveActivity {
             game.setWinner("draw");
             game.setActive("false");
         }
-        // TODO: add other drawing conditions like not enough material and 50 move rule
+
+        // fifty move rule is a draw condition;
+        // if there have been no pawn captures or advances in 50 moves, the game ends in a draw
+        // fen string tracks this for us
+        else if (fiftyMoveRule >= 100) {
+           game.setWinner("draw");
+           game.setActive("false");
+        }
+
+        // draw by not enough material
+        else if (!enoughMaterial) {
+            game.setWinner("draw");
+            game.setActive("false");
+        }
     }
 }

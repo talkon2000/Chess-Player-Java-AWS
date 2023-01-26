@@ -6,7 +6,7 @@ import com.nashss.se.chessplayerservice.activity.request.GetNextMoveRequest;
 import com.nashss.se.chessplayerservice.activity.response.GetNextMoveResponse;
 
 public class GetNextMoveLambda extends LambdaActivityRunner<GetNextMoveRequest, GetNextMoveResponse>
-        implements RequestHandler<com.nashss.se.chessplayerservice.lambda.LambdaRequest<GetNextMoveRequest>, com.nashss.se.chessplayerservice.lambda.LambdaResponse> {
+        implements RequestHandler<LambdaRequest<GetNextMoveRequest>, LambdaResponse> {
 
 
     @Override
