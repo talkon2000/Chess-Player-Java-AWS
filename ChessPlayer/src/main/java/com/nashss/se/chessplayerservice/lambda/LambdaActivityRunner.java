@@ -10,7 +10,6 @@ import java.util.function.Supplier;
 
 public class LambdaActivityRunner<TRequest, TResult> {
     private ServiceComponent service;
-    private final Logger log = LogManager.getLogger();
 
     /**
      * Handles running the activity and returning a LambdaResponse (either success or failure).
@@ -21,7 +20,6 @@ public class LambdaActivityRunner<TRequest, TResult> {
     protected LambdaResponse runActivity(
             Supplier<TRequest> requestSupplier,
             BiFunction<TRequest, ServiceComponent, TResult> handleRequest) {
-        log.info("runActivity");
         try {
             TRequest request = requestSupplier.get();
             ServiceComponent serviceComponent = getService();
@@ -33,7 +31,6 @@ public class LambdaActivityRunner<TRequest, TResult> {
     }
 
     private ServiceComponent getService() {
-        log.info("getService");
         if (service == null) {
             service = DaggerServiceComponent.create();
         }
