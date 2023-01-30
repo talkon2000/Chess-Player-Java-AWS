@@ -1,0 +1,82 @@
+:root {
+    /* css variables: https://developer.mozilla.org/en-US/docs/Web/CSS/var */
+    --primary-color: #5D5E5E;
+    --secondary-color: #ffffff;
+    --tertiary-color: #F5881F;
+    --error-color: #EE3A23;
+}
+
+.header {
+    /* Flexbox: https://css-tricks.com/snippets/css/a-guide-to-flexbox/ */
+    display: flex;
+    justify-content: space-between;
+    align-items: center;
+    background-color: var(--primary-color);
+    color: var(--secondary-color);
+    padding: 4px 20px;
+}
+
+.header_home {
+    font-size: 36px;
+    line-height: 40px;
+    height: 100px;
+    text-decoration: none;
+    color: var(--secondary-color);
+}
+
+.chess-board {
+    border-spacing: 0;
+    border-collapse:
+    collapse;
+}
+
+.chess-board th {
+    padding: .5em;
+}
+
+.chess-board th + th {
+    border-bottom: 1px solid #000;
+}
+
+.chess-board th:first-child,
+.chess-board td:last-child {
+    border-right: 1px solid #000;
+}
+
+.chess-board tr:last-child td {
+    border-bottom: 1px solid;
+}
+
+.chess-board th:empty {
+    border: none;
+}
+
+.chess-board td {
+    width: 1.5em;
+    height: 1.5em;
+    text-align:center;
+    font-size: 32px;
+    line-height: 0;
+}
+
+.chess-board .light {
+    background: #eee;
+}
+
+.chess-board .dark {
+    background: #aaa;
+}
+
+.hidden {
+    display: none;
+}
+
+.error {
+    color: var(--error-color);
+    border: 1px solid var(--error-color);
+    padding: 8px;
+}
+
+.validMove {
+
+}

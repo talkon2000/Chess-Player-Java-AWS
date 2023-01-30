@@ -11,6 +11,7 @@ public class Game {
     private String gameId;
     private String active;
     private String winner;
+    private String notation;
     private String moves;
     private String whitePlayerId;
     private String blackPlayerId;
@@ -41,6 +42,15 @@ public class Game {
 
     public void setWinner(String winner) {
         this.winner = winner;
+    }
+
+    @DynamoDBAttribute(attributeName = "notation")
+    public String getNotation() {
+        return notation;
+    }
+
+    public void setNotation(String notation) {
+        this.notation = notation;
     }
 
     @DynamoDBAttribute(attributeName = "moves")

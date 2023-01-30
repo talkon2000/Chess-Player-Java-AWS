@@ -37,7 +37,10 @@ public class GetNextMoveActivity {
         if (game == null || game.getActive().equals("false")) {
             throw new InvalidRequestException("There is no game with that ID");
         }
-        game.setMoves(game.getMoves() + " moves " + request.getMove());
+        if (!stockfish.getLegalMoves("fen " + game.getNotation()).contains(request.getMove())) {
+            throw new InvalidRequestException("That is not a legal move");
+        }
+        game.setNotation(game.getNotation() + " moves " + request.getMove());
 
         // Initialize stockfish
         if (!stockfish.startEngine()) {
@@ -55,11 +58,11 @@ public class GetNextMoveActivity {
         List<String> validMoves = null;
         if (game.getWinner() == null) {
             // If the player move did not end the game, make an engine move
-            engineMove = stockfish.getBestMove(String.format("fen %s", game.getMoves()), 500).trim();
-            game.setMoves(game.getMoves() + " moves " + engineMove);
+            engineMove = stockfish.getBestMove(String.format("fen %s", game.getNotation()), 500).trim();
+            game.setNotation(game.getNotation() + " moves " + engineMove);
             // Check if the engine move ends the game
             gameOverChecker(game);
-            validMoves = stockfish.getLegalMoves(game.getMoves());
+            validMoves = stockfish.getLegalMoves(game.getNotation());
         }
 
         stockfish.stopEngine();
@@ -70,7 +73,7 @@ public class GetNextMoveActivity {
     }
 
     private void gameOverChecker(Game game) {
-        List<String> legalMoves = stockfish.getLegalMoves("fen " + game.getMoves());
+        List<String> legalMoves = stockfish.getLegalMoves("fen " + game.getNotation());
 
         // Initialize inCheck to false
         boolean inCheck = false;
@@ -83,7 +86,7 @@ public class GetNextMoveActivity {
             // 5th field of fen string is 50 move rule
             if (line.startsWith("Fen: ")) {
                 String fen = line.split("Fen: ")[1];
-                game.setMoves(fen);
+                game.setNotation(fen);
                 pieces = fen.split(" ")[0];
                 fiftyMoveRule = Integer.parseInt(fen.split(" ")[4]);
             }
@@ -130,7 +133,7 @@ public class GetNextMoveActivity {
 
         // if in check and no valid moves, game is over by checkmate
         if (inCheck && legalMoves.isEmpty()) {
-            game.setWinner(game.getMoves().split(" ")[1].equals("w") ? "black" : "white");
+            game.setWinner(game.getNotation().split(" ")[1].equals("w") ? "black" : "white");
             game.setActive("false");
         }
 

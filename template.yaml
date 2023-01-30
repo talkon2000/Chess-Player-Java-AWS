@@ -4,9 +4,16 @@ Description: >
   Chess Player Client
 
 Parameters:
+
+  CognitoDomain:
+    Type: String
+    Description: A name for the cognito Domain
+    Default: "chess-player-service-joshtaylor"
+
   S3Bucket:
     Type: String
     Description: Parameter to specify the S3 Bucket to use for deployment
+
   FrontendDeployment:
     Default: remote
     Type: String
@@ -23,14 +30,144 @@ Conditions:
 Globals:
   Function:
     Timeout: 20
-
   Api:
     Cors:
       AllowMethods: "'GET,POST,PUT,OPTIONS'"
       AllowHeaders: "'content-type'"
       AllowOrigin: "'*'"
+    Auth:
+      DefaultAuthorizer: CognitoAuthorizer
+      AddDefaultAuthorizerToCorsPreflight: false
+      Authorizers:
+        CognitoAuthorizer:
+          UserPoolArn: !GetAtt UserPool.Arn
 
 Resources:
+
+  #-----------------------------------------------------
+  # Cognito Configuration for user management
+  #-----------------------------------------------------
+
+  UserPool:
+    Type: AWS::Cognito::UserPool
+    Properties:
+      AccountRecoverySetting:
+        RecoveryMechanisms:
+          - Name: verified_email
+            Priority: 1
+      UsernameAttributes:
+        - email
+      UsernameConfiguration:
+        CaseSensitive: false
+      AutoVerifiedAttributes:
+        - email
+      UserPoolName: !Sub ${CognitoDomain}-user-pool
+      Schema:
+        - Name: email
+          AttributeDataType: String
+          Mutable: false
+          Required: true
+        - Name: name
+          AttributeDataType: String
+          Mutable: true
+          Required: true
+
+  UserPoolClient:
+    Type: AWS::Cognito::UserPoolClient
+    Properties:
+      UserPoolId: !Ref UserPool
+      AllowedOAuthFlowsUserPoolClient: true
+      CallbackURLs:
+        - !If
+          - DeployCloudFront
+          - !Sub "https://${CloudfrontDistribution.DomainName}"
+          - http://localhost:8000
+      LogoutURLs:
+        - !If
+          - DeployCloudFront
+          - !Sub "https://${CloudfrontDistribution.DomainName}"
+          - http://localhost:8000
+      AllowedOAuthFlows:
+        - code
+        - implicit
+      AllowedOAuthScopes:
+        - phone
+        - email
+        - openid
+        - profile
+      SupportedIdentityProviders:
+        - COGNITO
+      PreventUserExistenceErrors: ENABLED
+
+  UserPoolDomain:
+    Type: AWS::Cognito::UserPoolDomain
+    Properties:
+      Domain: !Ref CognitoDomain
+      UserPoolId: !Ref UserPool
+
+  #-----------------------------------------------------
+  # CloudFront Configuration
+  #-----------------------------------------------------
+
+  CloudFrontOriginAccessIdentity:
+    Type: 'AWS::CloudFront::CloudFrontOriginAccessIdentity'
+    Condition: DeployCloudFront
+    Properties:
+      CloudFrontOriginAccessIdentityConfig:
+        Comment: 'Serverless frontend website'
+
+  CloudfrontDistribution:
+    Type: "AWS::CloudFront::Distribution"
+    Condition: DeployCloudFront
+    Properties:
+      DistributionConfig:
+        Comment: "Cloudfront distribution for serverless website"
+        DefaultRootObject: "index.html"
+        Enabled: true
+        HttpVersion: http2
+        PriceClass: PriceClass_100
+        # List of origins that Cloudfront will connect to
+        Origins:
+          - Id: s3-website
+            DomainName: !Sub "${S3Bucket}.s3.us-east-2.amazonaws.com"
+            OriginPath: /static
+            S3OriginConfig:
+              # Restricting Bucket access through an origin access identity
+              OriginAccessIdentity:
+                Fn::Sub: 'origin-access-identity/cloudfront/${CloudFrontOriginAccessIdentity}'
+        # To connect the CDN to the origins you need to specify behaviours
+        DefaultCacheBehavior:
+          # Compress resources automatically ( gzip )
+          Compress: 'true'
+          AllowedMethods:
+            - GET
+            - HEAD
+            - OPTIONS
+          ForwardedValues:
+            QueryString: false
+          TargetOriginId: s3-website
+          ViewerProtocolPolicy : redirect-to-https
+          CachePolicyId: 4135ea2d-6df8-44a3-9df3-4b5a84be39ad
+
+  S3BucketPolicy:
+    Type: AWS::S3::BucketPolicy
+    Condition: DeployCloudFront
+    Properties:
+      Bucket: !Ref S3Bucket
+      PolicyDocument:
+        # Restricting access to cloudfront only.
+        Statement:
+          -
+            Effect: Allow
+            Action: 's3:GetObject'
+            Resource:
+              - !Sub "arn:aws:s3:::${S3Bucket}/*"
+            Principal:
+              AWS: !Sub "arn:aws:iam::cloudfront:user/CloudFront Origin Access Identity ${CloudFrontOriginAccessIdentity}"
+
+  #-----------------------------------------------------
+  # Role/Permissions/Policy Configuration
+  #-----------------------------------------------------
 
   AccessDynamoDBTablesRole:
     Type: AWS::IAM::Role
@@ -87,6 +224,10 @@ Resources:
                       - !Ref 'AWS::AccountId'
                       - ':table/Games'
 
+  #-----------------------------------------------------
+  # Lambda Functions Configuration
+  #-----------------------------------------------------
+
   GetNextMoveLambda:
     Type: AWS::Serverless::Function
     Properties:
@@ -106,6 +247,10 @@ Resources:
           Properties:
             Path: /move/{move}
             Method: get
+
+  #-----------------------------------------------------
+  # DynamoDB Configuration
+  #-----------------------------------------------------
 
   UsersTable:
     Type: AWS::DynamoDB::Table
@@ -151,3 +296,33 @@ Resources:
           KeyType: "HASH"
       BillingMode: "PAY_PER_REQUEST"
       TableName: "Games"
+
+      #-----------------------------------------------------
+      # The outputs defined below will be printed
+      #  to the screen after a successful deploy
+      #-----------------------------------------------------
+
+Outputs:
+
+  CognitoUserPoolId:
+    Value: !Ref UserPool
+    Description: "The Cognito User Pool ID (COGNITO_USER_POOL_ID)."
+  CognitoUserPoolClientId:
+    Value: !Ref UserPoolClient
+    Description: "The Cognito User Pool Client ID (COGNITO_USER_POOL_CLIENT_ID)."
+  CognitoDomain:
+    Value: !Sub "${CognitoDomain}.auth.us-east-2.amazoncognito.com"
+    Description: "The Cognito Domain (COGNITO_DOMAIN)."
+
+  ApiBaseUrl:
+    Description: "API Gateway endpoint base URL for Prod stage (API_BASE_URL)."
+    Value: !Sub "https://${ServerlessRestApi}.execute-api.${AWS::Region}.amazonaws.com/Prod/"
+
+  CognitoRedirectSignin:
+    Description: "The URL of the deployed front-end application (COGNITO_REDIRECT_SIGNIN)."
+    Value: !Sub "https://${CloudfrontDistribution.DomainName}"
+    Condition: DeployCloudFront
+  CognitoRedirectSignout:
+    Description: "The URL of the deployed front-end application (COGNITO_REDIRECT_SIGNOUT)."
+    Value: !Sub "https://${CloudfrontDistribution.DomainName}"
+    Condition: DeployCloudFront
