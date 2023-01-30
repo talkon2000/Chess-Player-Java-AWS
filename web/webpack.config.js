@@ -23,7 +23,7 @@ module.exports = {
     usedExports: true
   },
   entry: {
-    getNextMove: path.resolve(__dirname, 'src', 'pages', 'game.js'),
+    getNextMove: path.resolve(__dirname, 'src', 'pages', 'getNextMove.js'),
     //viewPlaylist: path.resolve(__dirname, 'src', 'pages', 'viewPlaylist.js'),
     //searchPlaylists: path.resolve(__dirname, 'src', 'pages', 'searchPlaylists.js'),
   },
