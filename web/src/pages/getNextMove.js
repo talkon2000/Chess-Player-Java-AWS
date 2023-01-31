@@ -10,7 +10,7 @@ export default class GetNextMove extends BindingClass {
 
     constructor() {
         super();
-        this.bindClassMethods(['mount', 'setUpBoard', 'reloadMoves', 'drag', 'submitMove', 'cancel'], this);
+        this.bindClassMethods(['mount', 'setUpBoard', 'reloadMoves', 'drag', 'doCastle', 'doCastleUser', 'submitMove', 'cancel'], this);
         this.dataStore = new DataStore();
         this.header = new Header();
     }
@@ -34,13 +34,18 @@ export default class GetNextMove extends BindingClass {
         document.getElementById('cancel').disabled = true;
     }
 
-    setUpBoard() {
-        /*const game = await this.client.getGame(gameId, (error) => {
+    async setUpBoard() {
+        const errorMessageDisplay = document.getElementById('error-message');
+        // Get game
+        const response = await this.client.getGame(this.dataStore.get("gameId"), (error) => {
              errorMessageDisplay.innerText = `Error: ${error.message}`;
              errorMessageDisplay.classList.remove('hidden');
-        });*/
-        const fen = window.localStorage.getItem("notation");
-        const validMoves = window.localStorage.getItem("validMoves").split(",");
+        });
+        console.log(response);
+        const game = response.game;
+        const fen = game.notation;
+        const validMoves = game.validMoves.split(",");
+
         console.log(validMoves);
 
         // set up monstrosities
@@ -75,7 +80,7 @@ export default class GetNextMove extends BindingClass {
         }
 
         // set up valid moves
-        validMoves.forEach((move) => {
+        validMoves.filter(move => move != "").forEach((move) => {
             let validFrom = move.slice(0, 2);
             let validTo = move.slice(2, 4);
             const fromPiece = document.getElementById(validFrom).firstElementChild;
@@ -126,6 +131,22 @@ export default class GetNextMove extends BindingClass {
         // (2) move the piece on mousemove
         document.addEventListener('mousemove', onMouseMove);
 
+        // Logic in case a promotion happens
+        async function doPromotion(piece) {
+            let promotion = document.getElementById(promotion);
+            let promotedTo = ""
+            promotion.addEventListener("click", logic, { once: true });
+            promotion.classList.remove('hidden');
+            await function logic(event) {
+                elemBelow = document.elementFromPoint(event.clientX, event.clientY);
+                piece.innerHTML = elemBelow.innerHTML;
+                promotedTo = elemBelow.id;
+                promotion.classList.add('hidden');
+                promotion.removeEventListener("click", logic);
+            }
+            return promotedTo;
+        }
+
         // (3) drop the piece, remove unneeded handlers
         piece.onmouseup = () => {
             var captured = null;
@@ -141,12 +162,13 @@ export default class GetNextMove extends BindingClass {
                 }
                 if ((elemBelow.id.includes("1") || elemBelow.id.includes("8")) && (piece.innerHTML == "♟" || piece.innerHTML == "♙")) {
                     promoted = true;
-                    promoted = doPromotion(piece)
+                    promoted = doPromotion(piece);
                 }
                 elemBelow.append(piece);
                 document.getElementById('submit').disabled = false;
                 document.getElementById('cancel').disabled = false;
                 this.dataStore.set("move", {"to": elemBelow, "from": origParent, "captured": captured, "promoted": promoted});
+                this.doCastleUser();
                 console.log(this.dataStore.get("move"));
             }
             else {
@@ -156,21 +178,60 @@ export default class GetNextMove extends BindingClass {
             document.removeEventListener('mousemove', onMouseMove);
             piece.onmouseup = null;
         };
+    }
 
-        async function doPromotion(piece) {
-            let promotion = document.getElementById(promotion);
-            let promotedTo = ""
-            promotion.addEventListener("click", logic, { once: true });
-            promotion.classList.remove('hidden');
-            await function logic(event) {
-                elemBelow = document.elementFromPoint(event.clientX, event.clientY);
-                piece.innerHTML = elemBelow.innerHTML;
-                promotedTo = elemBelow.id;
-                promotion.classList.add('hidden');
-                promotion.removeEventListener("click", logic);
+    /**
+     * Overloaded method to handle the engine move or the user move
+     */
+    doCastle(move, piece) {
+        const from = move.slice(0, 1);
+        const to = move.slice(2, 3);
+        // Check if the piece is a white king
+        if (piece.innerHTML == "♔") {
+            // Castling king side. move the rook to the f file
+            if (from == "e" && to == "g") {
+                const rookSquare = document.getElementById("h1");
+                const rook = rookSquare.removeChild(rookSquare.children[0]);
+                document.getElementById("f1").append(rook);
+                return "K";
             }
-            return promotedTo;
+            // Castling queen side. move the rook to the d file
+            if (from == "e" && to == "c") {
+                const rookSquare = document.getElementById("a1");
+                const rook = rookSquare.removeChild(rookSquare.children[0]);
+                document.getElementById("d1").append(rook);
+                return "Q";
+            }
         }
+        // Check if the piece is a black king
+        else if (piece.innerHTML == "♚") {
+            // Castling king side. move the rook to the f file
+            if (from == "e" && to == "g") {
+                const rookSquare = document.getElementById("h8");
+                const rook = rookSquare.removeChild(rookSquare.children[0]);
+                document.getElementById("f8").append(rook);
+                return "k";
+            }
+            // Castling queen side. move the rook to the d file
+            if (from == "e" && to == "c") {
+                const rookSquare = document.getElementById("a8");
+                const rook = rookSquare.removeChild(rookSquare.children[0]);
+                document.getElementById("d8").append(rook);
+                return "q";
+            }
+        }
+    }
+
+    /**
+     * This is for the user move
+     */
+    doCastleUser() {
+        const move = this.dataStore.get("move");
+        const moveNotation = move.from.id + move.to.id;
+        const piece = move.to.firstElementChild;
+        const castled = this.doCastle(moveNotation, piece);
+        move.castled = castled;
+        this.dataStore.set("move", move);
     }
 
     /**
@@ -203,8 +264,6 @@ export default class GetNextMove extends BindingClass {
             document.getElementById('submit').disabled = true;
             document.getElementById('cancel').disabled = true;
             console.log(response);
-            window.localStorage.setItem("notation", response.game.notation);
-            window.localStorage.setItem("validMoves", response.game.validMoves);
             this.reloadMoves(response);
         }
      }
@@ -252,6 +311,21 @@ export default class GetNextMove extends BindingClass {
                 }
             }
             to.append(from.firstElementChild);
+            this.doCastle(response.move, origPiece);
+        }
+
+        // Check for winner
+        const winner = response.game.winner;
+        if (winner) {
+            if (winner == "draw") {
+                alert("The game has ended in a draw");
+            }
+            else if (winner == "black") {
+                alert("Black has won by checkmate");
+            }
+            else {
+                alert("White has won by checkmate");
+            }
         }
 
         // Remove all previous valid moves
@@ -261,13 +335,15 @@ export default class GetNextMove extends BindingClass {
         }
         
         // Make the new valid moves
-        response.game.validMoves.forEach((move) => {
-            let validFrom = move.slice(0, 2);
-            let validTo = move.slice(2, 4);
-            const piece = document.getElementById(validFrom).firstElementChild;
-            piece.validMoves.push(validTo);
-            piece.addEventListener('mousedown', this.drag);
-        });
+        if (response.game.validMoves) {
+            response.game.validMoves.split(",").filter(move => move != "").forEach((move) => {
+                let validFrom = move.slice(0, 2);
+                let validTo = move.slice(2, 4);
+                const piece = document.getElementById(validFrom).firstElementChild;
+                piece.validMoves.push(validTo);
+                piece.addEventListener('mousedown', this.drag);
+            });
+        }
     }
 
     /**
@@ -281,6 +357,20 @@ export default class GetNextMove extends BindingClass {
         }
         if (move.promoted) {
             piece.innerHTML = "♙";
+        }
+        if (move.castled) {
+            if (move.castled == "K") {
+                document.getElementById("h1").append(document.getElementById("f1").removeChild(document.getElementById("f1").children[0]));
+            }
+            if (move.castled == "Q") {
+                document.getElementById("a1").append(document.getElementById("d1").removeChild(document.getElementById("d1").children[0]));
+            }
+            if (move.castled == "k") {
+                document.getElementById("h8").append(document.getElementById("f8").removeChild(document.getElementById("f8").children[0]));
+            }
+            if (move.castled == "q") {
+                document.getElementById("a8").append(document.getElementById("d8").removeChild(document.getElementById("d8").children[0]));
+            }
         }
         move.from.append(piece);
         document.getElementById('submit').disabled = true;
