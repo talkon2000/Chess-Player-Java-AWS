@@ -63,7 +63,12 @@ public class GetNextMoveActivity {
             game.setNotation(game.getNotation() + " moves " + engineMove);
             // Check if the engine move ends the game
             gameOverChecker(game);
-            game.setValidMoves(new HashSet<>(stockfish.getLegalMoves(game.getNotation())));
+            StringBuilder sb = new StringBuilder();
+            for (String move : stockfish.getLegalMoves(game.getNotation())) {
+                sb.append(move);
+                sb.append(",");
+            }
+            game.setValidMoves(sb.toString());
         }
 
         stockfish.stopEngine();

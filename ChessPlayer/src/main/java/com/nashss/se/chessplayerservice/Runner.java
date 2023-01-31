@@ -3,6 +3,8 @@ package com.nashss.se.chessplayerservice;
 import com.nashss.se.chessplayerservice.engine.Stockfish;
 
 import java.util.List;
+import java.util.Map;
+import java.util.TreeMap;
 
 public class Runner {
 
@@ -45,5 +47,13 @@ public class Runner {
             }
         }
         stockfish.stopEngine();
+        String[] file = {"a", "b", "c", "d", "e", "f", "g", "h"};
+        String[] rank = {"8", "7", "6", "5", "4", "3", "2", "1"};
+        StringBuilder map = new StringBuilder("[");
+        for (int i = 0; i < 64; i++) {
+            map.append("\"" + file[i % 8] + rank[i / 8] + "\", ");
+        }
+
+        System.out.println(map.toString());
     }
 }

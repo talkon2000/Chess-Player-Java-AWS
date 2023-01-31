@@ -15,7 +15,7 @@ export default class ChessPlayerClient extends BindingClass {
     constructor(props = {}) {
         super();
 
-        const methodsToBind = ['clientLoaded', 'getIdentity', 'login', 'logout', 'getNextMove', 'searchUsers'];
+        const methodsToBind = ['clientLoaded', 'getIdentity', 'login', 'logout', 'getGame', 'getNextMove', 'searchUsers'];
         this.bindClassMethods(methodsToBind, this);
 
         this.authenticator = new Authenticator();;
@@ -71,6 +71,15 @@ export default class ChessPlayerClient extends BindingClass {
         return await this.authenticator.getUserToken();
     }
 
+    async getGame(gameId, errorCallback) {
+        try {
+            const response = await this.axiosClient.get(`game/${gameId}`);
+            return response.data;
+        } catch (error) {
+            this.handleError(error, errorCallback);
+        }
+    }
+
     /**
      * Gets the next move for the given game ID.
      * @param id Unique identifier for a game
@@ -78,12 +87,12 @@ export default class ChessPlayerClient extends BindingClass {
      * @param errorCallback (Optional) A function to execute if the call fails.
      * @returns The engine move, a list of valid moves, and metadata.
      */
-    async getNextMove(id, move, errorCallback) {
+    async getNextMove(gameId, move, errorCallback) {
         try {
-            const response = await this.axiosClient.get(`move/${move}`, { params: { "gameId": id } });
+            const response = await this.axiosClient.get(`move/${move}`, { params: { "gameId": gameId } });
             return response.data;
         } catch (error) {
-            this.handleError(error, errorCallback)
+            this.handleError(error, errorCallback);
         }
     }
 
@@ -98,7 +107,7 @@ export default class ChessPlayerClient extends BindingClass {
 
             return response.data;
         } catch (error) {
-            this.handleError(error, errorCallback)
+            this.handleError(error, errorCallback);
         }
 
     }

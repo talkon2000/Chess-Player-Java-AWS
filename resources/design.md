@@ -59,7 +59,7 @@ As mentioned in the problem statement, I want to implement a Player vs Player fe
   * whiteUserId : String
   * blackUserId : String
   * notation : String
-  * validMoves : String Set
+  * validMoves : String
   * moves : String
   * botDifficulty : Number
 

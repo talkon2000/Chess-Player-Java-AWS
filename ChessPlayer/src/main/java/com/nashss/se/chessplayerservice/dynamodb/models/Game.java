@@ -2,11 +2,9 @@ package com.nashss.se.chessplayerservice.dynamodb.models;
 
 import com.amazonaws.services.dynamodbv2.datamodeling.DynamoDBAttribute;
 import com.amazonaws.services.dynamodbv2.datamodeling.DynamoDBHashKey;
-import com.amazonaws.services.dynamodbv2.datamodeling.DynamoDBRangeKey;
 import com.amazonaws.services.dynamodbv2.datamodeling.DynamoDBTable;
 
 import javax.annotation.Nonnull;
-import java.util.Set;
 
 @DynamoDBTable(tableName = "Games")
 public class Game {
@@ -15,7 +13,7 @@ public class Game {
     private String active;
     private String winner;
     private String notation;
-    private Set<String> validMoves;
+    private String validMoves;
     private String moves;
     private String whitePlayerId;
     private String blackPlayerId;
@@ -58,12 +56,12 @@ public class Game {
     }
 
     @DynamoDBAttribute(attributeName = "validMoves")
-    public Set<String> getValidMoves() {
+    public String getValidMoves() {
         return validMoves;
     }
 
-    public void setValidMoves(@Nonnull Set<String> validMoves) {
-        this.validMoves = Set.copyOf(validMoves);
+    public void setValidMoves(@Nonnull String validMoves) {
+        this.validMoves = validMoves;
     }
 
     @DynamoDBAttribute(attributeName = "moves")
