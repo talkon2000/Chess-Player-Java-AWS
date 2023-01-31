@@ -24,8 +24,6 @@ module.exports = {
   },
   entry: {
     getNextMove: path.resolve(__dirname, 'src', 'pages', 'getNextMove.js'),
-    //viewPlaylist: path.resolve(__dirname, 'src', 'pages', 'viewPlaylist.js'),
-    //searchPlaylists: path.resolve(__dirname, 'src', 'pages', 'searchPlaylists.js'),
   },
   output: {
     path: path.resolve(__dirname, 'build', 'assets'),

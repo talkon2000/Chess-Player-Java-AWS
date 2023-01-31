@@ -1,28 +1,22 @@
 package com.nashss.se.chessplayerservice.activity.response;
 
-import java.util.List;
+import com.nashss.se.chessplayerservice.dynamodb.models.Game;
 
 public class GetNextMoveResponse {
-    private final List<String> validMoves;
-    private final String bestMove;
-    private final String winner;
+    private final Game game;
+    private final String move;
 
-    private GetNextMoveResponse(List<String> validMoves, String bestMove, String winner) {
-        this.validMoves = validMoves;
-        this.bestMove = bestMove;
-        this.winner = winner;
+    private GetNextMoveResponse(Game game, String move) {
+        this.game = game;
+        this.move = move;
     }
 
-    public List<String> getValidMoves() {
-        return (validMoves == null) ? null : List.copyOf(validMoves);
+    public Game getGame() {
+        return game;
     }
 
-    public String getBestMove() {
-        return bestMove;
-    }
-
-    public String getWinner() {
-        return winner;
+    public String getMove() {
+        return move;
     }
 
     public static Builder builder() {
@@ -30,27 +24,21 @@ public class GetNextMoveResponse {
     }
 
     public static class Builder {
-        private List<String> validMoves;
-        private String bestMove;
-        private String winner;
+        private Game game;
+        private String move;
 
-        public Builder withValidMoves(final List<String> validMoves) {
-            this.validMoves = validMoves == null ? null : List.copyOf(validMoves);
+        public Builder withGame(final Game game) {
+            this.game = game;
             return this;
         }
 
         public Builder withMove(final String move) {
-            this.bestMove = move;
-            return this;
-        }
-
-        public Builder withWinner(final String winner) {
-            this.winner = winner;
+            this.move = move;
             return this;
         }
 
         public GetNextMoveResponse build() {
-            return new GetNextMoveResponse(validMoves, bestMove, winner);
+            return new GetNextMoveResponse(game, move);
         }
     }
 }

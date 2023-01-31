@@ -248,6 +248,10 @@ Resources:
             Path: /move/{move}
             Method: get
 
+            #
+            #Auth:
+            #  Authorizer: 'NONE'
+
   #-----------------------------------------------------
   # DynamoDB Configuration
   #-----------------------------------------------------

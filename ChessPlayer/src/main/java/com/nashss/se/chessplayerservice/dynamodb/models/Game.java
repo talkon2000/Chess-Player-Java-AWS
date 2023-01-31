@@ -5,6 +5,9 @@ import com.amazonaws.services.dynamodbv2.datamodeling.DynamoDBHashKey;
 import com.amazonaws.services.dynamodbv2.datamodeling.DynamoDBRangeKey;
 import com.amazonaws.services.dynamodbv2.datamodeling.DynamoDBTable;
 
+import javax.annotation.Nonnull;
+import java.util.Set;
+
 @DynamoDBTable(tableName = "Games")
 public class Game {
 
@@ -12,6 +15,7 @@ public class Game {
     private String active;
     private String winner;
     private String notation;
+    private Set<String> validMoves;
     private String moves;
     private String whitePlayerId;
     private String blackPlayerId;
@@ -51,6 +55,15 @@ public class Game {
 
     public void setNotation(String notation) {
         this.notation = notation;
+    }
+
+    @DynamoDBAttribute(attributeName = "validMoves")
+    public Set<String> getValidMoves() {
+        return validMoves;
+    }
+
+    public void setValidMoves(@Nonnull Set<String> validMoves) {
+        this.validMoves = Set.copyOf(validMoves);
     }
 
     @DynamoDBAttribute(attributeName = "moves")

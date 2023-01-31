@@ -7,9 +7,10 @@ import DataStore from '../utils/DataStore';
  * The component that handles the logic to play chess for the website.
  */
 export default class GetNextMove extends BindingClass {
+
     constructor() {
         super();
-        this.bindClassMethods(['mount', 'clientLoaded', 'drag', 'submitMove', 'cancel'], this);
+        this.bindClassMethods(['mount', 'setUpBoard', 'reloadMoves', 'drag', 'submitMove', 'cancel'], this);
         this.dataStore = new DataStore();
         this.header = new Header();
     }
@@ -18,14 +19,19 @@ export default class GetNextMove extends BindingClass {
       * Add the header to the page and load the ChessPlayerClient.
       */
     mount() {
+        this.header.addHeaderToPage();
+        this.client = new ChessPlayerClient();
+
+        let url = new URL(window.location.href);
+        let gameId = url.searchParams.get("gameId");
+        this.dataStore.set("gameId", gameId);
+        setUpBoard(game.getNotation, game.getValidMoves);
+
         document.getElementById('submit').addEventListener('click', this.submitMove);
         document.getElementById('submit').disabled = true;
         document.getElementById('cancel').addEventListener('click', this.cancel);
         document.getElementById('cancel').disabled = true;
 
-        this.header.addHeaderToPage();
-        this.client = new ChessPlayerClient();
-        this.clientLoaded;
 
         //compile all the positions
         const ranks = [1, 2, 3, 4, 5, 6, 7, 8];
@@ -37,7 +43,7 @@ export default class GetNextMove extends BindingClass {
             }
         }
 
-        //add an event listener for each one
+        //add an event listener for each piece
         console.log(positions);
         positions.forEach((position) => {
             //if the position has a chess piece in it
@@ -46,17 +52,11 @@ export default class GetNextMove extends BindingClass {
                 child.addEventListener("mousedown", this.drag);
             }
         });
-
-        document.getElementById("d2").firstElementChild.validMoves = ["d3", "d4"];
     }
 
-    async clientLoaded() {
-        const urlParams = new URLSearchParams(window.location.search);
-        const gameId = urlParams.get('id');
-        this.dataStore.set('gameId', gameId);
-    }
+    setUpBoard(fen, validMoves) {
 
-    reloadMoves()
+    }
 
     drag(event) {
         if (!document.getElementById('submit').disabled) {
@@ -102,11 +102,22 @@ export default class GetNextMove extends BindingClass {
         document.addEventListener('mousemove', onMouseMove);
 
         // (3) drop the piece, remove unneeded handlers
-        piece.onmouseup = function() {
+        piece.onmouseup = () => {
+            var captured = null;
+            // if you drop the piece on another piece, keep track of that piece in captured
+            if (elemBelow.nodeName == "CHESS-PIECE") {
+                captured = elemBelow;
+                elemBelow = elemBelow.parentElement;
+            }
             if (piece.validMoves.includes(elemBelow.id)) {
+                if (captured) {
+                    elemBelow.removeChild(captured);
+                }
                 elemBelow.append(piece);
                 document.getElementById('submit').disabled = false;
                 document.getElementById('cancel').disabled = false;
+                this.dataStore.set("move", {"to": elemBelow, "from": origParent, "captured": captured});
+                console.log(this.dataStore.get("move"));
             }
             else {
                 origParent.append(piece);
@@ -125,8 +136,11 @@ export default class GetNextMove extends BindingClass {
          errorMessageDisplay.innerText = '';
          errorMessageDisplay.classList.add('hidden');
 
-        const gameId = dataStore.get(gameId);
-        const move = dataStore.get(move);
+        const gameId = this.dataStore.get("gameId");
+        const move = this.dataStore.get("move").from.id + this.dataStore.get("move").to.id;
+
+        console.log(gameId);
+        console.log(move);
 
         const submitButton = document.getElementById('submit');
         const origButtonText = submitButton.innerText;
@@ -136,11 +150,51 @@ export default class GetNextMove extends BindingClass {
             submitButton.innerText = origButtonText;
             errorMessageDisplay.innerText = `Error: ${error.message}`;
             errorMessageDisplay.classList.remove('hidden');
-        })
+        });
+
+        if (response) {
+            console.log(response);
+            window.localStorage.setItem("notation", response.notation)
+            reloadMoves(response);
+        }
      }
 
-     async cancel() {
+    /**
+     * Reload the board after a move
+     */
+     reloadMoves(response) {
+        // Remove all previous valid moves
+        document.getElementsByTagName("chess-piece").forEach((piece) => {
+            piece.validMoves = [];
+        })
 
+        // Do the response move
+        let bestMove = response.bestMove;
+        let from = document.getElementById(bestMove.slice(0, 2));
+        let to = document.getElementById(bestMove.slice(2, 4));
+        if (to.firstElementChild) {
+            to.removeChild(to.children[0]);
+        }
+        from.removeChild(from.children[0]);
+        to.append(from.firstElementChild);
+
+        // Make the new valid moves
+        response.validMoves.forEach((move) => {
+            let validFrom = move.slice(0, 2);
+            let validTo = move.slice(2);
+            document.getElementById(validFrom).validMoves.push(validTo);
+        })
+    }
+
+     cancel() {
+        const move = this.dataStore.get("move");
+        const piece = move.to.removeChild(move.to.children[0]);
+        if (move.captured) {
+            move.to.append(move.captured);
+        }
+        move.from.append(piece);
+        document.getElementById('submit').disabled = true;
+        document.getElementById('cancel').disabled = true;
      }
 }
 

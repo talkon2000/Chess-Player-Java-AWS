@@ -10,9 +10,7 @@ import com.nashss.se.chessplayerservice.exceptions.InvalidRequestException;
 import com.nashss.se.chessplayerservice.exceptions.StockfishException;
 
 import javax.inject.Inject;
-import java.util.HashMap;
-import java.util.List;
-import java.util.Map;
+import java.util.*;
 
 public class GetNextMoveActivity {
 
@@ -37,23 +35,26 @@ public class GetNextMoveActivity {
         if (game == null || game.getActive().equals("false")) {
             throw new InvalidRequestException("There is no game with that ID");
         }
-        if (!stockfish.getLegalMoves("fen " + game.getNotation()).contains(request.getMove())) {
-            throw new InvalidRequestException("That is not a legal move");
-        }
-        game.setNotation(game.getNotation() + " moves " + request.getMove());
 
         // Initialize stockfish
         if (!stockfish.startEngine()) {
             throw new StockfishException("Engine failed to start");
         }
-        stockfish.sendCommand("uci");
-        stockfish.sendCommand("setoption name skill level value " + game.getBotDifficulty());
-        stockfish.getOutput(10);
+        stockfish.getOutput(1);
+        // Check if the submitted move is legal
+        List<String> legalMoves = stockfish.getLegalMoves("fen " + game.getNotation());
+        if (!legalMoves.contains(request.getMove())) {
+            throw new InvalidRequestException("That is not a legal move");
+        }
+        game.setNotation(game.getNotation() + " moves " + request.getMove());
 
         // Check if the player move ends the game
         // This method also updates the game's moves to be fen notation
         gameOverChecker(game);
 
+        stockfish.sendCommand("uci");
+        stockfish.sendCommand("setoption name skill level value " + game.getBotDifficulty());
+        stockfish.getOutput(10);
         String engineMove = null;
         List<String> validMoves = null;
         if (game.getWinner() == null) {
@@ -62,14 +63,17 @@ public class GetNextMoveActivity {
             game.setNotation(game.getNotation() + " moves " + engineMove);
             // Check if the engine move ends the game
             gameOverChecker(game);
-            validMoves = stockfish.getLegalMoves(game.getNotation());
+            game.setValidMoves(new HashSet<>(stockfish.getLegalMoves(game.getNotation())));
         }
 
         stockfish.stopEngine();
 
         // Save the new notation to the database before returning
         gameDao.save(game);
-        return GetNextMoveResponse.builder().withMove(engineMove).withValidMoves(validMoves).withWinner(game.getWinner()).build();
+        return GetNextMoveResponse.builder()
+                .withGame(game)
+                .withMove(engineMove)
+                .build();
     }
 
     private void gameOverChecker(Game game) {

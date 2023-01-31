@@ -58,6 +58,8 @@ As mentioned in the problem statement, I want to implement a Player vs Player fe
   * winner : String
   * whiteUserId : String
   * blackUserId : String
+  * notation : String
+  * validMoves : String Set
   * moves : String
   * botDifficulty : Number
 
@@ -76,7 +78,7 @@ As mentioned in the problem statement, I want to implement a Player vs Player fe
 * GET
 * /move/{move}
 * Takes in gameId as a query parameter
-* Response: {validMoves: [move1, move2, ...], move: \<move>, winner: \<white, black, draw, null>}
+* Response: {move: move, game: \<game object>}
 * Might respond with an error if gameId or move are invalid
 
 ![](GetNextMoveSD.png)

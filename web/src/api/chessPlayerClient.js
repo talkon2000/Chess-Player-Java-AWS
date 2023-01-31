@@ -80,7 +80,7 @@ export default class ChessPlayerClient extends BindingClass {
      */
     async getNextMove(id, move, errorCallback) {
         try {
-            const response = await this.axiosClient.get(`move/${move}?${id}`);
+            const response = await this.axiosClient.get(`move/${move}`, { params: { "gameId": id } });
             return response.data;
         } catch (error) {
             this.handleError(error, errorCallback)
