@@ -66,10 +66,17 @@ As mentioned in the problem statement, I want to implement a Player vs Player fe
 ### CreateNewGameEndpoint
 * Creates a new game with a unique gameId in the Games table, then returns the gameId
 * POST
-* /createGame/
+* /game
 * Request Body: {whiteUserId: \<userId>, blackUserId: \<userId>, botDifficulty: \<botDifficulty>}
 * Response: {gameId: \<gameId>}
 * Might respond with an error if bot difficulty is out of bounds
+
+### GetGameEndpoint
+* Returns the game with the given id
+* GET
+* /game/{gameId}
+* Response: {game: \<game object>}
+* Might respond with an error if that game does not exist
 
 ### GetNextMoveEndpoint
 * Uses stockfish to get the next move, and updates the game in the games table
