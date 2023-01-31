@@ -248,10 +248,28 @@ Resources:
             Path: /move/{move}
             Method: get
 
-            #
-            #Auth:
-            #  Authorizer: 'NONE'
-
+  GetGameLambda:
+    Type: AWS::Serverless::Function
+    Properties:
+      Role: !GetAtt AccessDynamoDBTablesRole.Arn
+      CodeUri: ChessPlayer
+      Handler: com.nashss.se.chessplayerservice.lambda.GetGameLambda::handleRequest
+      Runtime: java11
+      Architectures:
+        - x86_64
+      MemorySize: 512
+      Environment:
+        Variables:
+          JAVA_TOOL_OPTIONS: -XX:+TieredCompilation -XX:TieredStopAtLevel=1
+      Events:
+        ChessPlayerClient:
+          Type: Api
+          Properties:
+            Path: /game/{gameId}
+            Method: get
+            Auth:
+              Authorizer: 'NONE'
+              
   #-----------------------------------------------------
   # DynamoDB Configuration
   #-----------------------------------------------------
