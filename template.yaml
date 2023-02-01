@@ -157,8 +157,7 @@ Resources:
       PolicyDocument:
         # Restricting access to cloudfront only.
         Statement:
-          -
-            Effect: Allow
+          - Effect: Allow
             Action: 's3:GetObject'
             Resource:
               - !Sub "arn:aws:s3:::${S3Bucket}/*"
