@@ -10,9 +10,7 @@ import com.nashss.se.chessplayerservice.exceptions.InvalidRequestException;
 import com.nashss.se.chessplayerservice.exceptions.StockfishException;
 
 import javax.inject.Inject;
-import java.util.HashMap;
-import java.util.List;
-import java.util.Map;
+import java.util.*;
 
 public class GetNextMoveActivity {
 
@@ -37,40 +35,54 @@ public class GetNextMoveActivity {
         if (game == null || game.getActive().equals("false")) {
             throw new InvalidRequestException("There is no game with that ID");
         }
-        game.setMoves(game.getMoves() + " moves " + request.getMove());
 
         // Initialize stockfish
         if (!stockfish.startEngine()) {
             throw new StockfishException("Engine failed to start");
         }
-        stockfish.sendCommand("uci");
-        stockfish.sendCommand("setoption name skill level value " + game.getBotDifficulty());
-        stockfish.getOutput(10);
+        stockfish.getOutput(1);
+        // Check if the submitted move is legal
+        List<String> legalMoves = stockfish.getLegalMoves("fen " + game.getNotation());
+        if (!legalMoves.contains(request.getMove())) {
+            throw new InvalidRequestException("That is not a legal move");
+        }
+        game.setNotation(game.getNotation() + " moves " + request.getMove());
 
         // Check if the player move ends the game
         // This method also updates the game's moves to be fen notation
         gameOverChecker(game);
 
+        stockfish.sendCommand("uci");
+        stockfish.sendCommand("setoption name skill level value " + game.getBotDifficulty());
+        stockfish.getOutput(10);
         String engineMove = null;
         List<String> validMoves = null;
         if (game.getWinner() == null) {
             // If the player move did not end the game, make an engine move
-            engineMove = stockfish.getBestMove(String.format("fen %s", game.getMoves()), 500).trim();
-            game.setMoves(game.getMoves() + " moves " + engineMove);
+            engineMove = stockfish.getBestMove(String.format("fen %s", game.getNotation()), 500).trim();
+            game.setNotation(game.getNotation() + " moves " + engineMove);
             // Check if the engine move ends the game
             gameOverChecker(game);
-            validMoves = stockfish.getLegalMoves(game.getMoves());
+            StringBuilder sb = new StringBuilder();
+            for (String move : stockfish.getLegalMoves(game.getNotation())) {
+                sb.append(move);
+                sb.append(",");
+            }
+            game.setValidMoves(sb.toString());
         }
 
         stockfish.stopEngine();
 
         // Save the new notation to the database before returning
         gameDao.save(game);
-        return GetNextMoveResponse.builder().withMove(engineMove).withValidMoves(validMoves).withWinner(game.getWinner()).build();
+        return GetNextMoveResponse.builder()
+                .withGame(game)
+                .withMove(engineMove)
+                .build();
     }
 
     private void gameOverChecker(Game game) {
-        List<String> legalMoves = stockfish.getLegalMoves("fen " + game.getMoves());
+        List<String> legalMoves = stockfish.getLegalMoves("fen " + game.getNotation());
 
         // Initialize inCheck to false
         boolean inCheck = false;
@@ -83,7 +95,7 @@ public class GetNextMoveActivity {
             // 5th field of fen string is 50 move rule
             if (line.startsWith("Fen: ")) {
                 String fen = line.split("Fen: ")[1];
-                game.setMoves(fen);
+                game.setNotation(fen);
                 pieces = fen.split(" ")[0];
                 fiftyMoveRule = Integer.parseInt(fen.split(" ")[4]);
             }
@@ -130,7 +142,7 @@ public class GetNextMoveActivity {
 
         // if in check and no valid moves, game is over by checkmate
         if (inCheck && legalMoves.isEmpty()) {
-            game.setWinner(game.getMoves().split(" ")[1].equals("w") ? "black" : "white");
+            game.setWinner(game.getNotation().split(" ")[1].equals("w") ? "black" : "white");
             game.setActive("false");
         }
 
