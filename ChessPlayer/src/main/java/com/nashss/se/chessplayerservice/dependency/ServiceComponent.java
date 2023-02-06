@@ -2,6 +2,7 @@ package com.nashss.se.chessplayerservice.dependency;
 
 import com.nashss.se.chessplayerservice.activity.GetGameActivity;
 import com.nashss.se.chessplayerservice.activity.GetNextMoveActivity;
+import com.nashss.se.chessplayerservice.activity.GetUserActivity;
 import dagger.Component;
 
 import javax.inject.Singleton;
@@ -13,4 +14,6 @@ public interface ServiceComponent {
     GetNextMoveActivity provideGetNextMoveActivity();
 
     GetGameActivity provideGetGameActivity();
+
+    GetUserActivity provideGetUserActivity();
 }
