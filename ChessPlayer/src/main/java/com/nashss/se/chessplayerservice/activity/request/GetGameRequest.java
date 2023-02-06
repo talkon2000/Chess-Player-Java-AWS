@@ -5,7 +5,7 @@ import com.fasterxml.jackson.databind.annotation.JsonPOJOBuilder;
 
 @JsonDeserialize(builder = GetGameRequest.Builder.class)
 public class GetGameRequest {
-    private String gameId;
+    private final String gameId;
 
     private GetGameRequest(String gameId) {
         this.gameId = gameId;
