@@ -32,4 +32,8 @@ public class UserDao {
         limitedCopyOfUser.setRating(user.getRating());
         return limitedCopyOfUser;
     }
+
+    public void createUser(User user) {
+        dynamoDBMapper.save(user);
+    }
 }
