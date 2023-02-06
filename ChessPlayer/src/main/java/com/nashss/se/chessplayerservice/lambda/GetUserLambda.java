@@ -13,14 +13,16 @@ public class GetUserLambda extends LambdaActivityRunner<GetUserRequest, GetUserR
     public LambdaResponse handleRequest(AuthenticatedLambdaRequest<GetUserRequest> input, Context context) {
         return super.runActivity(
                 () -> {
+                    GetUserRequest unauthenticatedRequest = input.fromPath(path -> GetUserRequest.builder()
+                            .withUserId(path.get("userId"))
+                            .build());
                     try {
                         return input.fromUserClaims(claims -> GetUserRequest.builder()
-                                .withUserId(claims.get("userId"))
+                                .withRequesterId(claims.get("userId"))
+                                .withUserId(unauthenticatedRequest.getUserId())
                                 .build());
                     } catch (Exception ignored) {
-                        return input.fromPath(path -> GetUserRequest.builder()
-                                .withUserId(path.get("userId"))
-                                .build());
+                        return unauthenticatedRequest;
                     }
                 },
                 (request, serviceComponent) -> serviceComponent.provideGetUserActivity().handleRequest(request)
