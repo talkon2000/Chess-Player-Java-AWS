@@ -41,7 +41,7 @@ As mentioned in the problem statement, I want to implement a Player vs Player fe
 ### Users Table
 * Attributes:
   * userId : String -> Partition Key
-  * rating : Number -> Sort key
+  * rating : Number
   * username : String
   * games : String Set
   * email : String
@@ -90,10 +90,25 @@ As mentioned in the problem statement, I want to implement a Player vs Player fe
 
 ![](GetNextMoveSD.png)
 
+### GetUserEndpoint
+* Gets a user from the Users table
+* GET
+* /users/{userId}
+* Response: {user: \<user object>}
+* Might respond with an error if the user does not exist
+
+### CreateUserEndpoint
+* Creates a user in the Users table
+* POST
+* /users/{userId}
+* Request body: {username: \<username>, email: \<email>}
+* Response: {user: \<user object>}
+* Might respond with an error if the email is invalid format, or if the userId is taken
+
 ### SearchUsersEndpoint
 * Searches the Users table's username and email GSIs to try to find the desired player
 * GET
-* /users/{searchString}
+* /users/search/{searchString}
 * Response: {user: \<user object>}
 * Might respond with an error if the search string is improper
 
