@@ -3,7 +3,7 @@ package com.nashss.se.chessplayerservice.activity.response;
 import com.nashss.se.chessplayerservice.dynamodb.models.Game;
 
 public class GetGameResponse {
-    private Game game;
+    private final Game game;
 
     private GetGameResponse(Game game) {
         this.game = game;

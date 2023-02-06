@@ -16,7 +16,7 @@ import java.util.function.Function;
  */
 public class LambdaRequest<T> extends APIGatewayProxyRequestEvent {
 
-    private static final ObjectMapper MAPPER = new ObjectMapper();
+    protected static final ObjectMapper MAPPER = new ObjectMapper();
     private final Logger log = LogManager.getLogger();
 
     /**
