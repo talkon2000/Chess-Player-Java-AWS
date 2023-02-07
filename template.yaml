@@ -85,7 +85,7 @@ Resources:
       LogoutURLs:
         - !If
           - DeployCloudFront
-          - !Sub "https://${CloudfrontDistribution.DomainName}"
+          - !Sub "https://${CloudfrontDistribution.DomainName}/index.html"
           - http://localhost:8000
       AllowedOAuthFlows:
         - code
