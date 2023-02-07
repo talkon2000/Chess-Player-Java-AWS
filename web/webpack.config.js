@@ -24,6 +24,9 @@ module.exports = {
   },
   entry: {
     getNextMove: path.resolve(__dirname, 'src', 'pages', 'getNextMove.js'),
+    landingPage: path.resolve(__dirname, 'src', 'pages', 'landingPage.js'),
+    userHome: path.resolve(__dirname, 'src', 'pages', 'userHome.js'),
+    login: path.resolve(__dirname, 'src', 'pages', 'login.js'),
   },
   output: {
     path: path.resolve(__dirname, 'build', 'assets'),
