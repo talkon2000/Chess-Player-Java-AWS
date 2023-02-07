@@ -40,9 +40,8 @@ As mentioned in the problem statement, I want to implement a Player vs Player fe
 
 ### Users Table
 * Attributes:
-  * userId : String -> Partition Key
+  * username : String -> Partition Key
   * rating : Number
-  * username : String
   * games : String Set
   * email : String
   * active : String
@@ -90,10 +89,17 @@ As mentioned in the problem statement, I want to implement a Player vs Player fe
 
 ![](GetNextMoveSD.png)
 
-### GetUserEndpoint
+### GetPublicUserEndpoint
 * Gets a user from the Users table
 * GET
-* /users/{userId}
+* /users/public/{userId}
+* Response: {user: \<user object>}
+* Might respond with an error if the user does not exist
+
+### GetPrivateUserEndpoint
+* Gets a user from the users table using an auth token
+* GET
+* /users
 * Response: {user: \<user object>}
 * Might respond with an error if the user does not exist
 
