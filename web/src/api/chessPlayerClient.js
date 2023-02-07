@@ -141,6 +141,24 @@ export default class ChessPlayerClient extends BindingClass {
      }
 
     /**
+     * Creates a user in the Database
+     * @param errorCallback the function to execute if the call fails.
+     */
+     async createUser(errorCallback) {
+        try {
+            const token = await this.getTokenOrThrow("You are not logged in!");
+            const response = await this.axiosClient.post(`users/`, {
+                headers: {
+                    Authorization: `Bearer ${token}`
+                }
+            });
+        }
+        catch (error) {
+            errorCallback(error);
+        }
+     }
+
+    /**
      * Search for a user.
      * @param criteria A string containing search criteria to pass to the API.
      * @returns The user that matches the search criteria.
@@ -153,7 +171,6 @@ export default class ChessPlayerClient extends BindingClass {
         } catch (error) {
             this.handleError(error, errorCallback);
         }
-
     }
 
     /**

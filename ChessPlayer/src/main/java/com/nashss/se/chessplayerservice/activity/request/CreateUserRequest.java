@@ -5,18 +5,12 @@ import com.fasterxml.jackson.databind.annotation.JsonPOJOBuilder;
 
 @JsonDeserialize(builder = CreateUserRequest.Builder.class)
 public class CreateUserRequest {
-    private final String userId;
-    private final String email;
     private final String username;
+    private final String email;
 
-    private CreateUserRequest(String userId, String email, String username) {
-        this.userId = userId;
+    private CreateUserRequest(String email, String username) {
         this.email = email;
         this.username = username;
-    }
-
-    public String getUserId() {
-        return userId;
     }
 
     public String getEmail() {
@@ -33,14 +27,8 @@ public class CreateUserRequest {
 
     @JsonPOJOBuilder
     public static class Builder {
-        private String userId;
         private String email;
         private String username;
-
-        public Builder withUserId(String userId) {
-            this.userId = userId;
-            return this;
-        }
 
         public Builder withEmail(String email) {
             this.email = email;
@@ -53,7 +41,7 @@ public class CreateUserRequest {
         }
 
         public CreateUserRequest build() {
-            return new CreateUserRequest(userId, email, username);
+            return new CreateUserRequest(email, username);
         }
     }
 }

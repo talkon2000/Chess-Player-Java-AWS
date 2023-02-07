@@ -1,6 +1,5 @@
 package com.nashss.se.chessplayerservice.activity;
 
-import com.amazonaws.services.dynamodbv2.datamodeling.DynamoDBMapper;
 import com.nashss.se.chessplayerservice.activity.request.CreateUserRequest;
 import com.nashss.se.chessplayerservice.activity.response.CreateUserResponse;
 import com.nashss.se.chessplayerservice.dynamodb.dao.UserDao;
@@ -20,17 +19,14 @@ public class CreateUserActivity {
     }
 
     public CreateUserResponse handleRequest(CreateUserRequest request) {
-        if (request.getUserId() == null) {
-            throw new InvalidRequestException("User ID can not be null");
+        if (request.getUsername() == null) {
+            throw new InvalidRequestException("Username can not be null");
         }
-        if (dao.load(request.getUserId()) != null) {
-            throw new InvalidRequestException("A user with that ID already exists");
+        if (dao.load(request.getUsername()) != null) {
+            throw new InvalidRequestException("A user with that username already exists");
         }
         if (request.getEmail() == null) {
             throw new InvalidRequestException("Email can not be null");
-        }
-        if (request.getUsername() == null) {
-            throw new InvalidRequestException("Username can not be null");
         }
 
         if (!RegexHelper.isValidEmail(request.getEmail())) {
