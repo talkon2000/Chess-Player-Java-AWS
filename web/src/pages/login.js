@@ -1,14 +1,22 @@
 import ChessPlayerClient from '../api/chessPlayerClient';
+import BindingClass from '../utils/bindingClass';
 
-export default class Login {
+/**
+ * The component that handles redirecting the user based on if they exist or not
+ */
+export default class Login extends BindingClass {
 
     constructor() {
-        this.mount();
+        super();
+        this.bindClassMethods(['getUser'], this);
+        this.client = new ChessPlayerClient();
     }
 
-    async mount() {
-        this.client = new ChessPlayerClient();
-        console.log(await this.client.getTokenOrThrow("None"));
+    async getUser() {
+        await this.client.getPrivateUser((error) => {
+            window.location.href = '/create-user.html';}
+        );
+        window.location.href = '/user-home.html';
     }
 }
 
@@ -17,6 +25,7 @@ export default class Login {
  */
 const main = async () => {
     const login = new Login();
+    login.getUser();
 };
 
 window.addEventListener('DOMContentLoaded', main);
