@@ -9,20 +9,20 @@ import java.util.Set;
 
 @DynamoDBTable(tableName = "Users")
 public class User {
-    private String userId;
-    private int rating;
     private String username;
+    private int rating;
     private Set<String> games;
     private String email;
     private String active;
 
-    @DynamoDBHashKey(attributeName = "userId")
-    public String getUserId() {
-        return userId;
+
+    @DynamoDBHashKey(attributeName = "username")
+    public String getUsername() {
+        return username;
     }
 
-    public void setUserId(String userId) {
-        this.userId = userId;
+    public void setUsername(String username) {
+        this.username = username;
     }
 
     @DynamoDBAttribute(attributeName = "rating")
@@ -34,14 +34,6 @@ public class User {
         this.rating = rating;
     }
 
-    @DynamoDBAttribute(attributeName = "username")
-    public String getUsername() {
-        return username;
-    }
-
-    public void setUsername(String username) {
-        this.username = username;
-    }
 
     @DynamoDBAttribute(attributeName = "games")
     public Set<String> getGames() {

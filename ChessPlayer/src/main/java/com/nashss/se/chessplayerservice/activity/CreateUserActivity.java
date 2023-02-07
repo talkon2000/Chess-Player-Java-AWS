@@ -38,7 +38,6 @@ public class CreateUserActivity {
         }
 
         User user = new User();
-        user.setUserId(request.getUserId());
         user.setUsername(request.getUsername());
         user.setEmail(request.getEmail());
         user.setActive("true");
