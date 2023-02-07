@@ -113,14 +113,15 @@ export default class ChessPlayerClient extends BindingClass {
      async getPrivateUser(errorCallback) {
         try {
             const token = await this.getTokenOrThrow("You are not logged in!");
-            const response = await this.axiosClient.get(`users/public`, {
+            const response = await this.axiosClient.get(`users/`, {
                 headers: {
                     Authorization: `Bearer ${token}`
                 }
             });
+            return response.data;
         }
         catch (error) {
-
+            errorCallback(error);
         }
      }
 
@@ -131,10 +132,11 @@ export default class ChessPlayerClient extends BindingClass {
      */
      async getPublicUser(username, errorCallback) {
         try {
-            const response = await this.axiosClient.get(`users/`);
+            const response = await this.axiosClient.get(`users/public/${username}`);
+            return response.data;
         }
         catch (error) {
-
+            errorCallback(error);
         }
      }
 

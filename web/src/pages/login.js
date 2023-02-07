@@ -8,12 +8,15 @@ export default class Login extends BindingClass {
 
     constructor() {
         super();
-        this.bindClassMethods(['login'], this);
+        this.bindClassMethods(['getUser'], this);
         this.client = new ChessPlayerClient();
     }
 
-    login() {
-        
+    async getUser() {
+        await this.client.getPrivateUser((error) => {
+            window.location.href = '/create-user.html';}
+        );
+        window.location.href = '/user-home.html';
     }
 }
 
@@ -22,7 +25,7 @@ export default class Login extends BindingClass {
  */
 const main = async () => {
     const login = new Login();
-    login.mount();
+    login.getUser();
 };
 
 window.addEventListener('DOMContentLoaded', main);
