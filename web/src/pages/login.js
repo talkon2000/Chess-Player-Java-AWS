@@ -13,10 +13,20 @@ export default class Login extends BindingClass {
     }
 
     async getUser() {
-        await this.client.getPrivateUser((error) => {
-            window.location.href = '/create-user.html';}
-        );
-        window.location.href = '/user-home.html';
+        const errorMessageDisplay = document.getElementById("error-message");
+        let user = await this.client.getPrivateUser((error) => {
+            errorMessageDisplay.innerText = `Error: ${error.message}`;
+            errorMessageDisplay.classList.remove('hidden');
+        });
+        if (!user) {
+            user = await this.client.createUser((error) => {
+                errorMessageDisplay.innerText = `Error: ${error.message}`;
+                errorMessageDisplay.classList.remove('hidden');
+            });
+        }
+        if (user) {
+            window.location.href = '/user-home.html';
+        }
     }
 }
 

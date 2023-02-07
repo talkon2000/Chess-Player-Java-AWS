@@ -45,8 +45,6 @@ As mentioned in the problem statement, I want to implement a Player vs Player fe
   * games : String Set
   * email : String
   * active : String
-* Global Secondary Index: UsernameSearch
-  * username : String -> Partition key
 * Global Secondary Index: EmailSearch
   * email : String -> Partition key
 
@@ -104,10 +102,9 @@ As mentioned in the problem statement, I want to implement a Player vs Player fe
 * Might respond with an error if the user does not exist
 
 ### CreateUserEndpoint
-* Creates a user in the Users table
+* Creates a user in the Users table using a cognito auth token
 * POST
-* /users/{userId}
-* Request body: {username: \<username>, email: \<email>}
+* /users/
 * Response: {user: \<user object>}
 * Might respond with an error if the email is invalid format, or if the userId is taken
 
