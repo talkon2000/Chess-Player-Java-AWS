@@ -26,9 +26,8 @@ public class UserDao {
             return null;
         }
         User limitedCopyOfUser = new User();
-        limitedCopyOfUser.setUserId(user.getUserId());
-        limitedCopyOfUser.setActive(user.getActive());
         limitedCopyOfUser.setUsername(user.getUsername());
+        limitedCopyOfUser.setActive(user.getActive());
         limitedCopyOfUser.setRating(user.getRating());
         return limitedCopyOfUser;
     }

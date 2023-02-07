@@ -4,14 +4,16 @@ import BindingClass from '../utils/bindingClass';
 /**
  * The component that handles redirecting the user based on if they exist or not
  */
-export default class Login {
+export default class Login extends BindingClass {
 
     constructor() {
+        super();
+        this.bindClassMethods(['login'], this);
         this.client = new ChessPlayerClient();
     }
 
     login() {
-
+        
     }
 }
 
