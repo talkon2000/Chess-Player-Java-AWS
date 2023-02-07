@@ -33,7 +33,7 @@ Globals:
   Api:
     Cors:
       AllowMethods: "'GET,POST,PUT,OPTIONS'"
-      AllowHeaders: "'content-type'"
+      AllowHeaders: "'content-type,authorization'"
       AllowOrigin: "'*'"
     Auth:
       DefaultAuthorizer: CognitoAuthorizer
@@ -80,8 +80,8 @@ Resources:
       CallbackURLs:
         - !If
           - DeployCloudFront
-          - !Sub "https://${CloudfrontDistribution.DomainName}"
-          - http://localhost:8000
+          - !Sub "https://${CloudfrontDistribution.DomainName}/login.html"
+          - http://localhost:8000/login.html
       LogoutURLs:
         - !If
           - DeployCloudFront
@@ -122,7 +122,7 @@ Resources:
     Properties:
       DistributionConfig:
         Comment: "Cloudfront distribution for serverless website"
-        DefaultRootObject: "landing-page.html"
+        DefaultRootObject: "index.html"
         Enabled: true
         HttpVersion: http2
         PriceClass: PriceClass_100

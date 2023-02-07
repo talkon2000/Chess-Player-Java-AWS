@@ -89,7 +89,12 @@ export default class ChessPlayerClient extends BindingClass {
      */
     async getNextMove(gameId, move, errorCallback) {
         try {
-            const response = await this.axiosClient.get(`move/${move}`, { params: { "gameId": gameId } });
+            const token = await this.getTokenOrThrow("Only authenticated users can make a move.");
+            const response = await this.axiosClient.get(`move/${move}?gameId=${gameId}`,{
+                headers: {
+                    Authorization: `Bearer ${token}`
+                }
+            });
             return response.data;
         } catch (error) {
             this.handleError(error, errorCallback);
