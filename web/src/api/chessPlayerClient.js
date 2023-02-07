@@ -71,6 +71,10 @@ export default class ChessPlayerClient extends BindingClass {
         return await this.authenticator.getUserToken();
     }
 
+
+    /**
+     * Retrieves a game from the database
+     */
     async getGame(gameId, errorCallback) {
         try {
             const response = await this.axiosClient.get(`game/${gameId}`);
@@ -82,10 +86,10 @@ export default class ChessPlayerClient extends BindingClass {
 
     /**
      * Gets the next move for the given game ID.
-     * @param id Unique identifier for a game
+     * @param gameId Unique identifier for a game
      * @param move The move the user wants to make
      * @param errorCallback (Optional) A function to execute if the call fails.
-     * @returns The engine move, a list of valid moves, and metadata.
+     * @returns The engine move, a game object including valid moves, and metadata.
      */
     async getNextMove(gameId, move, errorCallback) {
         try {
@@ -100,6 +104,39 @@ export default class ChessPlayerClient extends BindingClass {
             this.handleError(error, errorCallback);
         }
     }
+
+    /**
+     * Gets a user based on the auth token
+     * @param errorCallback the function to execute if the call fails.
+     * @returns A user object if the user exists
+     */
+     async getPrivateUser(errorCallback) {
+        try {
+            const token = await this.getTokenOrThrow("You are not logged in!");
+            const response = await this.axiosClient.get(`users/public`, {
+                headers: {
+                    Authorization: `Bearer ${token}`
+                }
+            });
+        }
+        catch (error) {
+
+        }
+     }
+
+    /**
+     * Gets a user's public profile based on user ID
+     * @param errorCallback the function to execute if the call fails.
+     * @returns A user object if the user exists
+     */
+     async getPublicUser(username, errorCallback) {
+        try {
+            const response = await this.axiosClient.get(`users/`);
+        }
+        catch (error) {
+
+        }
+     }
 
     /**
      * Search for a user.

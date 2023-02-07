@@ -55,8 +55,6 @@ Resources:
         RecoveryMechanisms:
           - Name: verified_email
             Priority: 1
-      UsernameAttributes:
-        - email
       UsernameConfiguration:
         CaseSensitive: false
       AutoVerifiedAttributes:
@@ -66,10 +64,6 @@ Resources:
         - Name: email
           AttributeDataType: String
           Mutable: false
-          Required: true
-        - Name: name
-          AttributeDataType: String
-          Mutable: true
           Required: true
 
   UserPoolClient:
