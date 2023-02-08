@@ -32,7 +32,7 @@ public class UserDao {
         return limitedCopyOfUser;
     }
 
-    public void createUser(User user) {
+    public void saveUser(User user) {
         dynamoDBMapper.save(user);
     }
 }
