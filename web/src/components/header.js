@@ -62,7 +62,7 @@ export default class Header extends BindingClass {
     }
 
     createLogoutButton(currentUser) {
-        return this.createButton(`Logout: ${currentUser.name}`, this.client.logout);
+        return this.createButton(`Logout: ${currentUser.username}`, this.client.logout);
     }
 
     createButton(text, clickHandler) {

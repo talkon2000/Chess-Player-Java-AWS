@@ -1,7 +1,6 @@
 import ChessPlayerClient from '../api/chessPlayerClient';
 import Header from '../components/header';
 import BindingClass from '../utils/bindingClass';
-import DataStore from '../utils/DataStore';
 
 /**
  * The component that handles the user's home page
@@ -10,11 +9,13 @@ export default class UserHome extends BindingClass {
 
     constructor() {
         super();
-        this.bindClassMethods(['mount', 'startGame'], this);
+        this.bindClassMethods(['mount', 'startGame','checkForEnterKey', 'search'], this);
         this.client = new ChessPlayerClient();
+        this.header = new Header();
     }
 
     mount() {
+        this.header.addHeaderToPage();
         var slider = document.getElementById("botDifficulty");
         var output = document.getElementById("output");
         output.innerHTML = slider.value; // Display the default slider value
@@ -24,9 +25,14 @@ export default class UserHome extends BindingClass {
           output.innerHTML = this.value;
         }
         document.getElementById("start").addEventListener('click', this.startGame);
+        document.getElementById("submitSearch").addEventListener('click', this.search);
+        document.getElementById("searchInput").addEventListener('keyup', this.checkForEnterKey);
     }
 
     async startGame() {
+        const errorMessageDisplay = document.getElementById('error-message');
+        errorMessageDisplay.innerText = '';
+        errorMessageDisplay.classList.add('hidden');
         const botDifficulty = document.getElementById("output").innerHTML;
         let authUserWhite = document.getElementById("authUserWhite").value;
         if (!authUserWhite) {
@@ -42,6 +48,26 @@ export default class UserHome extends BindingClass {
         }
     }
 
+    checkForEnterKey(event) {
+        event.preventDefault();
+        if (event.keyCode === 13) {
+            this.search();
+        }
+    }
+
+    async search() {
+        const errorMessageDisplay = document.getElementById('error-message');
+        errorMessageDisplay.innerText = '';
+        errorMessageDisplay.classList.add('hidden');
+        const response = await this.client.searchUsers(document.getElementById("searchInput").value, (error) => {
+            errorMessageDisplay.innerText = `Error: ${error.message}`;
+            errorMessageDisplay.classList.remove('hidden');
+        });
+
+        if (response) {
+            window.location.href = "/user.html?username=" + response.username;
+        }
+    }
 }
 
 /**

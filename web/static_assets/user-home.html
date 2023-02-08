@@ -6,16 +6,28 @@
         <link rel="stylesheet" type="text/css" href="css/style.css">
     </head>
     <body>
+        <header class="header" id="header"></header>
         <p class="hidden error" id="error-message"> </p>
-        <div class="vertical">
-            <input type="checkbox" id="authUserWhite" value="true" checked>
-            <label for="authUserWhite">Play as white</label>
-            <input type="range" min="0" max="20" value="0" class="slider" id="botDifficulty">
-            <div class="side-by-side">
-                <p>Bot Difficulty: </p>
-                <p id="output"></p>
+        <div id="base-container" class="side-by-side">
+            <div id="newGame">
+                <div class="vertical">
+                    <input type="checkbox" id="authUserWhite" value="true" checked>
+                    <label for="authUserWhite">Play as white</label>
+                    <input type="range" min="0" max="20" value="0" class="slider" id="botDifficulty">
+                    <div class="side-by-side">
+                        <p>Bot Difficulty: </p>
+                        <p id="output"></p>
+                    </div>
+                    <button id="start">Start new game</button>
+                </div>
             </div>
-            <button id="start">Start new game</button>
+            <div class="side-by-side" id="search">
+                <div class="vertical">
+                    <label for="searchInput">Search by username or email</label>
+                    <input type="text" id="searchInput" value="">
+                    <button id="submitSearch">Go</button>
+                </div>
+            </div>
         </div>
     </body>
 </html>
