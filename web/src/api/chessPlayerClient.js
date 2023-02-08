@@ -93,6 +93,7 @@ export default class ChessPlayerClient extends BindingClass {
                     Authorization: `Bearer ${token}`
                 }
             });
+            return response.data;
         }
         catch (error) {
             errorCallback(error);
