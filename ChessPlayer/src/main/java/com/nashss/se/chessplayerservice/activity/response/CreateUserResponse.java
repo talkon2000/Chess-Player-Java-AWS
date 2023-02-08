@@ -9,6 +9,10 @@ public class CreateUserResponse {
         this.user = user;
     }
 
+    public User getUser() {
+        return user;
+    }
+
     public static Builder builder() {
         return new Builder();
     }

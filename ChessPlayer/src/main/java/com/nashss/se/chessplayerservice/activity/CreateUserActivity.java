@@ -38,7 +38,7 @@ public class CreateUserActivity {
         user.setEmail(request.getEmail());
         user.setActive("true");
         user.setRating(900);
-        dao.createUser(user);
+        dao.saveUser(user);
         return CreateUserResponse.builder().withUser(user).build();
     }
 }

@@ -54,7 +54,7 @@ public class CreateNewGameActivity {
             else {
                 user.getGames().add(game.getGameId());
             }
-            userDao.createUser(user);
+            userDao.saveUser(user);
         }
 
         if (blackPlayerUsername != null) {
@@ -65,7 +65,7 @@ public class CreateNewGameActivity {
             else {
                 user.getGames().add(game.getGameId());
             }
-            userDao.createUser(user);
+            userDao.saveUser(user);
         }
 
         return CreateNewGameResponse.builder()

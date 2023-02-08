@@ -175,7 +175,7 @@ export default class ChessPlayerClient extends BindingClass {
      async createUser(errorCallback) {
         try {
             const token = await this.getTokenOrThrow("You are not logged in!");
-            const response = await this.axiosClient.post(`users/`, {
+            return await this.axiosClient.post(`users/`, {}, {
                 headers: {
                     Authorization: `Bearer ${token}`
                 }
