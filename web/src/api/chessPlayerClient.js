@@ -71,6 +71,34 @@ export default class ChessPlayerClient extends BindingClass {
         return await this.authenticator.getUserToken();
     }
 
+    /**
+     * Creates a new game in the database, and associates it with the user(s) database entries
+     * @param authUserWhite boolean indicating if the user creating the game is white or black
+     * @param otherUserId OR botDifficulty
+     * @param errorCallback (optional) function to perform if an error occurs
+     * @returns new game's ID
+     */
+     async createGame(authUserWhite, otherUserId, botDifficulty, errorCallback) {
+        try {
+            const token = await this.getTokenOrThrow("Only authenticated users can create a new game.");
+            let payload = {"authUserWhite": authUserWhite};
+            if (otherUserId) {
+                payload.otherUserId = otherUserId;
+            }
+            if (botDifficulty) {
+                payload.botDifficulty = botDifficulty;
+            }
+            const response = await this.axiosClient.post(`game/`, payload, {
+                headers: {
+                    Authorization: `Bearer ${token}`
+                }
+            });
+            return response.data;
+        }
+        catch (error) {
+            errorCallback(error);
+        }
+     }
 
     /**
      * Retrieves a game from the database
