@@ -5,10 +5,15 @@
         <script type="text/javascript" src="assets/userHome.js"></script>
         <link rel="stylesheet" type="text/css" href="css/style.css">
     </head>
-    <body>
+    <body class="vertical">
         <header class="header" id="header"></header>
         <p class="hidden error" id="error-message"> </p>
         <div id="base-container" class="side-by-side">
+            <div id ="user" class="vertical">
+                <p id="username"></p>
+                <p id="email"></p>
+                <p id="rating"></p>
+            </div>
             <div id="newGame">
                 <div class="vertical">
                     <input type="checkbox" id="authUserWhite" value="true" checked>
@@ -28,6 +33,9 @@
                     <button id="submitSearch">Go</button>
                 </div>
             </div>
+        </div>
+        <div id="games" class="vertical">
+
         </div>
     </body>
 </html>
