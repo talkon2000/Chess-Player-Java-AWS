@@ -15,8 +15,8 @@ public class Game {
     private String notation;
     private String validMoves;
     private String moves;
-    private String whitePlayerId;
-    private String blackPlayerId;
+    private String whitePlayerUsername;
+    private String blackPlayerUsername;
     private Integer botDifficulty;
 
     @DynamoDBHashKey(attributeName = "gameId")
@@ -73,22 +73,22 @@ public class Game {
         this.moves = moves;
     }
 
-    @DynamoDBAttribute(attributeName = "whitePlayerId")
-    public String getWhitePlayerId() {
-        return whitePlayerId;
+    @DynamoDBAttribute(attributeName = "whitePlayerUsername")
+    public String getWhitePlayerUsername() {
+        return whitePlayerUsername;
     }
 
-    public void setWhitePlayerId(String whitePlayerId) {
-        this.whitePlayerId = whitePlayerId;
+    public void setWhitePlayerUsername(String whitePlayerUsername) {
+        this.whitePlayerUsername = whitePlayerUsername;
     }
 
-    @DynamoDBAttribute(attributeName = "blackPlayerId")
-    public String getBlackPlayerId() {
-        return blackPlayerId;
+    @DynamoDBAttribute(attributeName = "blackPlayerUsername")
+    public String getBlackPlayerUsername() {
+        return blackPlayerUsername;
     }
 
-    public void setBlackPlayerId(String blackPlayerId) {
-        this.blackPlayerId = blackPlayerId;
+    public void setBlackPlayerUsername(String blackPlayerUsername) {
+        this.blackPlayerUsername = blackPlayerUsername;
     }
 
     @DynamoDBAttribute(attributeName = "botDifficulty")

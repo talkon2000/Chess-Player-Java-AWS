@@ -66,7 +66,7 @@ As mentioned in the problem statement, I want to implement a Player vs Player fe
 * Creates a new game with a unique gameId in the Games table, then returns the gameId
 * POST
 * /game
-* Request Body: {whiteUserId: \<userId>, blackUserId: \<userId>, botDifficulty: \<botDifficulty>}
+* Request Body: {authUserWhite: \<boolean>, otherUserId: \<otherUserId>, botDifficulty: \<botDifficulty>}
 * Response: {gameId: \<gameId>}
 * Might respond with an error if bot difficulty is out of bounds
 

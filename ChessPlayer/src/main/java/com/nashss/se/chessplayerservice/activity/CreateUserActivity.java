@@ -5,7 +5,7 @@ import com.nashss.se.chessplayerservice.activity.response.CreateUserResponse;
 import com.nashss.se.chessplayerservice.dynamodb.dao.UserDao;
 import com.nashss.se.chessplayerservice.dynamodb.models.User;
 import com.nashss.se.chessplayerservice.exceptions.InvalidRequestException;
-import com.nashss.se.chessplayerservice.utils.RegexHelper;
+import com.nashss.se.chessplayerservice.utils.ChessUtils;
 
 import javax.inject.Inject;
 
@@ -29,7 +29,7 @@ public class CreateUserActivity {
             throw new InvalidRequestException("Email can not be null");
         }
 
-        if (!RegexHelper.isValidEmail(request.getEmail())) {
+        if (!ChessUtils.isValidEmail(request.getEmail())) {
             throw new InvalidRequestException("Email is not valid");
         }
 
