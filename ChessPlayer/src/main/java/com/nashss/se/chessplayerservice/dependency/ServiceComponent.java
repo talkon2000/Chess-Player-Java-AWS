@@ -20,4 +20,6 @@ public interface ServiceComponent {
     CreateUserActivity provideCreateUserActivity();
 
     CreateNewGameActivity provideCreateNewGameActivity();
+
+    GetAllGamesActivity provideGetAllGamesActivity();
 }

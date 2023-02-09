@@ -49,11 +49,12 @@ export default class UserHome extends BindingClass {
     }
 
     async populateGameHistory(username) {
-        //const games = await this.client.getAllGames(username);
-        games = [{notation: "rnbqkbnr/pppppppp/8/8/8/8/PPPPPPPP/RNBQKBNR w KQkq - 0 1", gameId: "basil"},
-            {notation: "rnbqkbnr/pp1ppppp/8/2p5/4P3/5N2/PPPP1PPP/RNBQKB1R b KQkq - 1 2", gameId: "basil2"},
-            {notation: "r1b1k1nr/p2p1pNp/n2B4/1p1NP2P/6P1/3P1Q2/P1P1K3/q5b1", gameId: "basil3"},
-            {notation: "r1b1k1nr/p2p1pNp/n2B4/1p1NP2P/6P1/3P1Q2/P1P1K3/q5b1", gameId: "basil4"}];
+        const errorMessageDisplay = document.getElementById('error-message');
+
+        const games = await this.client.getAllGames((error) => {
+            errorMessageDisplay.innerText = `Error: ${error.message}`;
+            errorMessageDisplay.classList.remove('hidden');
+        });
         if (games) {
             // set up monstrosities
             const notationToPieceMap = {"P": "♙", "R": "♖", "N": "♘", "B": "♗", "Q": "♕", "K": "♔", "p": "♟", "r": "♜", "n": "♞", "b": "♝", "q": "♛", "k": "♚"};

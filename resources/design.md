@@ -76,6 +76,12 @@ As mentioned in the problem statement, I want to implement a Player vs Player fe
 * Response: {game: \<game object>}
 * Might respond with an error if that game does not exist
 
+### GetAllGamesEndpoint
+* Returns all games for a given user
+* GET
+* /allGames/
+* Response: {[game: \<game object>, game: \<game object>]}
+
 ### GetNextMoveEndpoint
 * Uses stockfish to get the next move, and updates the game in the games table
 * GET
