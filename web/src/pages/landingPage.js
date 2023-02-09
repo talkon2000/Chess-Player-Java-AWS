@@ -12,13 +12,18 @@ export default class LandingPage extends BindingClass {
             super();
             this.bindClassMethods(['mount'], this);
             this.header = new Header();
+            this.client = new ChessPlayerClient();
     }
 
      /**
       * Add the header to the page and load the ChessPlayerClient.
       */
-    mount() {
+    async mount() {
         this.header.addHeaderToPage();
+        const currentUser = await this.client.getIdentity();
+        if (currentUser) {
+            window.location.href = "user-home.html";
+        }
     }
 }
 
