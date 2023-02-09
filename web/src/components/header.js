@@ -23,7 +23,7 @@ export default class Header extends BindingClass {
     async addHeaderToPage() {
         const currentUser = await this.client.getIdentity();
 
-        const siteTitle = this.createSiteTitle();
+        const siteTitle = this.createSiteTitle(currentUser);
         const userInfo = this.createUserInfoForHeader(currentUser);
 
         const header = document.getElementById('header');
@@ -31,10 +31,10 @@ export default class Header extends BindingClass {
         header.appendChild(userInfo);
     }
 
-    createSiteTitle() {
+    createSiteTitle(currentUser) {
         const homeButton = document.createElement('a');
         homeButton.classList.add('header_home');
-        homeButton.href = 'index.html';
+        homeButton.href = currentUser ? "/user-home.html" : "index.html";
         homeButton.innerText = 'Home';
 
         const siteTitle = document.createElement('div');
