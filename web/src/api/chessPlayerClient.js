@@ -15,7 +15,8 @@ export default class ChessPlayerClient extends BindingClass {
     constructor(props = {}) {
         super();
 
-        const methodsToBind = ['clientLoaded', 'getIdentity', 'login', 'logout', 'getGame', 'getNextMove', 'searchUsers'];
+        const methodsToBind = ['clientLoaded', 'getIdentity', 'login', 'logout', 'getTokenOrThrow', 'createGame',
+            'getGame', 'getNextMove', 'getPrivateUser', 'getPublicUser', 'createUser'];
         this.bindClassMethods(methodsToBind, this);
 
         this.authenticator = new Authenticator();;
