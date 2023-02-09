@@ -120,12 +120,12 @@ export default class ChessPlayerClient extends BindingClass {
      async getAllGames(errorCallback) {
         try {
             const token = await this.getTokenOrThrow("You need to be logged in to see your games");
-            const response = await this.axiosClient.get(`game/allGames/`, {
+            const response = await this.axiosClient.get(`allGames/`, {
                 headers: {
                     Authorization: `Bearer ${token}`
                 }
             });
-            return response.data;
+            return response.data.games;
         } catch (error) {
             errorCallback(error);
         }
