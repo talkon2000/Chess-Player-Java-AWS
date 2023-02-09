@@ -53,7 +53,6 @@
 
 .vertical {
     display: flex;
-    justify-content: center;
     flex-direction: column;
     align-items: center;
     text-align: center;
@@ -166,15 +165,9 @@ chess-piece {
   opacity: 1; /* Fully shown on mouse-over */
 }
 
-iframe {
-  -moz-transform: scale(0.5, 0.5);
-  -webkit-transform: scale(0.5, 0.5);
-  -o-transform: scale(0.5, 0.5);
-  -ms-transform: scale(0.5, 0.5);
-  transform: scale(0.5, 0.5);
-  -moz-transform-origin: top left;
-  -webkit-transform-origin: top left;
-  -o-transform-origin: top left;
-  -ms-transform-origin: top left;
-  transform-origin: top left;
+.game {
+/*
+    some sort of scaling
+*/
+
 }
