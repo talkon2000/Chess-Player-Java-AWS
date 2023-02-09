@@ -41,12 +41,9 @@ export default class GetNextMove extends BindingClass {
              errorMessageDisplay.innerText = `Error: ${error.message}`;
              errorMessageDisplay.classList.remove('hidden');
         });
-        console.log(response);
         const game = response.game;
         const fen = game.notation;
         const validMoves = game.validMoves.split(",");
-
-        console.log(validMoves);
 
         // set up monstrosities
         const notationToPieceMap = {"P": "♙", "R": "♖", "N": "♘", "B": "♗", "Q": "♕", "K": "♔", "p": "♟", "r": "♜", "n": "♞", "b": "♝", "q": "♛", "k": "♚"};
@@ -92,7 +89,6 @@ export default class GetNextMove extends BindingClass {
         if (!document.getElementById('submit').disabled) {
             return;
         }
-        console.log(event);
         const piece = event.target;
         if (!piece.validMoves) {
             return;
