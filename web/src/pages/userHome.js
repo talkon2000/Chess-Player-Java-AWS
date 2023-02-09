@@ -59,15 +59,24 @@ export default class UserHome extends BindingClass {
             // set up monstrosities
             const notationToPieceMap = {"P": "♙", "R": "♖", "N": "♘", "B": "♗", "Q": "♕", "K": "♔", "p": "♟", "r": "♜", "n": "♞", "b": "♝", "q": "♛", "k": "♚"};
             const indexToPosition = ["a8", "b8", "c8", "d8", "e8", "f8", "g8", "h8", "", "a7", "b7", "c7", "d7", "e7", "f7", "g7", "h7", "", "a6", "b6", "c6", "d6", "e6", "f6", "g6", "h6", "", "a5", "b5", "c5", "d5", "e5", "f5", "g5", "h5", "", "a4", "b4", "c4", "d4", "e4", "f4", "g4", "h4", "", "a3", "b3", "c3", "d3", "e3", "f3", "g3", "h3", "", "a2", "b2", "c2", "d2", "e2", "f2", "g2", "h2", "", "a1", "b1", "c1", "d1", "e1", "f1", "g1", "h1"];
-            const gamesDiv = document.getElementById("games");
+            const historyDiv = document.getElementById("pastGames");
+            const currentDiv = document.getElementById("currentGames");
             games.forEach((game) => {
 
-                const gameElement = document.createElement("div");
+                const gameElement = document.createElement("td");
                 gameElement.id = game.gameId;
                 gameElement.notation = game.notation;
                 gameElement.innerHTML = "<table class='chess-board'><tbody><tr><th></th><th>a</th><th>b</th><th>c</th><th>d</th><th>e</th><th>f</th><th>g</th><th>h</th></tr><tr><th>8</th><td class='light' id='a8'></td><td class='dark' id='b8'></td><td class='light' id='c8'></td><td class='dark' id='d8'></td><td class='light' id='e8'></td><td class='dark' id='f8'></td><td class='light' id='g8'></td><td class='dark' id='h8'></td></tr><tr><th>7</th><td class='dark' id='a7'> </td><td class='light' id='b7'></td><td class='dark' id='c7'></td><td class='light' id='d7'></td><td class='dark' id='e7'></td><td class='light' id='f7'></td><td class='dark' id='g7'></td><td class='light' id='h7'></td></tr><tr><th>6</th><td class='light' id='a6'></td><td class='dark' id='b6'></td><td class='light' id='c6'></td><td class='dark' id='d6'></td><td class='light' id='e6'></td><td class='dark' id='f6'></td><td class='light' id='g6'></td><td class='dark' id='h6'></td></tr><tr><th>5</th><td class='dark' id='a5'></td><td class='light' id='b5'></td><td class='dark' id='c5'></td><td class='light' id='d5'></td><td class='dark' id='e5'></td><td class='light' id='f5'></td><td class='dark' id='g5'></td><td class='light' id='h5'></td></tr><tr><th>4</th><td class='light' id='a4'></td><td class='dark' id='b4'></td><td class='light' id='c4'></td><td class='dark' id='d4'></td><td class='light' id='e4'></td><td class='dark' id='f4'></td><td class='light' id='g4'></td><td class='dark' id='h4'></td></tr><tr><th>3</th><td class='dark' id='a3'></td><td class='light' id='b3'></td><td class='dark' id='c3'></td><td class='light' id='d3'></td><td class='dark' id='e3'></td><td class='light' id='f3'></td><td class='dark' id='g3'></td><td class='light' id='h3'></td></tr><tr><th>2</th><td class='light' id='a2'></td><td class='dark' id='b2'></td><td class='light' id='c2'></td><td class='dark' id='d2'></td><td class='light' id='e2'></td><td class='dark' id='f2'></td><td class='light' id='g2'></td><td class='dark' id='h2'></td></tr><tr><th>1</th><td class='dark' id='a1'> </td><td class='light' id='b1'></td><td class='dark' id='c1'></td><td class='light' id='d1'></td><td class='dark' id='e1'></td><td class='light' id='f1'></td><td class='dark' id='g1'></td><td class='light' id='h1'></td></tr></tbody></table>";
                 const fen = game.notation;
-                gamesDiv.append(gameElement);
+                if (game.active == "true") {
+                    currentDiv.append(gameElement);
+                    gameElement.addEventListener('click', function() {
+                        window.location.href = "/game.html?gameId=" + gameElement.id
+                    });
+                }
+                else {
+                    historyDiv.append(gameElement);
+                }
 
                 function isNumeric(str) {
                     return /^\d+$/.test(str);

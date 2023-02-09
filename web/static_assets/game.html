@@ -6,6 +6,7 @@
             customElements.define("chess-piece", ChessPiece);
         </script>
         <link rel="stylesheet" type="text/css" href="css/style.css">
+        <link rel="stylesheet" type="text/css" href="css/bigChess.css">
         <meta charset="UTF-8">
     </head>
     <body>
@@ -23,7 +24,7 @@
                 </tbody>
             </table>
         </div>
-        <div>
+        <div class="middle">
             <table class="chess-board">
                 <tbody>
                 <tr>
@@ -127,8 +128,10 @@
                 </tr>
                 </tbody>
             </table>
-            <button id="submit">Submit Move</button>
-            <button id="cancel">Cancel</button>
+            <div id="buttons">
+                <button id="submit">Submit Move</button>
+                <button id="cancel">Cancel</button>
+            </div>
         </div>
     </body>
 </html>
