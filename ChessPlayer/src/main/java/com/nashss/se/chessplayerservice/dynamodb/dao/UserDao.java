@@ -19,7 +19,7 @@ public class UserDao {
         return dynamoDBMapper.load(User.class, userId);
     }
 
-    public User loadUserLimited(String userId) {
+    public User loadPublicUser(String userId) {
         User user = load(userId);
         // User not found in DB
         if (user == null) {
@@ -29,6 +29,7 @@ public class UserDao {
         limitedCopyOfUser.setUsername(user.getUsername());
         limitedCopyOfUser.setActive(user.getActive());
         limitedCopyOfUser.setRating(user.getRating());
+        limitedCopyOfUser.setGames(user.getGames());
         return limitedCopyOfUser;
     }
 

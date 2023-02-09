@@ -302,6 +302,8 @@ Resources:
           Properties:
             Path: /users/public/{username}
             Method: get
+            Auth:
+              Authorizer: 'NONE'
 
   GetPrivateUserLambda:
     Type: AWS::Serverless::Function

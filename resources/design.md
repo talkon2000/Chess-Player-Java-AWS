@@ -28,7 +28,6 @@ If I have extra time after completing the problem(s) above, I would like to expl
 9. As a user, I would like to be able to resume my in-progress game if I lose internet or close my browser, so that I don't lose my progress.
 10. As a user, I would like to be able to see which pieces my opponent and I have taken, so that I can keep track of who is winning.
 11. As a user, I would like to be able to search for other users by username, so I can find my friends.
-12. As a user, I would like to be able to search for other users by email, so I can find my friends.
 
 As mentioned in the problem statement, I want to implement a Player vs Player feature if I have enough time.
 
@@ -90,7 +89,7 @@ As mentioned in the problem statement, I want to implement a Player vs Player fe
 ### GetPublicUserEndpoint
 * Gets a user from the Users table
 * GET
-* /users/public/{userId}
+* /users/public/{username}
 * Response: {user: \<user object>}
 * Might respond with an error if the user does not exist
 
@@ -107,13 +106,6 @@ As mentioned in the problem statement, I want to implement a Player vs Player fe
 * /users/
 * Response: {user: \<user object>}
 * Might respond with an error if the email is invalid format, or if the userId is taken
-
-### SearchUsersEndpoint
-* Searches the Users table's username and email GSIs to try to find the desired player
-* GET
-* /users/search/{searchString}
-* Response: {user: \<user object>}
-* Might respond with an error if the search string is improper
 
 ### GetPreviousGamesEndpoint
 * Returns a list of all previous games the user has played
