@@ -16,7 +16,7 @@ export default class ChessPlayerClient extends BindingClass {
         super();
 
         const methodsToBind = ['clientLoaded', 'getIdentity', 'login', 'logout', 'getTokenOrThrow', 'createGame',
-            'getGame', 'getNextMove', 'getPrivateUser', 'getPublicUser', 'createUser'];
+            'getGame', 'getAllGames', 'getNextMove', 'getPrivateUser', 'getPublicUser', 'createUser'];
         this.bindClassMethods(methodsToBind, this);
 
         this.authenticator = new Authenticator();;
@@ -112,6 +112,24 @@ export default class ChessPlayerClient extends BindingClass {
             this.handleError(error, errorCallback);
         }
     }
+
+    /**
+     * Retrieves all games for the authenticated user
+     * To be used on the user's home page
+     */
+     async getAllGames(errorCallback) {
+        try {
+            const token = await this.getTokenOrThrow("You need to be logged in to see your games");
+            const response = await this.axiosClient.get(`game/allGames/`, {
+                headers: {
+                    Authorization: `Bearer ${token}`
+                }
+            });
+            return response.data;
+        } catch (error) {
+            errorCallback(error);
+        }
+     }
 
     /**
      * Gets the next move for the given game ID.
