@@ -22,7 +22,7 @@ public class GetPublicUserActivity {
             throw new InvalidRequestException("Username can not be null");
         }
 
-        User user = dao.loadUserLimited(request.getUsername());
+        User user = dao.loadPublicUser(request.getUsername());
         if (user == null) {
             throw new InvalidRequestException("There is no user with that username");
         }

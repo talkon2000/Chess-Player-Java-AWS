@@ -131,13 +131,27 @@ export default class UserHome extends BindingClass {
         const errorMessageDisplay = document.getElementById('error-message');
         errorMessageDisplay.innerText = '';
         errorMessageDisplay.classList.add('hidden');
-        const response = await this.client.searchUsers(document.getElementById("searchInput").value, (error) => {
-            errorMessageDisplay.innerText = `Error: ${error.message}`;
+        const response = await this.client.getPublicUser(document.getElementById("searchInput").value, (error) => {
+            errorMessageDisplay.innerText = "There is no user with that username.";
             errorMessageDisplay.classList.remove('hidden');
         });
-
+        const searchResults = document.getElementById("searchResults");
+        if (searchResults.children.length > 0) {
+            searchResults.removeChild(searchResults.children[0]);
+        }
         if (response) {
-            window.location.href = "/user.html?username=" + response.username;
+
+            const user = response.user;
+            console.log(user);
+            const result = document.createElement("div");
+            const username = document.createElement("p");
+            const rating = document.createElement("p");
+            const gamesPlayed = document.createElement("p");
+            result.append(username, rating, gamesPlayed);
+            username.innerText = user.username;
+            rating.innerText = "Rating: " + user.rating;
+            gamesPlayed.innerText = (user.games) ? user.games.length + " games played" : "0" + " games played";
+            searchResults.append(result);
         }
     }
 }

@@ -187,21 +187,6 @@ export default class ChessPlayerClient extends BindingClass {
      }
 
     /**
-     * Search for a user.
-     * @param criteria A string containing search criteria to pass to the API.
-     * @returns The user that matches the search criteria.
-     */
-    async searchUsers(criteria, errorCallback) {
-        try {
-            const response = await this.axiosClient.get(`users/${criteria}`);
-
-            return response.data;
-        } catch (error) {
-            this.handleError(error, errorCallback);
-        }
-    }
-
-    /**
      * Helper method to log the error and run any error functions.
      * @param error The error received from the server.
      * @param errorCallback (Optional) A function to execute if the call fails.
