@@ -10,7 +10,7 @@ export default class GetNextMove extends BindingClass {
 
     constructor() {
         super();
-        this.bindClassMethods(['mount', 'setUpBoard', 'reloadMoves', 'drag', 'doCastle', 'doCastleUser', 'submitMove', 'cancel'], this);
+        this.bindClassMethods(['mount', 'setUpBoard', 'reloadMoves', 'drag', 'doCastle', 'doCastleUser', 'submitMove', 'cancel', 'resign'], this);
         this.dataStore = new DataStore();
         this.header = new Header();
     }
@@ -32,6 +32,7 @@ export default class GetNextMove extends BindingClass {
         document.getElementById('submit').disabled = true;
         document.getElementById('cancel').addEventListener('click', this.cancel);
         document.getElementById('cancel').disabled = true;
+        document.getElementById('resign').addEventListener('click', this.resign);
     }
 
     async setUpBoard() {
@@ -371,6 +372,21 @@ export default class GetNextMove extends BindingClass {
         move.from.append(piece);
         document.getElementById('submit').disabled = true;
         document.getElementById('cancel').disabled = true;
+     }
+
+     resign() {
+        const errorMessageDisplay = document.getElementById('error-message');
+        errorMessageDisplay.innerText = '';
+        errorMessageDisplay.classList.add('hidden');
+        const response = this.client.resign((error) => {
+            submitButton.innerText = origButtonText;
+            errorMessageDisplay.innerText = `Error: ${error.message}`;
+            errorMessageDisplay.classList.remove('hidden');
+        });
+
+        if (response) {
+            alert("The game has ended in resignation");
+        }
      }
 }
 
