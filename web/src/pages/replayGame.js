@@ -109,9 +109,9 @@ export default class GetNextMove extends BindingClass {
             if (to.firstElementChild) {
                 captured = to.removeChild(to.children[0]);
             }
-            let promotion = move.slice(4);
+            const promotion = move.slice(4, 5);
             if (promotion) {
-                promoted = true;
+                promoted = origPiece;
             }
             let origPiece = from.firstElementChild;
             if (promotion && origPiece.classList.contains("white")) {
@@ -159,17 +159,19 @@ export default class GetNextMove extends BindingClass {
         const moves = this.dataStore.get("moves");
         const currentMove = this.dataStore.get("currentMove");
         const move = moves[currentMove];
+        console.log(move);
         if (move) {
             const from = document.getElementById(move.slice(0, 2));
             const to = document.getElementById(move.slice(2, 4));
             const piece = to.removeChild(to.children[0]);
-            if (move.captured) {
-                to.append(move.captured);
+            const moveProperties = this.dataStore.get("move" + currentMove);
+            if (moveProperties.captured) {
+                to.append(moveProperties.captured);
             }
-            if (move.promoted) {
+            if (moveProperties.promoted) {
                 piece.innerHTML = "♙";
             }
-            if (move.castled) {
+            if (moveProperties.castled) {
                 if (move.castled == "K") {
                     document.getElementById("h1").append(document.getElementById("f1").removeChild(document.getElementById("f1").children[0]));
                 }
