@@ -27,6 +27,7 @@ module.exports = {
     landingPage: path.resolve(__dirname, 'src', 'pages', 'landingPage.js'),
     userHome: path.resolve(__dirname, 'src', 'pages', 'userHome.js'),
     login: path.resolve(__dirname, 'src', 'pages', 'login.js'),
+    replayGame: path.resolve(__dirname, 'src', 'pages', 'replayGame.js'),
   },
   output: {
     path: path.resolve(__dirname, 'build', 'assets'),
