@@ -1,6 +1,5 @@
 package com.nashss.se.chessplayerservice.activity;
 
-import com.nashss.se.chessplayerservice.Runner;
 import com.nashss.se.chessplayerservice.activity.request.GetNextMoveRequest;
 import com.nashss.se.chessplayerservice.activity.response.GetNextMoveResponse;
 import com.nashss.se.chessplayerservice.dynamodb.dao.GameDao;
@@ -52,6 +51,7 @@ public class GetNextMoveActivity {
             throw new InvalidRequestException("That is not a legal move");
         }
         game.setNotation(game.getNotation() + " moves " + request.getMove());
+        game.setMoves(game.getMoves() == null ? request.getMove() : game.getMoves() + " " + request.getMove());
 
         // Check if the player move ends the game
         // This method also updates the game's moves to be fen notation
@@ -66,6 +66,7 @@ public class GetNextMoveActivity {
             // If the player move did not end the game, make an engine move
             engineMove = stockfish.getBestMove(String.format("fen %s", game.getNotation()), 500).trim();
             game.setNotation(game.getNotation() + " moves " + engineMove);
+            game.setMoves(game.getMoves() == null ? request.getMove() : game.getMoves() + " " + request.getMove());
             // Check if the engine move ends the game
             gameOverChecker(game);
             StringBuilder sb = new StringBuilder();

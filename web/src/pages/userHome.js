@@ -71,11 +71,14 @@ export default class UserHome extends BindingClass {
                 if (game.active == "true") {
                     currentDiv.append(gameElement);
                     gameElement.addEventListener('click', function() {
-                        window.location.href = "/game.html?gameId=" + gameElement.id
+                        window.location.href = "/game.html?gameId=" + gameElement.id;
                     });
                 }
                 else {
                     historyDiv.append(gameElement);
+                    gameElement.addEventListener('click', function() {
+                        window.location.href = "/pastGame.html?gameId=" + gameElement.id;
+                    });
                 }
 
                 function isNumeric(str) {
