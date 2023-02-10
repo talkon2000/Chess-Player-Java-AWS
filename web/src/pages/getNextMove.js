@@ -10,7 +10,7 @@ export default class GetNextMove extends BindingClass {
 
     constructor() {
         super();
-        this.bindClassMethods(['mount', 'setUpBoard', 'reloadMoves', 'drag', 'doCastle', 'doCastleUser', 'submitMove', 'cancel', 'resign'], this);
+        this.bindClassMethods(['mount', 'setUpBoard', 'reloadMoves', 'drag', 'doPromotion', 'doCastle', 'doCastleUser', 'submitMove', 'cancel', 'resign'], this);
         this.dataStore = new DataStore();
         this.header = new Header();
     }
@@ -128,26 +128,13 @@ export default class GetNextMove extends BindingClass {
         // (2) move the piece on mousemove
         document.addEventListener('mousemove', onMouseMove);
 
-        // Logic in case a promotion happens
-        async function doPromotion(piece) {
-            let promotion = document.getElementById(promotion);
-            let promotedTo = ""
-            promotion.addEventListener("click", logic, { once: true });
-            promotion.classList.remove('hidden');
-            await function logic(event) {
-                elemBelow = document.elementFromPoint(event.clientX, event.clientY);
-                piece.innerHTML = elemBelow.innerHTML;
-                promotedTo = elemBelow.id;
-                promotion.classList.add('hidden');
-                promotion.removeEventListener("click", logic);
-            }
-            return promotedTo;
-        }
-
         // (3) drop the piece, remove unneeded handlers
         piece.onmouseup = () => {
             var captured = null;
             // if you drop the piece on another piece, keep track of that piece in captured
+            if (elemBelow.children) {
+                captured = elemBelow.children[0];
+            }
             if (elemBelow.nodeName == "CHESS-PIECE") {
                 captured = elemBelow;
                 elemBelow = elemBelow.parentElement;
@@ -157,16 +144,17 @@ export default class GetNextMove extends BindingClass {
                 if (captured) {
                     elemBelow.removeChild(captured);
                 }
+                elemBelow.append(piece);
                 if ((elemBelow.id.includes("1") || elemBelow.id.includes("8")) && (piece.innerHTML == "♟" || piece.innerHTML == "♙")) {
                     promoted = true;
-                    promoted = doPromotion(piece);
+                    promoted = this.doPromotion(piece);
                 }
-                elemBelow.append(piece);
+                else {
                 document.getElementById('submit').disabled = false;
                 document.getElementById('cancel').disabled = false;
-                this.dataStore.set("move", {"to": elemBelow, "from": origParent, "captured": captured, "promoted": promoted});
+                }
+                this.dataStore.set("move", {"to": elemBelow, "from": origParent, "captured": captured});
                 this.doCastleUser();
-                console.log(this.dataStore.get("move"));
             }
             else {
                 origParent.append(piece);
@@ -175,6 +163,28 @@ export default class GetNextMove extends BindingClass {
             document.removeEventListener('mousemove', onMouseMove);
             piece.onmouseup = null;
         };
+    }
+
+    // Logic in case a promotion happens
+    doPromotion(piece)  {
+        let promotion = document.getElementById("promotion");
+        let promotedTo = "";
+        promotion.classList.remove('hidden');
+
+        promotion.addEventListener("click", (event) => {
+            let elemBelow = document.elementFromPoint(event.clientX, event.clientY);
+            if (elemBelow.nodeName == "CHESS-PIECE") {
+                elemBelow = elemBelow.parentElement;
+            }
+            piece.innerHTML = elemBelow.innerHTML;
+            promotedTo = elemBelow.id;
+            promotion.classList.add('hidden');
+            document.getElementById('submit').disabled = false;
+            document.getElementById('cancel').disabled = false;
+            const move = this.dataStore.get("move");
+            move.promoted = promotedTo;
+            this.dataStore.set("move", move);
+        }, { once: true });
     }
 
     /**
@@ -241,7 +251,14 @@ export default class GetNextMove extends BindingClass {
 
         const gameId = this.dataStore.get("gameId");
         const obj = this.dataStore.get("move");
-        const move = obj.from.id + obj.to.id + obj.promoted;
+        let move = null;
+        if (obj.promoted) {
+            move = obj.from.id + obj.to.id + obj.promoted;
+        }
+        else {
+            move = obj.from.id + obj.to.id;
+        }
+        console.log(obj);
 
         console.log(gameId);
         console.log(move);
@@ -314,6 +331,7 @@ export default class GetNextMove extends BindingClass {
         // Check for winner
         const winner = response.game.winner;
         if (winner) {
+            document.getElementById('resign').disabled = true;
             if (winner == "draw") {
                 alert("The game has ended in a draw");
             }
@@ -348,6 +366,7 @@ export default class GetNextMove extends BindingClass {
      */
      cancel() {
         const move = this.dataStore.get("move");
+        console.log(move);
         const piece = move.to.removeChild(move.to.children[0]);
         if (move.captured) {
             move.to.append(move.captured);
@@ -378,7 +397,7 @@ export default class GetNextMove extends BindingClass {
         const errorMessageDisplay = document.getElementById('error-message');
         errorMessageDisplay.innerText = '';
         errorMessageDisplay.classList.add('hidden');
-        const response = this.client.resign((error) => {
+        const response = this.client.resign(this.dataStore.get(gameId), (error) => {
             submitButton.innerText = origButtonText;
             errorMessageDisplay.innerText = `Error: ${error.message}`;
             errorMessageDisplay.classList.remove('hidden');

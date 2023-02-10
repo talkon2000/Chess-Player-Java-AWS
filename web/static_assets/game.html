@@ -12,14 +12,22 @@
     <body>
         <header class="header" id="header"></header>
         <p class="hidden error" id="error-message"> </p>
-        <div class = "hidden">
-            <table class="chess-board" id="promotion">
+        <div>
+            <table class="chess-board hidden" id="promotion">
                 <tbody>
                 <tr>
-                    <td class ="light" id="q">♕</td>
-                    <td class ="dark" id="r">♖</td>
-                    <td class ="light" id="b">♗</td>
-                    <td class ="dark" id="k">♘</td>
+                    <td class ="light" id="q">
+                        <chess-piece>♕</chess-piece>
+                    </td>
+                    <td class ="dark" id="r">
+                        <chess-piece>♖</chess-piece>
+                    </td>
+                    <td class ="light" id="b">
+                        <chess-piece>♗</chess-piece>
+                    </td>
+                    <td class ="dark" id="n">
+                        <chess-piece>♘</chess-piece>
+                    </td>
                 </tr>
                 </tbody>
             </table>
