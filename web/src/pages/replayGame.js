@@ -41,7 +41,18 @@ export default class GetNextMove extends BindingClass {
 
 
         document.getElementById('forward').addEventListener('click', this.forward);
+        window.addEventListener('keyup', (event) => {
+            if (event.keyCode == '39') {
+                this.forward();
+            }
+        });
+
         document.getElementById('back').addEventListener('click', this.back);
+        window.addEventListener('keyup', (event) => {
+            if (event.keyCode == '37') {
+                this.back();
+            }
+        });
 
         this.dataStore.set("moves", game.moves.split(" "));
         this.dataStore.set("currentMove", -1);
@@ -110,9 +121,6 @@ export default class GetNextMove extends BindingClass {
                 captured = to.removeChild(to.children[0]);
             }
             const promotion = move.slice(4, 5);
-            if (promotion) {
-                promoted = origPiece;
-            }
             let origPiece = from.firstElementChild;
             if (promotion && origPiece.classList.contains("white")) {
                 if (promotion == "q") {
@@ -130,7 +138,7 @@ export default class GetNextMove extends BindingClass {
             }
             if (promotion && origPiece.classList.contains("black")) {
                 if (promotion == "q") {
-                    origPiece.innerHTML = "♛";document.getElementById(validFrom)
+                    origPiece.innerHTML = "♛";
                 }
                 if (promotion == "b") {
                     origPiece.innerHTML = "♝";
@@ -141,6 +149,9 @@ export default class GetNextMove extends BindingClass {
                 if (promotion == "n") {
                     origPiece.innerHTML = "♞";
                 }
+            }
+            if (promotion) {
+                promoted = origPiece;
             }
             to.append(from.firstElementChild);
             castled = this.doCastle(move, origPiece);
@@ -159,7 +170,6 @@ export default class GetNextMove extends BindingClass {
         const moves = this.dataStore.get("moves");
         const currentMove = this.dataStore.get("currentMove");
         const move = moves[currentMove];
-        console.log(move);
         if (move) {
             const from = document.getElementById(move.slice(0, 2));
             const to = document.getElementById(move.slice(2, 4));
@@ -172,16 +182,16 @@ export default class GetNextMove extends BindingClass {
                 piece.innerHTML = "♙";
             }
             if (moveProperties.castled) {
-                if (move.castled == "K") {
+                if (moveProperties.castled == "K") {
                     document.getElementById("h1").append(document.getElementById("f1").removeChild(document.getElementById("f1").children[0]));
                 }
-                if (move.castled == "Q") {
+                if (moveProperties.castled == "Q") {
                     document.getElementById("a1").append(document.getElementById("d1").removeChild(document.getElementById("d1").children[0]));
                 }
-                if (move.castled == "k") {
+                if (moveProperties.castled == "k") {
                     document.getElementById("h8").append(document.getElementById("f8").removeChild(document.getElementById("f8").children[0]));
                 }
-                if (move.castled == "q") {
+                if (moveProperties.castled == "q") {
                     document.getElementById("a8").append(document.getElementById("d8").removeChild(document.getElementById("d8").children[0]));
                 }
             }
