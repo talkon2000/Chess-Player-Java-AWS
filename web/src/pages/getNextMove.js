@@ -397,7 +397,7 @@ export default class GetNextMove extends BindingClass {
         const errorMessageDisplay = document.getElementById('error-message');
         errorMessageDisplay.innerText = '';
         errorMessageDisplay.classList.add('hidden');
-        const response = this.client.resign(this.dataStore.get(gameId), (error) => {
+        const response = this.client.resign(this.dataStore.get("gameId"), (error) => {
             submitButton.innerText = origButtonText;
             errorMessageDisplay.innerText = `Error: ${error.message}`;
             errorMessageDisplay.classList.remove('hidden');
@@ -405,6 +405,7 @@ export default class GetNextMove extends BindingClass {
 
         if (response) {
             alert("The game has ended in resignation");
+            document.getElementById('resign').disabled = true;
         }
      }
 }
