@@ -11,6 +11,10 @@
     align-items: center;
 }
 
+#resign {
+    align-items: right;
+}
+
 .chess-board {
     border-spacing: 0;
     border-collapse: collapse;

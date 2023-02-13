@@ -22,4 +22,6 @@ public interface ServiceComponent {
     CreateNewGameActivity provideCreateNewGameActivity();
 
     GetAllGamesActivity provideGetAllGamesActivity();
+
+    ResignActivity provideResignActivity();
 }
