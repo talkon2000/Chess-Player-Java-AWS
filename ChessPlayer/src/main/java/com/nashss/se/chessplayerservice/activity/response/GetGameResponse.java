@@ -13,6 +13,7 @@ public class GetGameResponse {
         return game;
     }
 
+    //CHECKSTYLE:OFF:Builder
     public static Builder builder() {
         return new Builder();
     }

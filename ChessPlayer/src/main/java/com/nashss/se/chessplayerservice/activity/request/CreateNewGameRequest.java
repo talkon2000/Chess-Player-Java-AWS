@@ -36,6 +36,7 @@ public class CreateNewGameRequest {
         return botDifficulty;
     }
 
+    //CHECKSTYLE:OFF:Builder
     public static Builder builder() {
         return new Builder();
     }
