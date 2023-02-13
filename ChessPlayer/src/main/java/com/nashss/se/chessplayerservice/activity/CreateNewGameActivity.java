@@ -12,17 +12,39 @@ import com.nashss.se.chessplayerservice.utils.ChessUtils;
 import javax.inject.Inject;
 import java.util.Set;
 
+/**
+ * Implementation of the CreateNewGameActivity for the ChessPlayerClient's CreateNewGame API.
+ *
+ * This API allows the user to create a new game, creates the game in the database, and returns the game.
+ * Also updates the user with the gameId.
+ */
 public class CreateNewGameActivity {
 
     private final UserDao userDao;
     private final GameDao gameDao;
 
+    /**
+     * Instantiates a new CreateNewGameActivity object.
+     *
+     * @param gameDao DAO to access the games table.
+     * @param userDao DAO to access the users table.
+     */
     @Inject
     public CreateNewGameActivity(UserDao userDao, GameDao gameDao) {
         this.userDao = userDao;
         this.gameDao = gameDao;
     }
 
+    /**
+     * This method handles the incoming request by creating a {@link Game} object in the database.
+     * <p>
+     * It then returns the game object.
+     * <p>
+     * If the usernames are null, this should throw an InvalidRequestException.
+     *
+     * @param request request object containing the username(s) of the player(s) and the botDifficulty.
+     * @return CreateNewGameResponse object containing the {@link Game}.
+     */
     public CreateNewGameResponse handleRequest(CreateNewGameRequest request) {
         if (request.getAuthPlayerUsername() == null && request.getOtherPlayerUsername() == null) {
             throw new InvalidRequestException("Both player usernames can not be null");
