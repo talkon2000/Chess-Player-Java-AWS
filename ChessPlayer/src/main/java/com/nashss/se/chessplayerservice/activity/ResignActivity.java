@@ -4,7 +4,6 @@ import com.nashss.se.chessplayerservice.activity.request.ResignRequest;
 import com.nashss.se.chessplayerservice.activity.response.ResignResponse;
 import com.nashss.se.chessplayerservice.dynamodb.dao.GameDao;
 import com.nashss.se.chessplayerservice.dynamodb.models.Game;
-import com.nashss.se.chessplayerservice.dynamodb.models.User;
 import com.nashss.se.chessplayerservice.exceptions.InvalidRequestException;
 
 import javax.inject.Inject;
@@ -57,12 +56,11 @@ public class ResignActivity {
         if (game.getWhitePlayerUsername() != null && game.getWhitePlayerUsername().equals(request.getUsername())) {
             game.setActive("false");
             game.setWinner("black");
-        }
-        else if (game.getBlackPlayerUsername() != null && game.getBlackPlayerUsername().equals(request.getUsername())) {
+        } else if (game.getBlackPlayerUsername() != null &&
+                 game.getBlackPlayerUsername().equals(request.getUsername())) {
             game.setActive("false");
             game.setWinner("white");
-        }
-        else {
+        } else {
             throw new InvalidRequestException("Username must belong to a user playing the game");
         }
 

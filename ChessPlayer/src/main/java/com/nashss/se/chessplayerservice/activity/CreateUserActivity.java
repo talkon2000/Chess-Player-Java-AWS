@@ -3,7 +3,6 @@ package com.nashss.se.chessplayerservice.activity;
 import com.nashss.se.chessplayerservice.activity.request.CreateUserRequest;
 import com.nashss.se.chessplayerservice.activity.response.CreateUserResponse;
 import com.nashss.se.chessplayerservice.dynamodb.dao.UserDao;
-import com.nashss.se.chessplayerservice.dynamodb.models.Game;
 import com.nashss.se.chessplayerservice.dynamodb.models.User;
 import com.nashss.se.chessplayerservice.exceptions.InvalidRequestException;
 import com.nashss.se.chessplayerservice.utils.ChessUtils;

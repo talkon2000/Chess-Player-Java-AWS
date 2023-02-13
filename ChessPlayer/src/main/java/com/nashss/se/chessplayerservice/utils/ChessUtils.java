@@ -26,7 +26,7 @@ public class ChessUtils {
     }
 
     /**
-     * Static utility method to convert a bot difficulty to a relative elo rating
+     * Static utility method to convert a bot difficulty to a relative elo rating.
      * @param botDifficulty the botDifficulty
      * @return an ELO rating representing the bot's ELO.
      */

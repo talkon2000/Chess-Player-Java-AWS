@@ -9,8 +9,9 @@ import com.nashss.se.chessplayerservice.dynamodb.models.User;
 import com.nashss.se.chessplayerservice.exceptions.InvalidRequestException;
 import com.nashss.se.chessplayerservice.utils.ChessUtils;
 
-import javax.inject.Inject;
 import java.util.Set;
+
+import javax.inject.Inject;
 
 /**
  * Implementation of the CreateNewGameActivity for the ChessPlayerClient's CreateNewGame API.
@@ -72,8 +73,7 @@ public class CreateNewGameActivity {
             User user = userDao.load(whitePlayerUsername);
             if (user.getGames() == null) {
                 user.setGames(Set.of(game.getGameId()));
-            }
-            else {
+            } else {
                 user.getGames().add(game.getGameId());
             }
             userDao.saveUser(user);
@@ -83,8 +83,7 @@ public class CreateNewGameActivity {
             User user = userDao.load(blackPlayerUsername);
             if (user.getGames() == null) {
                 user.setGames(Set.of(game.getGameId()));
-            }
-            else {
+            } else {
                 user.getGames().add(game.getGameId());
             }
             userDao.saveUser(user);

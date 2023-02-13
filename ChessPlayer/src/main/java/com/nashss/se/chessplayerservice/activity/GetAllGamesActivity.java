@@ -8,10 +8,11 @@ import com.nashss.se.chessplayerservice.dynamodb.models.Game;
 import com.nashss.se.chessplayerservice.dynamodb.models.User;
 import com.nashss.se.chessplayerservice.exceptions.InvalidRequestException;
 
-import javax.inject.Inject;
 import java.util.HashSet;
 import java.util.Set;
 import java.util.stream.Collectors;
+
+import javax.inject.Inject;
 
 /**
  * Implementation of the GetAllGamesActivity for the ChessPlayerClient's GetAllGames API.
