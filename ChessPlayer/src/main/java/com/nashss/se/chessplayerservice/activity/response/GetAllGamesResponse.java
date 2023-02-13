@@ -16,6 +16,7 @@ public class GetAllGamesResponse {
         return (games == null) ? null : Set.copyOf(games);
     }
 
+    //CHECKSTYLE:OFF:Builder
     public static Builder builder() {
         return new Builder();
     }

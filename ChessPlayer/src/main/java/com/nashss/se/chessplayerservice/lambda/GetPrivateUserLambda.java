@@ -1,9 +1,10 @@
 package com.nashss.se.chessplayerservice.lambda;
 
-import com.amazonaws.services.lambda.runtime.Context;
-import com.amazonaws.services.lambda.runtime.RequestHandler;
 import com.nashss.se.chessplayerservice.activity.request.GetPrivateUserRequest;
 import com.nashss.se.chessplayerservice.activity.response.GetUserResponse;
+
+import com.amazonaws.services.lambda.runtime.Context;
+import com.amazonaws.services.lambda.runtime.RequestHandler;
 
 public class GetPrivateUserLambda extends LambdaActivityRunner<GetPrivateUserRequest, GetUserResponse>
         implements RequestHandler<AuthenticatedLambdaRequest<GetPrivateUserRequest>, LambdaResponse> {
@@ -12,10 +13,10 @@ public class GetPrivateUserLambda extends LambdaActivityRunner<GetPrivateUserReq
     @Override
     public LambdaResponse handleRequest(AuthenticatedLambdaRequest<GetPrivateUserRequest> input, Context context) {
         return super.runActivity(
-                () -> input.fromUserClaims(claims -> GetPrivateUserRequest.builder()
-                                .withUsername(claims.get("cognito:username"))
-                                .build()),
-                (request, serviceComponent) -> serviceComponent.provideGetPrivateUserActivity().handleRequest(request)
+            () -> input.fromUserClaims(claims -> GetPrivateUserRequest.builder()
+                            .withUsername(claims.get("cognito:username"))
+                            .build()),
+            (request, serviceComponent) -> serviceComponent.provideGetPrivateUserActivity().handleRequest(request)
         );
     }
 }

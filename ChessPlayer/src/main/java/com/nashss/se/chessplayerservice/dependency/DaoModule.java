@@ -13,6 +13,10 @@ import javax.inject.Singleton;
 @Module
 public class DaoModule {
 
+    /**
+     * Provides a dynamoDBMapper with a custom DynamoDBMapper config.
+     * @return DynamoDBMapper
+     */
     @Singleton
     @Provides
     public DynamoDBMapper provideDynamoDBMapper() {
