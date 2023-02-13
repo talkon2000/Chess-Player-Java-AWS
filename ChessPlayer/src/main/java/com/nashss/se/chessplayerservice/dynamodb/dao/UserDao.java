@@ -15,12 +15,12 @@ public class UserDao {
         this.dynamoDBMapper = dynamoDBMapper;
     }
 
-    public User load(String userId) {
-        return dynamoDBMapper.load(User.class, userId);
+    public User load(String username) {
+        return dynamoDBMapper.load(User.class, username);
     }
 
-    public User loadPublicUser(String userId) {
-        User user = load(userId);
+    public User loadPublicUser(String username) {
+        User user = load(username);
         // User not found in DB
         if (user == null) {
             return null;

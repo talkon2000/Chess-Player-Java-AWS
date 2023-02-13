@@ -5,6 +5,7 @@ import com.amazonaws.services.dynamodbv2.datamodeling.DynamoDBHashKey;
 import com.amazonaws.services.dynamodbv2.datamodeling.DynamoDBTable;
 
 import javax.annotation.Nonnull;
+import java.util.Objects;
 
 @DynamoDBTable(tableName = "Games")
 public class Game {
@@ -98,5 +99,42 @@ public class Game {
 
     public void setBotDifficulty(Integer botDifficulty) {
         this.botDifficulty = botDifficulty;
+    }
+
+    @Override
+    public String toString() {
+        return "Game{" +
+                "gameId='" + gameId + '\'' +
+                ", active='" + active + '\'' +
+                ", winner='" + winner + '\'' +
+                ", notation='" + notation + '\'' +
+                ", validMoves='" + validMoves + '\'' +
+                ", moves='" + moves + '\'' +
+                ", whitePlayerUsername='" + whitePlayerUsername + '\'' +
+                ", blackPlayerUsername='" + blackPlayerUsername + '\'' +
+                ", botDifficulty=" + botDifficulty +
+                '}';
+    }
+
+    @Override
+    public boolean equals(Object o) {
+        if (this == o) return true;
+        if (o == null || getClass() != o.getClass()) return false;
+        Game game = (Game) o;
+        return gameId.equals(game.gameId) &&
+                Objects.equals(active, game.active) &&
+                Objects.equals(winner, game.winner) &&
+                Objects.equals(notation, game.notation) &&
+                Objects.equals(validMoves, game.validMoves) &&
+                Objects.equals(moves, game.moves) &&
+                Objects.equals(whitePlayerUsername, game.whitePlayerUsername) &&
+                Objects.equals(blackPlayerUsername, game.blackPlayerUsername) &&
+                Objects.equals(botDifficulty, game.botDifficulty);
+    }
+
+    @Override
+    public int hashCode() {
+        return Objects.hash(gameId, active, winner, notation, validMoves,
+                moves, whitePlayerUsername, blackPlayerUsername, botDifficulty);
     }
 }
