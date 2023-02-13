@@ -11,6 +11,7 @@ import com.nashss.se.chessplayerservice.exceptions.InvalidRequestException;
 import com.nashss.se.chessplayerservice.exceptions.StockfishException;
 import com.nashss.se.chessplayerservice.utils.ChessUtils;
 
+import java.util.Arrays;
 import java.util.List;
 import javax.inject.Inject;
 
@@ -71,11 +72,11 @@ public class GetNextMoveActivity {
         if (!stockfish.startEngine()) {
             throw new StockfishException("Engine failed to start");
         }
-        stockfish.getOutput(1);
+        stockfish.getOutput(3);
         // Check if the submitted move is legal
-        List<String> legalMoves = stockfish.getLegalMoves("fen " + game.getNotation());
-        if (!legalMoves.contains(request.getMove())) {
-            throw new InvalidRequestException("That is not a legal move");
+        String[] legalMoves = game.getValidMoves().split(",");
+        if (Arrays.stream(legalMoves).noneMatch(move -> move.equals(request.getMove()))) {
+            throw new InvalidRequestException("That is not a legal move: " + Arrays.toString(legalMoves));
         }
         game.setNotation(game.getNotation() + " moves " + request.getMove());
         String moves = game.getMoves() == null ? request.getMove() : game.getMoves() + " " + request.getMove();

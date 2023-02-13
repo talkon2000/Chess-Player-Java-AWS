@@ -132,7 +132,7 @@ public class Stockfish {
     public List<String> getLegalMoves(String position) {
         sendCommand("position " + position);
         sendCommand("go perft 1");
-        String output = getOutput(15);
+        String output = getOutput(20);
         return Arrays.stream(output.split("\n"))
                 .map(s -> s.split(":")[0].trim())
                 .filter(s -> !s.isBlank() && !s.contains("Nodes"))
