@@ -4,6 +4,7 @@ import com.amazonaws.services.dynamodbv2.datamodeling.DynamoDBAttribute;
 import com.amazonaws.services.dynamodbv2.datamodeling.DynamoDBHashKey;
 import com.amazonaws.services.dynamodbv2.datamodeling.DynamoDBTable;
 
+import java.util.Objects;
 import java.util.Set;
 
 @DynamoDBTable(tableName = "Users")
@@ -59,5 +60,33 @@ public class User {
 
     public void setActive(String active) {
         this.active = active;
+    }
+
+    @Override
+    public String toString() {
+        return "User{" +
+                "username='" + username + '\'' +
+                ", rating=" + rating +
+                ", games=" + games +
+                ", email='" + email + '\'' +
+                ", active='" + active + '\'' +
+                '}';
+    }
+
+    @Override
+    public boolean equals(Object o) {
+        if (this == o) return true;
+        if (o == null || getClass() != o.getClass()) return false;
+        User user = (User) o;
+        return rating == user.rating &&
+                username.equals(user.username) &&
+                Objects.equals(games, user.games) &&
+                Objects.equals(email, user.email) &&
+                Objects.equals(active, user.active);
+    }
+
+    @Override
+    public int hashCode() {
+        return Objects.hash(username, rating, games, email, active);
     }
 }
