@@ -1,6 +1,10 @@
 package com.nashss.se.chessplayerservice.engine;
 
-import java.io.*;
+import java.io.BufferedReader;
+import java.io.File;
+import java.io.IOException;
+import java.io.InputStreamReader;
+import java.io.OutputStreamWriter;
 import java.nio.file.Files;
 import java.nio.file.Path;
 import java.util.Arrays;
@@ -10,7 +14,7 @@ import java.util.stream.Collectors;
 import static java.nio.file.StandardCopyOption.REPLACE_EXISTING;
 
 /**
- * A simple and efficient client to run Stockfish from Java
+ * A simple and efficient client to run Stockfish from Java.
  *
  * @author Rahul A R and modified by Josh Taylor
  *
@@ -19,7 +23,7 @@ public class Stockfish {
     private BufferedReader processReader;
     private OutputStreamWriter processWriter;
 
-    private final String PATH = getEngineLocation();
+    private final String path = getEngineLocation();
 
     /**
      * Starts Stockfish engine as a process and initializes it.
@@ -29,7 +33,7 @@ public class Stockfish {
      */
     public boolean startEngine() {
         try {
-            Process engineProcess = Runtime.getRuntime().exec(PATH);
+            Process engineProcess = Runtime.getRuntime().exec(path);
             processReader = new BufferedReader(new InputStreamReader(
                     engineProcess.getInputStream()));
             processWriter = new OutputStreamWriter(
@@ -86,10 +90,11 @@ public class Stockfish {
             sendCommand("isready");
             while (true) {
                 String text = processReader.readLine();
-                if (text.equals("readyok"))
+                if (text.equals("readyok")) {
                     break;
-                else
+                } else {
                     output.append(text).append("\n");
+                }
             }
         } catch (IOException | InterruptedException e) {
             e.printStackTrace();
@@ -99,12 +104,12 @@ public class Stockfish {
 
     /**
      * This function returns the best move for a given position after
-     * calculating for 'waitTime' ms
+     * calculating for 'waitTime' ms.
      *
      * @param position Position string. Valid input is either "startpos moves "
      *                 followed by moves in pure algebraic notation
      *                 without from-to delimiters (example: d2d4)
-     *                 or "fem " followed by a position in FEM notation
+     *                 or "fen " followed by a position in FEN notation
      * @param waitTime engine calculation time in milliseconds
      * @return Best Move in pure algebraic format. For example: "d2d4"
      */
@@ -116,7 +121,7 @@ public class Stockfish {
     }
 
     /**
-     * Get a list of all legal moves from the given position
+     * Get a list of all legal moves from the given position.
      *
      * @param position Position string. Valid input is either
      *                 "startpos moves " followed by moves in pure algebraic notation
@@ -154,12 +159,12 @@ public class Stockfish {
     }
 
     /**
-     * Get the evaluation score of a given board position
+     * Get the evaluation score of a given board position.
      *
      * @param position Position string. Valid input is either
      *                 "startpos moves " followed by moves in pure algebraic notation
      *                 without from-to delimiters (example: d2d4)
-     *                 or "fem " followed by a position in FEM notation
+     *                 or "fen " followed by a position in FEN notation
      * @return evalScore
      */
     public String getEvalScore(String position) {
@@ -177,17 +182,17 @@ public class Stockfish {
 
     private String getEngineLocation() {
         // If running locally
-        String path = "engine/stockfish";
-        if (new File(path).canExecute()) {
+        String pathToEngine = "engine/stockfish";
+        if (new File(pathToEngine).canExecute()) {
             System.out.println("local");
-            return path;
+            return pathToEngine;
         }
 
         // If running in Lambda
-        path = "/var/task/./lib/stockfish";
-        if (new File(path).canExecute()) {
+        pathToEngine = "/var/task/./lib/stockfish";
+        if (new File(pathToEngine).canExecute()) {
             System.out.println("lambda");
-            return path;
+            return pathToEngine;
         }
 
         // If running in docker

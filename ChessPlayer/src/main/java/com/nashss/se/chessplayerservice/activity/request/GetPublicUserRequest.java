@@ -13,6 +13,7 @@ public class GetPublicUserRequest {
         return username;
     }
 
+    //CHECKSTYLE:OFF:Builder
     public static Builder builder() {
         return new Builder();
     }

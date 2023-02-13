@@ -11,15 +11,29 @@ import com.nashss.se.chessplayerservice.exceptions.InvalidRequestException;
 import com.nashss.se.chessplayerservice.exceptions.StockfishException;
 import com.nashss.se.chessplayerservice.utils.ChessUtils;
 
+import java.util.List;
 import javax.inject.Inject;
-import java.util.*;
 
+/**
+ * Implementation of the GetNextMoveActivity for the ChessPlayerClient's GetNextMove API.
+ *
+ * This API allows the user to submit a move, updates the game in the database, and returns the updated game and move.
+ * May also update the User in the database if the game ends.
+ */
 public class GetNextMoveActivity {
 
     private final GameDao gameDao;
     private final UserDao userDao;
     private final Stockfish stockfish;
 
+
+    /**
+     * Instantiates a new GetNextMoveActivity object.
+     *
+     * @param gameDao DAO to access the games table.
+     * @param userDao DAO to access the users table.
+     * @param stockfish Stockfish object to interface with the chess engine
+     */
     @Inject
     public GetNextMoveActivity(GameDao gameDao, UserDao userDao, Stockfish stockfish) {
         this.gameDao = gameDao;
@@ -27,6 +41,19 @@ public class GetNextMoveActivity {
         this.stockfish = stockfish;
     }
 
+    /**
+     * This method handles the incoming request by initializing the engine, checking if the move is valid, and
+     * checking if the game has ended.
+     * <p>
+     * It then returns the updated game object, and the engine move.
+     * <p>
+     * If the move is not valid, this should throw an InvalidRequestException.
+     * <p>
+     * If the game does not exist, this should throw an InvalidRequestException.
+     *
+     * @param request request object containing the gameId and the player's move
+     * @return GetNextMoveResponse object containing the updated {@link Game} and the engine move
+     */
     public GetNextMoveResponse handleRequest(GetNextMoveRequest request) {
         if (request.getMove() == null || request.getGameId() == null) {
             throw new InvalidRequestException(
@@ -100,8 +127,8 @@ public class GetNextMoveActivity {
                     blackRating -= (1 - blackExpectedScore) * 25;
                 }
                 if (winner.equals("black")) {
-                    whiteRating -= (1- whiteExpectedScore) * 25;
-                    blackRating -= (1- blackExpectedScore) * 25;
+                    whiteRating -= (1 - whiteExpectedScore) * 25;
+                    blackRating -= (1 - blackExpectedScore) * 25;
                 }
                 if (winner.equals("draw")) {
                     whiteRating += (.5 - whiteExpectedScore) * 25;
@@ -111,9 +138,8 @@ public class GetNextMoveActivity {
                 black.setRating(blackRating);
                 userDao.saveUser(white);
                 userDao.saveUser(black);
-            }
-            // If white vs bot
-            else if (game.getWhitePlayerUsername() != null) {
+            } else if (game.getWhitePlayerUsername() != null) {
+                // If white vs bot
                 User white = userDao.load(game.getWhitePlayerUsername());
                 int whiteRating = white.getRating();
                 int botRating = ChessUtils.botDifficultyToRating(game.getBotDifficulty());
@@ -122,22 +148,21 @@ public class GetNextMoveActivity {
                     whiteRating += (1 - expectedScore) * 25;
                 }
                 if (winner.equals("black")) {
-                    whiteRating -= (1- expectedScore) * 25;
+                    whiteRating -= (1 - expectedScore) * 25;
                 }
                 if (winner.equals("draw")) {
                     whiteRating += (.5 - expectedScore) * 25;
                 }
                 white.setRating(whiteRating);
                 userDao.saveUser(white);
-            }
-            // If black vs bot
-            else {
+            } else {
+                // If black vs bot
                 User black = userDao.load(game.getBlackPlayerUsername());
                 int blackRating = black.getRating();
                 int botRating = ChessUtils.botDifficultyToRating(game.getBotDifficulty());
                 double expectedScore = 1 / (1 + 10.0 * (botRating - blackRating) / 400);
                 if (winner.equals("black")) {
-                    blackRating += (1- expectedScore) * 25;
+                    blackRating += (1 - expectedScore) * 25;
                 }
                 if (winner.equals("white")) {
                     blackRating -= (1 - expectedScore) * 25;
@@ -176,8 +201,8 @@ public class GetNextMoveActivity {
             }
             if (line.startsWith("Checkers: ")) {
                 // See if position is in check
-                line = line.replace("Checkers: ", "").trim();
-                if (!line.isBlank()) {
+                String tmp = line.replace("Checkers: ", "").trim();
+                if (!tmp.isBlank()) {
                     inCheck = true;
                 }
             }
@@ -205,8 +230,7 @@ public class GetNextMoveActivity {
                     enoughMaterial = true;
                     break;
                 }
-            }
-            else {
+            } else {
                 whitePieces.append(c);
                 if (whitePieces.length() > 1) {
                     enoughMaterial = true;
@@ -219,24 +243,18 @@ public class GetNextMoveActivity {
         if (inCheck && legalMoves.isEmpty()) {
             game.setWinner(game.getNotation().split(" ")[1].equals("w") ? "black" : "white");
             game.setActive("false");
-        }
-
-        // if no valid moves, but you are not in check, game is over by stalemate
-        else if (legalMoves.isEmpty()) {
+        } else if (legalMoves.isEmpty()) {
+            // if no valid moves, but you are not in check, game is over by stalemate
             game.setWinner("draw");
             game.setActive("false");
-        }
-
-        // fifty move rule is a draw condition;
-        // if there have been no pawn captures or advances in 50 moves, the game ends in a draw
-        // fen string tracks this for us
-        else if (fiftyMoveRule >= 100) {
-           game.setWinner("draw");
-           game.setActive("false");
-        }
-
-        // draw by not enough material
-        else if (!enoughMaterial) {
+        } else if (fiftyMoveRule >= 100) {
+            // fifty move rule is a draw condition;
+            // if there have been no pawn captures or advances in 50 moves, the game ends in a draw
+            // fen string tracks this for us
+            game.setWinner("draw");
+            game.setActive("false");
+        } else if (!enoughMaterial) {
+            // draw by not enough material
             game.setWinner("draw");
             game.setActive("false");
         }

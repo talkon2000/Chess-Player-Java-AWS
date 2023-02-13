@@ -22,6 +22,7 @@ public class GetNextMoveRequest {
         return gameId;
     }
 
+    //CHECKSTYLE:OFF:Builder
     public static Builder builder() {
         return new Builder();
     }

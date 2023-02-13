@@ -17,10 +17,19 @@ public class ChessUtils {
     private static final Pattern EMAIL_CHARACTER_PATTERN =
             Pattern.compile("^[a-zA-Z0-9_!#$%&'*+/=?`{|}~^.-]+@[a-zA-Z0-9.-]+$");
 
+    /**
+     * Static utility method to generate a 10-digit alphanumeric gameId.
+     * @return a random 10-digit alphanumeric String
+     */
     public static String generateGameId() {
         return RandomStringUtils.random(10, true, true);
     }
 
+    /**
+     * Static utility method to convert a bot difficulty to a relative elo rating.
+     * @param botDifficulty the botDifficulty
+     * @return an ELO rating representing the bot's ELO.
+     */
     public static int botDifficultyToRating(int botDifficulty) {
         Map<Integer, Integer> diffToRatingMap = new HashMap<>();
         diffToRatingMap.put(0, 600);

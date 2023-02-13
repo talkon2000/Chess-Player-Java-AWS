@@ -9,15 +9,37 @@ import com.nashss.se.chessplayerservice.utils.ChessUtils;
 
 import javax.inject.Inject;
 
+/**
+ * Implementation of the CreateUserActivity for the ChessPlayerClient's CreateUser API.
+ *
+ * This API allows the user to create a {@link User} in the database, and returns that user.
+ */
 public class CreateUserActivity {
 
     private final UserDao dao;
 
+    /**
+     * Instantiates a new CreateUserActivity object.
+     *
+     * @param dao DAO to access the users table.
+     */
     @Inject
     public CreateUserActivity(UserDao dao) {
         this.dao = dao;
     }
 
+    /**
+     * This method handles the incoming request by creating a {@link User} object in the database.
+     * <p>
+     * It then returns the user object.
+     * <p>
+     * If the username is null or already taken, this should throw an InvalidRequestException.
+     * <p>
+     * If the email is null or not a valid email, this should throw an InvalidRequestException.
+     *
+     * @param request request object containing the username and email of the player.
+     * @return CreateUserResponse object containing the {@link User}.
+     */
     public CreateUserResponse handleRequest(CreateUserRequest request) {
         if (request.getUsername() == null) {
             throw new InvalidRequestException("Username can not be null");

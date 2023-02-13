@@ -1,9 +1,10 @@
 package com.nashss.se.chessplayerservice.lambda;
 
-import com.amazonaws.services.lambda.runtime.Context;
-import com.amazonaws.services.lambda.runtime.RequestHandler;
 import com.nashss.se.chessplayerservice.activity.request.CreateNewGameRequest;
 import com.nashss.se.chessplayerservice.activity.response.CreateNewGameResponse;
+
+import com.amazonaws.services.lambda.runtime.Context;
+import com.amazonaws.services.lambda.runtime.RequestHandler;
 
 public class CreateNewGameLambda extends LambdaActivityRunner<CreateNewGameRequest, CreateNewGameResponse>
         implements RequestHandler<AuthenticatedLambdaRequest<CreateNewGameRequest>, LambdaResponse> {
@@ -12,13 +13,13 @@ public class CreateNewGameLambda extends LambdaActivityRunner<CreateNewGameReque
     public LambdaResponse handleRequest(AuthenticatedLambdaRequest<CreateNewGameRequest> input, Context context) {
         CreateNewGameRequest unauthorizedRequest = input.fromBody(CreateNewGameRequest.class);
         return super.runActivity(
-                () -> input.fromUserClaims(claims -> CreateNewGameRequest.builder()
-                        .withAuthPlayerUsername(claims.get("cognito:username"))
-                        .withOtherPlayerUsername(unauthorizedRequest.getOtherPlayerUsername())
-                        .withAuthUserWhite(unauthorizedRequest.getAuthUserWhite())
-                        .withBotDifficulty(unauthorizedRequest.getBotDifficulty())
-                        .build()),
-                (request, serviceComponent) -> serviceComponent.provideCreateNewGameActivity().handleRequest(request)
+            () -> input.fromUserClaims(claims -> CreateNewGameRequest.builder()
+                    .withAuthPlayerUsername(claims.get("cognito:username"))
+                    .withOtherPlayerUsername(unauthorizedRequest.getOtherPlayerUsername())
+                    .withAuthUserWhite(unauthorizedRequest.getAuthUserWhite())
+                    .withBotDifficulty(unauthorizedRequest.getBotDifficulty())
+                    .build()),
+            (request, serviceComponent) -> serviceComponent.provideCreateNewGameActivity().handleRequest(request)
         );
     }
 }

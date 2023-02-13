@@ -21,6 +21,7 @@ public class ResignRequest {
         return gameId;
     }
 
+    //CHECKSTYLE:OFF:Builder
     public static Builder builder() {
         return new Builder();
     }
