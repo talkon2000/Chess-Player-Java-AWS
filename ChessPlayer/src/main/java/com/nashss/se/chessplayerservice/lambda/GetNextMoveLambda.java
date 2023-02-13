@@ -1,9 +1,10 @@
 package com.nashss.se.chessplayerservice.lambda;
 
-import com.amazonaws.services.lambda.runtime.Context;
-import com.amazonaws.services.lambda.runtime.RequestHandler;
 import com.nashss.se.chessplayerservice.activity.request.GetNextMoveRequest;
 import com.nashss.se.chessplayerservice.activity.response.GetNextMoveResponse;
+
+import com.amazonaws.services.lambda.runtime.Context;
+import com.amazonaws.services.lambda.runtime.RequestHandler;
 
 public class GetNextMoveLambda extends LambdaActivityRunner<GetNextMoveRequest, GetNextMoveResponse>
         implements RequestHandler<LambdaRequest<GetNextMoveRequest>, LambdaResponse> {
@@ -12,11 +13,11 @@ public class GetNextMoveLambda extends LambdaActivityRunner<GetNextMoveRequest, 
     @Override
     public LambdaResponse handleRequest(LambdaRequest<GetNextMoveRequest> input, Context context) {
         return super.runActivity(
-                () -> input.fromPathAndQuery((path, query) -> GetNextMoveRequest.builder()
-                        .withMove(path.get("move"))
-                        .withGameId(query.get("gameId"))
-                        .build()),
-                (request, serviceComponent) -> serviceComponent.provideGetNextMoveActivity().handleRequest(request)
+            () -> input.fromPathAndQuery((path, query) -> GetNextMoveRequest.builder()
+                    .withMove(path.get("move"))
+                    .withGameId(query.get("gameId"))
+                    .build()),
+            (request, serviceComponent) -> serviceComponent.provideGetNextMoveActivity().handleRequest(request)
         );
     }
 }
