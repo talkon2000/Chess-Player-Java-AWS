@@ -1,0 +1,17 @@
+<?xml version="1.0"?>
+<!DOCTYPE suppressions PUBLIC
+        "-//Puppy Crawl//DTD Suppressions 1.1//EN"
+        "http://www.puppycrawl.com/dtds/suppressions_1_1.dtd">
+<suppressions>
+    <suppress checks="." files="src/resources/.*\.[PpJj][NnPp][Gg]" />
+    <suppress checks="AvoidStaticImport" files=".*Test.java" />
+    <suppress checks="JavadocType" files="." />
+    <suppress checks="(Javadoc|MethodName)" files="src/test/java" />             <!-- gradle tests -->
+    <suppress checks="(Javadoc|MethodName)" files="tst/com/amazon" />            <!-- HappyTrails tests -->
+    <suppress checks="(Javadoc|MethodName)" files="src/com/amazon/.*/mastery/" /> <!-- MT TCT hydra proxies -->
+    <suppress checks="(Javadoc|MethodName)" files="src/com/amazon/.*/preparedness/" /> <!-- PPT TCT hydra proxies -->
+    <suppress checks="(Javadoc|MethodName)" files="src/com/amazon/.*/test/" />   <!-- integration tests -->
+    <suppress checks="(Javadoc|MethodName)" files="src/com/amazon/.*/tct/tests/" />   <!-- tct tests -->
+    <suppress checks="MethodName" files="src/com/amazon/.*/tct/basewrappers/.*Test.java" /> <!-- Project Wrapper tests -->
+    <suppress checks="FinalLocalVariable" files="_U3.*/src/com/amazon/ata" />
+</suppressions>
