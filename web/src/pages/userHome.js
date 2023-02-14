@@ -181,6 +181,7 @@ export default class UserHome extends BindingClass {
                 errorMessageDisplay.classList.remove('hidden');
             });
             if (response) {
+                await this.client.logout();
                 window.location.href = '/index.html';
             }
         }

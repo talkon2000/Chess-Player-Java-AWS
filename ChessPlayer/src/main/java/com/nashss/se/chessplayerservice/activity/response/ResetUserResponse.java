@@ -6,7 +6,7 @@ public class ResetUserResponse {
 
     private final User user;
 
-    private ResetUserResponse(User user){
+    private ResetUserResponse(User user) {
         this.user = user;
     }
 
@@ -14,6 +14,7 @@ public class ResetUserResponse {
         return user;
     }
 
+    //CHECKSTYLE:OFF:Builder
     public static Builder builder() {
         return new Builder();
     }

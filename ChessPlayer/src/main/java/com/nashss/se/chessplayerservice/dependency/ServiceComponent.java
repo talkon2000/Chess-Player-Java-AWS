@@ -1,6 +1,14 @@
 package com.nashss.se.chessplayerservice.dependency;
 
-import com.nashss.se.chessplayerservice.activity.*;
+import com.nashss.se.chessplayerservice.activity.CreateNewGameActivity;
+import com.nashss.se.chessplayerservice.activity.CreateUserActivity;
+import com.nashss.se.chessplayerservice.activity.GetAllGamesActivity;
+import com.nashss.se.chessplayerservice.activity.GetGameActivity;
+import com.nashss.se.chessplayerservice.activity.GetNextMoveActivity;
+import com.nashss.se.chessplayerservice.activity.GetPrivateUserActivity;
+import com.nashss.se.chessplayerservice.activity.GetPublicUserActivity;
+import com.nashss.se.chessplayerservice.activity.ResetUserActivity;
+import com.nashss.se.chessplayerservice.activity.ResignActivity;
 
 import dagger.Component;
 
