@@ -3,6 +3,7 @@ package com.nashss.se.chessplayerservice.utils;
 import org.apache.commons.lang3.RandomStringUtils;
 import org.apache.commons.lang3.StringUtils;
 
+import javax.annotation.Nonnull;
 import java.util.HashMap;
 import java.util.Map;
 import java.util.regex.Pattern;
@@ -16,6 +17,11 @@ public class ChessUtils {
 
     private static final Pattern EMAIL_CHARACTER_PATTERN =
             Pattern.compile("^[a-zA-Z0-9_!#$%&'*+/=?`{|}~^.-]+@[a-zA-Z0-9.-]+$");
+    public enum WINNER {
+        PLAYER,
+        OPPONENT,
+        DRAW
+    }
 
     /**
      * Static utility method to generate a 10-digit alphanumeric gameId.
@@ -67,6 +73,27 @@ public class ChessUtils {
             return false;
         } else {
             return EMAIL_CHARACTER_PATTERN.matcher(email).find();
+        }
+    }
+
+    /**
+     * Static utility method to calculate the change in elo of a player
+     * @param playerRating the rating of the player you are calculating the change for
+     * @param opponentRating the rating of the opponent
+     * @param winner an enum indicating who won
+     * @return the difference in rating to be added
+     */
+    public static double calculateRatingForPlayer(int playerRating, int opponentRating, ChessUtils.WINNER winner) {
+        double expectedScore = 1 / (1 + 10.0 * (opponentRating - playerRating) / 400);
+        if (winner == null) {
+            throw new RuntimeException("winner cannot be null");
+        }
+        if (winner.equals(WINNER.PLAYER)) {
+            return (1 - expectedScore) * 25;
+        } else if (winner.equals(WINNER.OPPONENT)) {
+            return (1 - expectedScore) * 25 * -1;
+        } else {
+            return (.5 - expectedScore) * 25;
         }
     }
 }
