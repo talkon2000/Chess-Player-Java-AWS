@@ -66,4 +66,8 @@ public class UserDao {
     public void saveUser(User user) {
         dynamoDBMapper.save(user);
     }
+
+    public void deleteUser(User user) {
+        dynamoDBMapper.delete(user);
+    }
 }

@@ -28,6 +28,8 @@ If I have extra time after completing the problem(s) above, I would like to expl
 9. As a user, I would like to be able to resume my in-progress game if I lose internet or close my browser, so that I don't lose my progress.
 10. As a user, I would like to be able to see which pieces my opponent and I have taken, so that I can keep track of who is winning.
 11. As a user, I would like to be able to search for other users by username, so I can find my friends.
+12. As a user, I would like to be able to resign a game, so that I don't have to waste time playing it through to the end.
+13. As a user, I would like to be able to reset my account, so that I can start fresh.
 
 As mentioned in the problem statement, I want to implement a Player vs Player feature if I have enough time.
 
@@ -127,6 +129,12 @@ As mentioned in the problem statement, I want to implement a Player vs Player fe
 * Request Body: {rating: \<rating>, username: \<username>, email: \<email>, active: \<active>}
 * Response: {user: \<user object>}
 * Might respond with an error if username or email are invalid Strings, if rating is invalid or reduced below 0, or if active is set to something other than true/false
+
+### ResetUserEndpoint
+* Deletes a user entry in the Users table
+* DELETE
+* /users/
+* Response: {user: \<user object>}
 
 ## 6. Wireframe frontend
 
