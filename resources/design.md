@@ -30,6 +30,7 @@ If I have extra time after completing the problem(s) above, I would like to expl
 11. As a user, I would like to be able to search for other users by username, so I can find my friends.
 12. As a user, I would like to be able to resign a game, so that I don't have to waste time playing it through to the end.
 13. As a user, I would like to be able to reset my account, so that I can start fresh.
+14. As a user, I would like to be able to hide games, so that my UI doesn't get too cluttered.
 
 As mentioned in the problem statement, I want to implement a Player vs Player feature if I have enough time.
 
@@ -53,6 +54,7 @@ As mentioned in the problem statement, I want to implement a Player vs Player fe
 * Attributes:
   * gameId : String -> Partition key
   * active : String
+  * isVisible : String
   * winner : String
   * whiteUserId : String
   * blackUserId : String
@@ -135,6 +137,13 @@ As mentioned in the problem statement, I want to implement a Player vs Player fe
 * DELETE
 * /users/
 * Response: {user: \<user object>}
+
+### HideGamesEndpoint
+* Sets the 'isVisible' attribute of a list of games to false
+* DELETE
+* /game
+* Request Body: { [gameId, gameId, gameId] }
+* Response: { [gameId, gameId, gameId] }
 
 ## 6. Wireframe frontend
 
