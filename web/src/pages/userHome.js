@@ -9,7 +9,7 @@ export default class UserHome extends BindingClass {
 
     constructor() {
         super();
-        this.bindClassMethods(['mount', 'loadUserData', 'populateGameHistory', 'startGame', 'checkForEnterKey', 'search'], this);
+        this.bindClassMethods(['mount', 'loadUserData', 'populateGameHistory', 'startGame', 'checkForEnterKey', 'search', 'resetAccount'], this);
         this.client = new ChessPlayerClient();
         this.header = new Header();
     }
@@ -27,6 +27,7 @@ export default class UserHome extends BindingClass {
         document.getElementById("start").addEventListener('click', this.startGame);
         document.getElementById("submitSearch").addEventListener('click', this.search);
         document.getElementById("searchInput").addEventListener('keyup', this.checkForEnterKey);
+        document.getElementById("resetAccount").addEventListener('click', this.resetAccount);
 
         this.loadUserData();
     }
@@ -165,6 +166,23 @@ export default class UserHome extends BindingClass {
             rating.innerText = "Rating: " + user.rating;
             gamesPlayed.innerText = (user.games) ? user.games.length + " games played" : "0" + " games played";
             searchResults.append(result);
+        }
+    }
+
+    async resetAccount() {
+        const errorMessageDisplay = document.getElementById('error-message');
+        errorMessageDisplay.innerText = '';
+        errorMessageDisplay.classList.add('hidden');
+        const confirm = window.confirm("Are you sure you want to reset your account?" +
+                " You will still be able to use your login, but all of your data will be erased.");
+        if (confirm) {
+            const response = await this.client.resetAccount((error) => {
+                errorMessageDisplay.innerText = "There is no user with that username.";
+                errorMessageDisplay.classList.remove('hidden');
+            });
+            if (response) {
+                window.location.href = '/index.html';
+            }
         }
     }
 }
