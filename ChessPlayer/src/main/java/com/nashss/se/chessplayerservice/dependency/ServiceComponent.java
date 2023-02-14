@@ -7,6 +7,7 @@ import com.nashss.se.chessplayerservice.activity.GetGameActivity;
 import com.nashss.se.chessplayerservice.activity.GetNextMoveActivity;
 import com.nashss.se.chessplayerservice.activity.GetPrivateUserActivity;
 import com.nashss.se.chessplayerservice.activity.GetPublicUserActivity;
+import com.nashss.se.chessplayerservice.activity.ResetUserActivity;
 import com.nashss.se.chessplayerservice.activity.ResignActivity;
 
 import dagger.Component;
@@ -67,4 +68,10 @@ public interface ServiceComponent {
      * @return ResignActivity
      */
     ResignActivity provideResignActivity();
+
+    /**
+     * Provides the relevant activity.
+     * @return ResetUserActivity
+     */
+    ResetUserActivity provideResetUserActivity();
 }
