@@ -114,66 +114,29 @@ public class GetNextMoveActivity {
         // If the game is over, edit the user(s) rating scores
         // If expected Score is above .5, you are expected to either win or draw
         if (game.getWinner() != null) {
+            User white;
+            User black;
             String winner = game.getWinner();
             // If multiplayer
             if (game.getBotDifficulty() == null) {
-                User white = userDao.load(game.getWhitePlayerUsername());
-                User black = userDao.load(game.getBlackPlayerUsername());
-                int whiteRating = white.getRating();
-                int blackRating = black.getRating();
-                double whiteExpectedScore = 1 / (1 + 10.0 * (blackRating - whiteRating) / 400);
-                double blackExpectedScore = 1 / (1 + 10.0 * (whiteRating - blackRating) / 400);
-                if (winner.equals("white")) {
-                    whiteRating += (1 - whiteExpectedScore) * 25;
-                    blackRating -= (1 - blackExpectedScore) * 25;
-                }
-                if (winner.equals("black")) {
-                    whiteRating -= (1 - whiteExpectedScore) * 25;
-                    blackRating -= (1 - blackExpectedScore) * 25;
-                }
-                if (winner.equals("draw")) {
-                    whiteRating += (.5 - whiteExpectedScore) * 25;
-                    blackRating += (.5 - blackExpectedScore) * 25;
-                }
-                white.setRating(whiteRating);
-                black.setRating(blackRating);
-                userDao.saveUser(white);
-                userDao.saveUser(black);
+                white = userDao.load(game.getWhitePlayerUsername());
+                black = userDao.load(game.getBlackPlayerUsername());
             } else if (game.getWhitePlayerUsername() != null) {
                 // If white vs bot
-                User white = userDao.load(game.getWhitePlayerUsername());
-                int whiteRating = white.getRating();
-                int botRating = ChessUtils.botDifficultyToRating(game.getBotDifficulty());
-                double expectedScore = 1 / (1 + 10.0 * (botRating - whiteRating) / 400);
-                if (winner.equals("white")) {
-                    whiteRating += (1 - expectedScore) * 25;
-                }
-                if (winner.equals("black")) {
-                    whiteRating -= (1 - expectedScore) * 25;
-                }
-                if (winner.equals("draw")) {
-                    whiteRating += (.5 - expectedScore) * 25;
-                }
-                white.setRating(whiteRating);
-                userDao.saveUser(white);
+                white = userDao.load(game.getWhitePlayerUsername());
+                black = new User();
+                black.setRating(ChessUtils.botDifficultyToRating(game.getBotDifficulty()));
             } else {
                 // If black vs bot
-                User black = userDao.load(game.getBlackPlayerUsername());
-                int blackRating = black.getRating();
-                int botRating = ChessUtils.botDifficultyToRating(game.getBotDifficulty());
-                double expectedScore = 1 / (1 + 10.0 * (botRating - blackRating) / 400);
-                if (winner.equals("black")) {
-                    blackRating += (1 - expectedScore) * 25;
-                }
-                if (winner.equals("white")) {
-                    blackRating -= (1 - expectedScore) * 25;
-                }
-                if (winner.equals("draw")) {
-                    blackRating += (.5 - expectedScore) * 25;
-                }
-                black.setRating(blackRating);
-                userDao.saveUser(black);
+                black = userDao.load(game.getBlackPlayerUsername());
+                white = new User();
+                white.setRating(ChessUtils.botDifficultyToRating(game.getBotDifficulty()));
             }
+
+            white.setRating(white.getRating() +
+                    (int) ChessUtils.calculateRatingForWhite(white.getRating(), black.getRating(), winner));
+            black.setRating(black.getRating() +
+                    (int) ChessUtils.calculateRatingForBlack(white.getRating(), black.getRating(), winner));
         }
 
         return GetNextMoveResponse.builder()

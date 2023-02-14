@@ -3,8 +3,10 @@ package com.nashss.se.chessplayerservice.utils;
 import org.apache.commons.lang3.RandomStringUtils;
 import org.apache.commons.lang3.StringUtils;
 
+import java.util.Arrays;
 import java.util.HashMap;
 import java.util.Map;
+import java.util.Optional;
 import java.util.regex.Pattern;
 
 public class ChessUtils {
@@ -16,10 +18,36 @@ public class ChessUtils {
 
     private static final Pattern EMAIL_CHARACTER_PATTERN =
             Pattern.compile("^[a-zA-Z0-9_!#$%&'*+/=?`{|}~^.-]+@[a-zA-Z0-9.-]+$");
+
     public enum WINNER {
-        PLAYER,
-        OPPONENT,
-        DRAW
+        WHITE("white"),
+        BLACK("black"),
+        DRAW("draw");
+
+        private final String enumStr;
+
+        /**
+         * Utility enum to convert String.
+         * @param enumStr the String conversion of the enum
+         */
+        WINNER(String enumStr) {
+            this.enumStr = enumStr;
+        }
+
+        public String getEnumStr() {
+            return enumStr;
+        }
+
+        /**
+         * Reverse lookup method.
+         * @param value the String to lookup
+         * @return the Enum equivalent of the string
+         */
+        public static Optional<WINNER> getWinnerByString(String value) {
+            return Arrays.stream(WINNER.values())
+                    .filter(winner -> winner.enumStr.equals(value))
+                    .findFirst();
+        }
     }
 
     /**
@@ -76,21 +104,46 @@ public class ChessUtils {
     }
 
     /**
-     * Static utility method to calculate the change in elo of a player.
-     * @param playerRating the rating of the player you are calculating the change for
-     * @param opponentRating the rating of the opponent
-     * @param winner an enum indicating who won
+     * Static utility method to calculate the change in elo of the white player.
+     * @param whiteRating the rating of the white player
+     * @param blackRating the rating of the black player
+     * @param winner a String indicating who won. Should be one of ["white", "black", "draw"]
      * @return the difference in rating to be added
      */
-    public static double calculateRatingForPlayer(int playerRating, int opponentRating, ChessUtils.WINNER winner) {
-        double expectedScore = 1 / (1 + 10.0 * (opponentRating - playerRating) / 400);
-        if (winner == null) {
-            throw new RuntimeException("winner cannot be null");
+    public static double calculateRatingForWhite(int whiteRating, int blackRating, String winner) {
+        Optional<WINNER> optionalWINNER = WINNER.getWinnerByString(winner);
+        if (optionalWINNER.isEmpty()) {
+            throw new RuntimeException("winner must be one of [white, black, draw]");
         }
-        if (winner.equals(WINNER.PLAYER)) {
+        WINNER winnerEnum = optionalWINNER.get();
+        double expectedScore = 1 / (1 + 10.0 * (blackRating - whiteRating) / 400);
+        if (winnerEnum.equals(WINNER.WHITE)) {
             return (1 - expectedScore) * 25;
-        } else if (winner.equals(WINNER.OPPONENT)) {
+        } else if (winnerEnum.equals(WINNER.BLACK)) {
             return (1 - expectedScore) * 25 * -1;
+        } else {
+            return (.5 - expectedScore) * 25;
+        }
+    }
+
+    /**
+     * Static utility method to calculate the change in elo of the black player.
+     * @param whiteRating the rating of the white player
+     * @param blackRating the rating of the black player
+     * @param winner a String indicating who won. Should be one of ["white", "black", "draw"]
+     * @return the difference in rating to be added
+     */
+    public static double calculateRatingForBlack(int whiteRating, int blackRating, String winner) {
+        Optional<WINNER> optionalWINNER = WINNER.getWinnerByString(winner);
+        if (optionalWINNER.isEmpty()) {
+            throw new RuntimeException("winner must be one of [white, black, draw]");
+        }
+        WINNER winnerEnum = optionalWINNER.get();
+        double expectedScore = 1 / (1 + 10.0 * (whiteRating - blackRating) / 400);
+        if (winnerEnum.equals(WINNER.WHITE)) {
+            return (1 - expectedScore) * 25 * -1;
+        } else if (winnerEnum.equals(WINNER.BLACK)) {
+            return (1 - expectedScore) * 25;
         } else {
             return (.5 - expectedScore) * 25;
         }
