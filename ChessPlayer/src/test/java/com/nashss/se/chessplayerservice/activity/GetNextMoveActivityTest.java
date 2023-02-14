@@ -104,11 +104,10 @@ class GetNextMoveActivityTest {
         Game game = new Game();
         game.setActive("true");
         game.setNotation("notation");
+        game.setValidMoves("move1,move2");
         when(gameDao.load("gameId")).thenReturn(game);
         when(stockfish.startEngine()).thenReturn(true);
-        when(stockfish.getLegalMoves("fen notation")).thenReturn(List.of("move1", "move2"));
 
         assertThrows(InvalidRequestException.class, () -> getNextMoveActivity.handleRequest(request));
-        verify(stockfish).getLegalMoves("fen notation");
     }
 }
