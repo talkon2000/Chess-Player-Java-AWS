@@ -52,6 +52,9 @@ public class ResignActivity {
         if (game == null) {
             throw new InvalidRequestException("There is no game with that ID");
         }
+        if (!game.getActive().equals("true")) {
+            throw new InvalidRequestException("You cannot resign an inactive game");
+        }
 
         if (game.getWhitePlayerUsername() != null && game.getWhitePlayerUsername().equals(request.getUsername())) {
             game.setActive("false");
