@@ -75,31 +75,46 @@ public class ResignActivity {
         }
         int opponentRating = opponent.getRating();
 
+        boolean playerIsWhite;
         if (game.getWhitePlayerUsername() != null &&
                 game.getWhitePlayerUsername().equals(request.getUsername())) {
+            playerIsWhite = true;
             game.setActive("false");
             game.setWinner("black");
         } else if (game.getBlackPlayerUsername() != null &&
                 game.getBlackPlayerUsername().equals(request.getUsername())) {
+            playerIsWhite = false;
             game.setActive("false");
             game.setWinner("white");
         } else {
             throw new InvalidRequestException("Username must belong to a user playing the game");
         }
 
-        int ratingChange = (int) ChessUtils.calculateRatingForPlayer(player.getRating(),
-                opponentRating,
-                ChessUtils.WINNER.OPPONENT);
+        int ratingChange;
+        int opponentRatingChange = 0;
+        if (playerIsWhite) {
+            ratingChange =
+                    (int) ChessUtils.calculateRatingForWhite(player.getRating(), opponentRating, game.getWinner());
+            if (opponent.getUsername() != null) {
+                opponentRatingChange =
+                        (int) ChessUtils.calculateRatingForBlack(player.getRating(), opponentRating, game.getWinner());
+            }
+        } else {
+            ratingChange =
+                    (int) ChessUtils.calculateRatingForBlack(player.getRating(), opponentRating, game.getWinner());
+            if (opponent.getUsername() != null) {
+                opponentRatingChange =
+                        (int) ChessUtils.calculateRatingForWhite(player.getRating(), opponentRating, game.getWinner());
+            }
+        }
         player.setRating(player.getRating() + ratingChange);
         userDao.saveUser(player);
 
         if (opponent.getUsername() != null) {
-            int opponentRatingChange = (int) ChessUtils.calculateRatingForPlayer(opponentRating,
-                    player.getRating(),
-                    ChessUtils.WINNER.PLAYER);
             opponent.setRating(opponent.getRating() + opponentRatingChange);
             userDao.saveUser(opponent);
         }
+
         gameDao.save(game);
 
         return ResignResponse.builder()
