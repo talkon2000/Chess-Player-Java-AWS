@@ -25,6 +25,7 @@ public class ResignActivity {
      * Instantiates a new ResignActivity object.
      *
      * @param gameDao DAO to access the games table.
+     * @param userDao DAO to access the users table.
      */
     @Inject
     public ResignActivity(GameDao gameDao, UserDao userDao) {

@@ -3,7 +3,6 @@ package com.nashss.se.chessplayerservice.utils;
 import org.apache.commons.lang3.RandomStringUtils;
 import org.apache.commons.lang3.StringUtils;
 
-import javax.annotation.Nonnull;
 import java.util.HashMap;
 import java.util.Map;
 import java.util.regex.Pattern;
@@ -77,7 +76,7 @@ public class ChessUtils {
     }
 
     /**
-     * Static utility method to calculate the change in elo of a player
+     * Static utility method to calculate the change in elo of a player.
      * @param playerRating the rating of the player you are calculating the change for
      * @param opponentRating the rating of the opponent
      * @param winner an enum indicating who won
