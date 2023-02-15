@@ -67,6 +67,7 @@ public class CreateNewGameActivity {
         game.setValidMoves(ChessUtils.STARTING_VALID_MOVES);
         game.setBlackPlayerUsername(blackPlayerUsername);
         game.setWhitePlayerUsername(whitePlayerUsername);
+        game.setIsVisible("true");
         gameDao.save(game);
 
         if (whitePlayerUsername != null) {

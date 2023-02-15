@@ -54,7 +54,10 @@ public class GetAllGamesActivity {
         User user = userDao.loadPublicUser(request.getUsername());
         Set<Game> games = new HashSet<>();
         if (user.getGames() != null) {
-            games = user.getGames().parallelStream().map(gameDao::load).collect(Collectors.toSet());
+            games = user.getGames().parallelStream()
+                    .map(gameDao::load)
+                    .filter(game -> request.getReturnHiddenGames() || Boolean.parseBoolean(game.getIsVisible()))
+                    .collect(Collectors.toSet());
         }
 
         return GetAllGamesResponse.builder()

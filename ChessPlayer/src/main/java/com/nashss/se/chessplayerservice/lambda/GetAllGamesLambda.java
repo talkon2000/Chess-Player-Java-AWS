@@ -13,9 +13,15 @@ public class GetAllGamesLambda extends LambdaActivityRunner<GetAllGamesRequest, 
     @Override
     public LambdaResponse handleRequest(AuthenticatedLambdaRequest<GetAllGamesRequest> input, Context context) {
         return super.runActivity(
-            () -> input.fromUserClaims(claims -> GetAllGamesRequest.builder()
-                    .withUsername(claims.get("cognito:username"))
-                    .build()),
+            () -> {
+                GetAllGamesRequest request = input.fromQuery(query -> GetAllGamesRequest.builder()
+                        .withHiddenGames(Boolean.parseBoolean(query.get("returnHiddenGames")))
+                        .build());
+                return input.fromUserClaims(claims -> GetAllGamesRequest.builder()
+                        .withUsername(claims.get("cognito:username"))
+                        .withHiddenGames(request.getReturnHiddenGames())
+                        .build());
+            },
             (request, serviceComponent) -> serviceComponent.provideGetAllGamesActivity().handleRequest(request)
         );
     }
