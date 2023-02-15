@@ -1,7 +1,5 @@
 package com.nashss.se.chessplayerservice.activity.response;
 
-import com.fasterxml.jackson.databind.annotation.JsonPOJOBuilder;
-
 public class HideGamesResponse {
 
     private final String[] gameIds;

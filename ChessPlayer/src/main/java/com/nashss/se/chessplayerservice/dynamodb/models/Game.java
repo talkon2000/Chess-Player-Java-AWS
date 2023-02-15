@@ -20,6 +20,7 @@ public class Game {
     private String whitePlayerUsername;
     private String blackPlayerUsername;
     private Integer botDifficulty;
+    private String isVisible;
 
     @DynamoDBHashKey(attributeName = "gameId")
     public String getGameId() {
@@ -100,6 +101,15 @@ public class Game {
 
     public void setBotDifficulty(Integer botDifficulty) {
         this.botDifficulty = botDifficulty;
+    }
+
+    @DynamoDBAttribute(attributeName = "isVisible")
+    public String getIsVisible() {
+        return isVisible;
+    }
+
+    public void setIsVisible(String isVisible) {
+        this.isVisible = isVisible;
     }
 
     @Override
