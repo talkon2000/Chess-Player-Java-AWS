@@ -9,7 +9,7 @@ export default class UserHome extends BindingClass {
 
     constructor() {
         super();
-        this.bindClassMethods(['mount', 'loadUserData', 'populateGameHistory', 'startGame', 'checkForEnterKey', 'search', 'resetAccount'], this);
+        this.bindClassMethods(['mount', 'loadUserData', 'populateGameHistory', 'startGame', 'checkForEnterKey', 'search', 'resetAccount','toggleHidingMode', 'hideGames'], this);
         this.client = new ChessPlayerClient();
         this.header = new Header();
     }
@@ -28,6 +28,8 @@ export default class UserHome extends BindingClass {
         document.getElementById("submitSearch").addEventListener('click', this.search);
         document.getElementById("searchInput").addEventListener('keyup', this.checkForEnterKey);
         document.getElementById("resetAccount").addEventListener('click', this.resetAccount);
+        document.getElementById("hideGames").addEventListener('click', this.toggleHidingMode);
+        document.getElementById("submitHide").addEventListener('click', this.hideGames)
 
         this.loadUserData();
     }
@@ -67,18 +69,27 @@ export default class UserHome extends BindingClass {
                 const gameElement = document.createElement("td");
                 gameElement.id = game.gameId;
                 gameElement.notation = game.notation;
-                gameElement.innerHTML = "<table class='chess-board'><tbody><tr><th></th><th>a</th><th>b</th><th>c</th><th>d</th><th>e</th><th>f</th><th>g</th><th>h</th></tr><tr><th>8</th><td class='light' id='a8'></td><td class='dark' id='b8'></td><td class='light' id='c8'></td><td class='dark' id='d8'></td><td class='light' id='e8'></td><td class='dark' id='f8'></td><td class='light' id='g8'></td><td class='dark' id='h8'></td></tr><tr><th>7</th><td class='dark' id='a7'> </td><td class='light' id='b7'></td><td class='dark' id='c7'></td><td class='light' id='d7'></td><td class='dark' id='e7'></td><td class='light' id='f7'></td><td class='dark' id='g7'></td><td class='light' id='h7'></td></tr><tr><th>6</th><td class='light' id='a6'></td><td class='dark' id='b6'></td><td class='light' id='c6'></td><td class='dark' id='d6'></td><td class='light' id='e6'></td><td class='dark' id='f6'></td><td class='light' id='g6'></td><td class='dark' id='h6'></td></tr><tr><th>5</th><td class='dark' id='a5'></td><td class='light' id='b5'></td><td class='dark' id='c5'></td><td class='light' id='d5'></td><td class='dark' id='e5'></td><td class='light' id='f5'></td><td class='dark' id='g5'></td><td class='light' id='h5'></td></tr><tr><th>4</th><td class='light' id='a4'></td><td class='dark' id='b4'></td><td class='light' id='c4'></td><td class='dark' id='d4'></td><td class='light' id='e4'></td><td class='dark' id='f4'></td><td class='light' id='g4'></td><td class='dark' id='h4'></td></tr><tr><th>3</th><td class='dark' id='a3'></td><td class='light' id='b3'></td><td class='dark' id='c3'></td><td class='light' id='d3'></td><td class='dark' id='e3'></td><td class='light' id='f3'></td><td class='dark' id='g3'></td><td class='light' id='h3'></td></tr><tr><th>2</th><td class='light' id='a2'></td><td class='dark' id='b2'></td><td class='light' id='c2'></td><td class='dark' id='d2'></td><td class='light' id='e2'></td><td class='dark' id='f2'></td><td class='light' id='g2'></td><td class='dark' id='h2'></td></tr><tr><th>1</th><td class='dark' id='a1'> </td><td class='light' id='b1'></td><td class='dark' id='c1'></td><td class='light' id='d1'></td><td class='dark' id='e1'></td><td class='light' id='f1'></td><td class='dark' id='g1'></td><td class='light' id='h1'></td></tr></tbody></table>";
+                const table = document.createElement("table");
+                table.classList.add('chess-board');
+                table.innerHTML = "<tbody><tr><th></th><th>a</th><th>b</th><th>c</th><th>d</th><th>e</th><th>f</th><th>g</th><th>h</th></tr><tr><th>8</th><td class='light' id='a8'></td><td class='dark' id='b8'></td><td class='light' id='c8'></td><td class='dark' id='d8'></td><td class='light' id='e8'></td><td class='dark' id='f8'></td><td class='light' id='g8'></td><td class='dark' id='h8'></td></tr><tr><th>7</th><td class='dark' id='a7'> </td><td class='light' id='b7'></td><td class='dark' id='c7'></td><td class='light' id='d7'></td><td class='dark' id='e7'></td><td class='light' id='f7'></td><td class='dark' id='g7'></td><td class='light' id='h7'></td></tr><tr><th>6</th><td class='light' id='a6'></td><td class='dark' id='b6'></td><td class='light' id='c6'></td><td class='dark' id='d6'></td><td class='light' id='e6'></td><td class='dark' id='f6'></td><td class='light' id='g6'></td><td class='dark' id='h6'></td></tr><tr><th>5</th><td class='dark' id='a5'></td><td class='light' id='b5'></td><td class='dark' id='c5'></td><td class='light' id='d5'></td><td class='dark' id='e5'></td><td class='light' id='f5'></td><td class='dark' id='g5'></td><td class='light' id='h5'></td></tr><tr><th>4</th><td class='light' id='a4'></td><td class='dark' id='b4'></td><td class='light' id='c4'></td><td class='dark' id='d4'></td><td class='light' id='e4'></td><td class='dark' id='f4'></td><td class='light' id='g4'></td><td class='dark' id='h4'></td></tr><tr><th>3</th><td class='dark' id='a3'></td><td class='light' id='b3'></td><td class='dark' id='c3'></td><td class='light' id='d3'></td><td class='dark' id='e3'></td><td class='light' id='f3'></td><td class='dark' id='g3'></td><td class='light' id='h3'></td></tr><tr><th>2</th><td class='light' id='a2'></td><td class='dark' id='b2'></td><td class='light' id='c2'></td><td class='dark' id='d2'></td><td class='light' id='e2'></td><td class='dark' id='f2'></td><td class='light' id='g2'></td><td class='dark' id='h2'></td></tr><tr><th>1</th><td class='dark' id='a1'> </td><td class='light' id='b1'></td><td class='dark' id='c1'></td><td class='light' id='d1'></td><td class='dark' id='e1'></td><td class='light' id='f1'></td><td class='dark' id='g1'></td><td class='light' id='h1'></td></tr></tbody>";
                 const fen = game.notation;
                 if (game.active == "true") {
                     currentDiv.append(gameElement);
-                    gameElement.addEventListener('click', function() {
-                        window.location.href = "/game.html?gameId=" + gameElement.id;
+                    gameElement.append(table);
+                    table.addEventListener('click', function() {
+                        window.location.href = "/game.html?gameId=" + table.parentElement.id;
                     });
                 }
                 else {
+                    const checkboxForHide = document.createElement("input");
+                    checkboxForHide.type = "checkbox";
+                    checkboxForHide.classList.add('hidden');
+                    checkboxForHide.classList.add('gameCheckbox');
                     historyDiv.append(gameElement);
-                    gameElement.addEventListener('click', function() {
-                        window.location.href = "/pastGame.html?gameId=" + gameElement.id;
+                    gameElement.append(table);
+                    gameElement.append(checkboxForHide);
+                    table.addEventListener('click', function() {
+                        window.location.href = "/pastGame.html?gameId=" + table.parentElement.id;
                     });
                 }
 
@@ -183,6 +194,59 @@ export default class UserHome extends BindingClass {
             if (response) {
                 await this.client.logout();
                 window.location.href = '/index.html';
+            }
+        }
+    }
+
+    toggleHidingMode() {
+        const checkbox = document.getElementById("hideGames");
+        const submitButton = document.getElementById("submitHide");
+        const gameCheckboxes = document.querySelectorAll("input.gameCheckbox");
+        console.log(gameCheckboxes);
+        if (!checkbox.checked) {
+            submitButton.classList.add('hidden');
+            if (gameCheckboxes) {
+                gameCheckboxes.forEach(box => {
+                    box.classList.add('hidden');
+                });
+            }
+        }
+
+        if (checkbox.checked) {
+            submitButton.classList.remove('hidden');
+            if (gameCheckboxes) {
+                gameCheckboxes.forEach(box => {
+                    box.classList.remove('hidden');
+                });
+            }
+        }
+    }
+
+    async hideGames() {
+        const errorMessageDisplay = document.getElementById('error-message');
+        errorMessageDisplay.innerText = '';
+        errorMessageDisplay.classList.add('hidden');
+
+        const gameCheckboxes = document.querySelectorAll("input.gameCheckbox");
+        const gameIds = [];
+        if (gameCheckboxes) {
+            gameCheckboxes.forEach(box => {
+                if (box.checked) {
+                    gameIds.push(box.parentElement.id);
+                }
+            });
+        }
+        if (gameIds.length > 0) {
+            const response = await this.client.hideGames(gameIds, error => {
+                errorMessageDisplay.innerText = `Error: ${error.message}`;
+                errorMessageDisplay.classList.remove('hidden');
+            });
+            console.log(response);
+            if (response.data.gameIds) {
+                response.data.gameIds.forEach(gameId => {
+                console.log(gameId);
+                    document.querySelector(`#${gameId}`).remove();
+                });
             }
         }
     }

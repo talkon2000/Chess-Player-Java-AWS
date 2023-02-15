@@ -44,6 +44,7 @@ class GetAllGamesActivityTest {
         user.setGames(Set.of("gameId"));
         GetAllGamesRequest request = GetAllGamesRequest.builder()
                 .withUsername(username)
+                .withHiddenGames(true)
                 .build();
         when(userDao.loadPublicUser(username)).thenReturn(user);
         when(gameDao.load("gameId")).thenReturn(game);

@@ -7,6 +7,7 @@ import com.nashss.se.chessplayerservice.activity.GetGameActivity;
 import com.nashss.se.chessplayerservice.activity.GetNextMoveActivity;
 import com.nashss.se.chessplayerservice.activity.GetPrivateUserActivity;
 import com.nashss.se.chessplayerservice.activity.GetPublicUserActivity;
+import com.nashss.se.chessplayerservice.activity.HideGamesActivity;
 import com.nashss.se.chessplayerservice.activity.ResetUserActivity;
 import com.nashss.se.chessplayerservice.activity.ResignActivity;
 
@@ -74,4 +75,10 @@ public interface ServiceComponent {
      * @return ResetUserActivity
      */
     ResetUserActivity provideResetUserActivity();
+
+    /**
+     * Provides the relevant activity.
+     * @return HideGamesActivity
+     */
+    HideGamesActivity provideHideGamesActivity();
 }
