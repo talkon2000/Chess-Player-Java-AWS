@@ -16,7 +16,7 @@ export default class ChessPlayerClient extends BindingClass {
         super();
 
         const methodsToBind = ['clientLoaded', 'getIdentity', 'login', 'logout', 'getTokenOrThrow', 'createGame',
-            'getGame', 'getAllGames', 'getNextMove', 'getPrivateUser', 'getPublicUser', 'createUser', 'resign', 'resetAccount'];
+            'getGame', 'getAllGames', 'getNextMove', 'getPrivateUser', 'getPublicUser', 'createUser', 'resign', 'resetAccount', 'hideGames'];
         this.bindClassMethods(methodsToBind, this);
 
         this.authenticator = new Authenticator();;
@@ -167,9 +167,7 @@ export default class ChessPlayerClient extends BindingClass {
             });
             return response.data;
         }
-        catch (error) {
-            errorCallback(error);
-        }
+        catch (error) {}
      }
 
     /**
@@ -233,6 +231,22 @@ export default class ChessPlayerClient extends BindingClass {
         }
     }
 
+    async hideGames(gameIds, errorCallback) {
+        try {
+            const token = await this.getTokenOrThrow("You are not logged in!");
+            return await this.axiosClient.delete(`game/`, {
+                data: {
+                    gameIds: gameIds
+                },
+                headers: {
+                    Authorization: `Bearer ${token}`
+                }
+            });
+        }
+        catch (error) {
+            errorCallback(error);
+        }
+    }
     /**
      * Helper method to log the error and run any error functions.
      * @param error The error received from the server.

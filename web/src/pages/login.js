@@ -14,10 +14,7 @@ export default class Login extends BindingClass {
 
     async getUser() {
         const errorMessageDisplay = document.getElementById("error-message");
-        let user = await this.client.getPrivateUser((error) => {
-            errorMessageDisplay.innerText = `Error: ${error.message}`;
-            errorMessageDisplay.classList.remove('hidden');
-        });
+        let user = await this.client.getPrivateUser();
         if (!user) {
             user = await this.client.createUser((error) => {
                 errorMessageDisplay.innerText = `Error: ${error.message}`;
