@@ -56,11 +56,11 @@ export default class ChessPlayerClient extends BindingClass {
     }
 
     async login() {
-        this.authenticator.login();
+        await this.authenticator.login();
     }
 
     async logout() {
-        this.authenticator.logout();
+        await this.authenticator.logout();
     }
 
     async getTokenOrThrow(unauthenticatedErrorMessage) {
