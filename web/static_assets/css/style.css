@@ -70,6 +70,7 @@
 
 chess-piece {
     cursor: pointer;
+    user-select: none;
 }
 
 /* open source loading spinner */
