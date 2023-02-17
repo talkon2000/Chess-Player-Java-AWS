@@ -20,6 +20,7 @@ export default class LandingPage extends BindingClass {
       */
     async mount() {
         this.header.addHeaderToPage();
+        document.getElementById("navHome").classList.add("active");
     }
 }
 

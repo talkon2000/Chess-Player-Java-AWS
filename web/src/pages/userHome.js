@@ -16,6 +16,7 @@ export default class UserHome extends BindingClass {
 
     mount() {
         this.header.addHeaderToPage();
+        document.getElementById("navAccount").classList.add("active");
         var slider = document.getElementById("botDifficulty");
         var output = document.getElementById("output");
         output.innerHTML = slider.value; // Display the default slider value

@@ -24,19 +24,17 @@ export default class Header extends BindingClass {
         const currentUser = await this.client.getIdentity();
         const userInfo = this.createUserInfoForHeader(currentUser);
         if (currentUser) {
-            document.getElementById("myAccount").classList.remove("hidden");
+            document.getElementById("navAccount").classList.remove("hidden");
         }
 
-        const navItem = document.createElement('li');
-        navItem.classList.add("nav-item");
 
-        document.getElementById("currentUser").appendChild(navItem);
-        navItem.appendChild(userInfo);
+        document.getElementById("currentUser").appendChild(userInfo);
     }
 
     createUserInfoForHeader(currentUser) {
         const userInfo = document.createElement('li');
         userInfo.classList.add('user');
+        userInfo.classList.add('nav-item');
 
         const childContent = currentUser
             ? this.createLogoutButton(currentUser)
@@ -49,13 +47,13 @@ export default class Header extends BindingClass {
 
     createLoginButton() {
         const button = this.createButton('Login', this.client.login);
-        button.classList.add("btn-success");
+        button.classList.add("btn-secondary");
         return button;
     }
 
     createLogoutButton(currentUser) {
         const button = this.createButton(`Logout: ${currentUser.username}`, this.client.logout);
-        button.classList.add("btn-info");
+        button.classList.add("btn-secondary");
         return button;
     }
 
