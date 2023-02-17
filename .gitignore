@@ -46,3 +46,4 @@ out/
 build
 logs
 node_modules
+*.out

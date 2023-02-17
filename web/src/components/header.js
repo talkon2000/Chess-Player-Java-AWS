@@ -45,7 +45,7 @@ export default class Header extends BindingClass {
     }
 
     createUserInfoForHeader(currentUser) {
-        const userInfo = document.createElement('div');
+        const userInfo = document.createElement('li');
         userInfo.classList.add('user');
 
         const childContent = currentUser
@@ -66,8 +66,8 @@ export default class Header extends BindingClass {
     }
 
     createButton(text, clickHandler) {
-        const button = document.createElement('a');
-        button.classList.add('button');
+        const button = document.createElement('button');
+        button.type="button";
         button.href = '#';
         button.innerText = text;
 

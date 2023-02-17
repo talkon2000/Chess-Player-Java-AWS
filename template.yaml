@@ -59,6 +59,8 @@ Resources:
         CaseSensitive: false
       AutoVerifiedAttributes:
         - email
+      AliasAttributes:
+        - email
       UserPoolName: !Sub ${CognitoDomain}-user-pool
       Schema:
         - Name: email

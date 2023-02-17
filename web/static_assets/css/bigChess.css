@@ -28,13 +28,21 @@
     border-bottom: 1px solid #000;
 }
 
+.chess-board td:first-child {
+    border-left: 1px solid #000;
+}
+
 .chess-board th:first-child,
 .chess-board td:last-child {
     border-right: 1px solid #000;
 }
 
+.chess-board tr:first-child td {
+    border-top: 1px solid #000;
+}
+
 .chess-board tr:last-child td {
-    border-bottom: 1px solid;
+    border-bottom: 1px solid #000;;
 }
 
 .chess-board th:empty {
@@ -42,11 +50,13 @@
 }
 
 .chess-board td {
+    font-family: "Times New Roman", Times, serif;
     width: 2em;
     height: 2em;
     text-align:center;
     font-size: 48px;
     line-height: 0;
+    user-select: none;
 }
 
 .chess-board .light {
