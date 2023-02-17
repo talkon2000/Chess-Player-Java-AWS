@@ -9,7 +9,7 @@ export default class Header extends BindingClass {
         super();
 
         const methodsToBind = [
-            'addHeaderToPage', 'createSiteTitle', 'createUserInfoForHeader',
+            'addHeaderToPage', 'createUserInfoForHeader',
             'createLoginButton', 'createLogoutButton', 'createButton'
         ];
         this.bindClassMethods(methodsToBind, this);
@@ -22,26 +22,16 @@ export default class Header extends BindingClass {
      */
     async addHeaderToPage() {
         const currentUser = await this.client.getIdentity();
-
-        const siteTitle = this.createSiteTitle(currentUser);
         const userInfo = this.createUserInfoForHeader(currentUser);
+        if (currentUser) {
+            document.getElementById("myAccount").classList.remove("hidden");
+        }
 
-        const header = document.getElementById('header');
-        header.appendChild(siteTitle);
-        header.appendChild(userInfo);
-    }
+        const navItem = document.createElement('li');
+        navItem.classList.add("nav-item");
 
-    createSiteTitle(currentUser) {
-        const homeButton = document.createElement('a');
-        homeButton.classList.add('header_home');
-        homeButton.href = currentUser ? "/user-home.html" : "index.html";
-        homeButton.innerText = 'Home';
-
-        const siteTitle = document.createElement('div');
-        siteTitle.classList.add('site-title');
-        siteTitle.appendChild(homeButton);
-
-        return siteTitle;
+        document.getElementById("currentUser").appendChild(navItem);
+        navItem.appendChild(userInfo);
     }
 
     createUserInfoForHeader(currentUser) {
@@ -58,16 +48,20 @@ export default class Header extends BindingClass {
     }
 
     createLoginButton() {
-        return this.createButton('Login', this.client.login);
+        const button = this.createButton('Login', this.client.login);
+        button.classList.add("btn-success");
+        return button;
     }
 
     createLogoutButton(currentUser) {
-        return this.createButton(`Logout: ${currentUser.username}`, this.client.logout);
+        const button = this.createButton(`Logout: ${currentUser.username}`, this.client.logout);
+        button.classList.add("btn-info");
+        return button;
     }
 
     createButton(text, clickHandler) {
-        const button = document.createElement('button');
-        button.type="button";
+        const button = document.createElement('a');
+        button.classList.add("btn");
         button.href = '#';
         button.innerText = text;
 

@@ -19,41 +19,7 @@ export default class LandingPage extends BindingClass {
       * Add the header to the page and load the ChessPlayerClient.
       */
     async mount() {
-        const navItem = document.createElement('li');
-        navItem.classList.add("nav-item");
-        const currentUser = await this.client.getIdentity();
-        let childContent;
-        if (currentUser) {
-            childContent = this.createLogoutButton(currentUser)
-            document.getElementById("myAccount").classList.remove("hidden");
-        } else {
-            childContent = this.createLoginButton();
-        }
-
-        document.getElementById("currentUser").appendChild(navItem);
-        navItem.appendChild(childContent);
-    }
-
-    createLoginButton() {
-        return this.createButton('Login', this.client.login);
-    }
-
-    createLogoutButton(currentUser) {
-        return this.createButton(`Logout: ${currentUser.username}`, this.client.logout);
-    }
-
-    createButton(text, clickHandler) {
-        const button = document.createElement('a');
-        button.classList.add("btn");
-        button.classList.add("btn-success");
-        button.href = '#';
-        button.innerText = text;
-
-        button.addEventListener('click', async () => {
-            await clickHandler();
-        });
-
-        return button;
+        this.header.addHeaderToPage();
     }
 }
 

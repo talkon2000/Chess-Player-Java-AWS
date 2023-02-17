@@ -76,8 +76,8 @@ Resources:
       CallbackURLs:
         - !If
           - DeployCloudFront
-          - !Sub "https://${CloudfrontDistribution.DomainName}/login.html"
-          - http://localhost:8000/login.html
+          - !Sub "https://${CloudfrontDistribution.DomainName}/user-home.html"
+          - http://localhost:8000/user-home.html
       LogoutURLs:
         - !If
           - DeployCloudFront
