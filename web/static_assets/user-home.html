@@ -30,62 +30,88 @@
                 </li>
             </ul>
             <ul class="navbar-nav ml-auto" id="currentUser">
-                <li class="nav-item hidden" id="navAccount">
-                    <a class="nav-link" href="user-home.html">My account</a>
+                <li class="nav-item hidden">
+                    <a class="nav-link" href="user-home.html" id="navAccount">My account</a>
                 </li>
             </ul>
         </div>
     </nav>
 </header>
-        <p class="hidden error" id="error-message"> </p>
-        <div class="vertical">
-            <div id="base-container" class="side-by-side">
-                <div id ="user" class="vertical">
-                    <p id="username"></p>
-                    <p id="email"></p>
-                    <p id="rating"></p>
-                    <button id="resetAccount">Reset Account</button>
-                </div>
-                <div id="newGame">
-                    <div class="vertical">
-                        <input type="checkbox" id="authUserWhite" value="true" checked>
-                        <label for="authUserWhite">Play as white</label>
-                        <input type="range" min="0" max="20" value="0" class="slider" id="botDifficulty">
-                        <div class="side-by-side">
-                            <p>Bot Difficulty: </p>
-                            <p id="output"></p>
-                        </div>
-                        <button id="start">Start new game</button>
-                    </div>
-                </div>
-                <div class="side-by-side" id="search">
-                    <div class="vertical">
-                        <label for="searchInput">Search by username</label>
-                        <input type="text" id="searchInput" value="">
-                        <button id="submitSearch">Go</button>
-                    </div>
-                    <div id="searchResults">
 
-                    </div>
+<p id="error-message"></p>
+<div class="container-sm pt-5">
+    <div id="errorAlerts"></div>
+    <div class="row">
+        <div class="col-sm-4 px-5">
+            <div class="card text-center" id="user">
+                <div class="card-header" id="username">username</div>
+                <div class="card-body" id="email">email</div>
+                <div class="card-body" id="rating">rating</div>
+                <button class="card-footer btn btn-danger" id="resetAccount">Reset Account</button>
+            </div>
+        </div>
+        <div class="col-sm-4 container rounded border bg-light" id="newGame">
+            <div class="side-by-side" style="gap:20px">
+                <input type="range" min="0" max="20" value="0" class="slider" orient="vertical" id="botDifficulty">
+                <div class="vertical">
+                    <p>Bot Difficulty: </p>
+                    <p id="output"></p>
+                </div>
+                <div class="vertical" style="justify-content: center;">
+                    <input type="checkbox" id="authUserWhite" value="true" checked>
+                    <label for="authUserWhite">Play as white</label>
+                    <a>
+                        <button type="button" class="btn btn-secondary" id="start">Start new game</button>
+                    </a>
                 </div>
             </div>
-            <p>Ongoing games:</p>
+        </div>
+        <div class="col" id="search">
+            <div class="side-by-side">
+                <div class="vertical">
+                    <label for="searchInput">Search by username</label>
+                    <input type="text" class="mx-2" id="searchInput" value="">
+                </div>
+                <button type="button" class="btn btn-secondary" style="height:60%; margin-top:auto" id="submitSearch">Go</button>
+            </div>
+                <div class="pt-3 px-5" id="searchResults">
+
+                </div>
+
+        </div>
+    </div>
+
+    <h1 class="pt-5">Games</h1>
+    <!-- Defines tabs for navigation -->
+    <ul class="pt-2 nav nav-tabs">
+        <li class="nav-item">
+            <a class="nav-link active" data-bs-toggle="tab" href="#ongoing">Ongoing</a>
+        </li>
+        <li class="nav-item">
+            <a class="nav-link" data-bs-toggle="tab" href="#past">History</a>
+        </li>
+    </ul>
+
+    <!-- Defines tab contents -->
+    <div class="tab-content">
+        <div class="tab-pane container active" id="ongoing">
             <div class="tableFixHead">
                 <table>
                     <tbody>
-                        <tr id="currentGames">
+                    <tr id="currentGames">
 
-                        </tr>
+                    </tr>
                     </tbody>
                 </table>
             </div>
-            <p>Past games:</p>
+        </div>
+        <div class="tab-pane container" id="past">
             <div class="tableFixHead">
                 <table>
                     <tbody>
-                        <tr id="pastGames">
+                    <tr id="pastGames">
 
-                        </tr>
+                    </tr>
                     </tbody>
                 </table>
             </div>
@@ -93,5 +119,8 @@
             <input type="checkbox" id="hideGames">
             <button id="submitHide" class="hidden">Submit</button>
         </div>
-    </body>
+    </div>
+
+</div>
+</body>
 </html>

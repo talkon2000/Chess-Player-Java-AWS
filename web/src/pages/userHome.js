@@ -14,9 +14,20 @@ export default class UserHome extends BindingClass {
         this.header = new Header();
     }
 
-    mount() {
+    async mount() {
         this.header.addHeaderToPage();
+        const navAccount = document.getElementById("navAccount");
         document.getElementById("navAccount").classList.add("active");
+
+        const alerts = document.getElementById("errorAlerts");
+        let user = await this.client.getPrivateUser();
+        if (!user) {
+            user = await this.client.createUser((error) => {
+                const alert = this.client.createAlert("Your user could not be created.", "alert-danger");
+                alerts.append(alert);
+            });
+        }
+
         var slider = document.getElementById("botDifficulty");
         var output = document.getElementById("output");
         output.innerHTML = slider.value; // Display the default slider value
@@ -36,13 +47,9 @@ export default class UserHome extends BindingClass {
     }
 
     async loadUserData() {
-        const errorMessageDisplay = document.getElementById('error-message');
-        errorMessageDisplay.innerText = '';
-        errorMessageDisplay.classList.add('hidden');
-
+        const alerts = document.getElementById("errorAlerts");
         const user = await this.client.getPrivateUser((error) => {
-            errorMessageDisplay.innerText = `Error: ${error.message}`;
-            errorMessageDisplay.classList.remove('hidden');
+            alerts.append(this.client.createAlert(`<strong>Error:</strong> ${error.message}`, "alert-danger"));
         });
         if (user) {
             document.getElementById("username").innerHTML = user.user.username;
@@ -53,11 +60,10 @@ export default class UserHome extends BindingClass {
     }
 
     async populateGameHistory(username) {
-        const errorMessageDisplay = document.getElementById('error-message');
+        const alerts = document.getElementById("errorAlerts");
 
         const games = await this.client.getAllGames((error) => {
-            errorMessageDisplay.innerText = `Error: ${error.message}`;
-            errorMessageDisplay.classList.remove('hidden');
+            alerts.append(this.client.createAlert(`<strong>Error:</strong> ${error.message}`, "alert-danger"));
         });
         if (games) {
             // set up monstrosities
@@ -127,18 +133,16 @@ export default class UserHome extends BindingClass {
     }
 
     async startGame() {
-        const errorMessageDisplay = document.getElementById('error-message');
-        errorMessageDisplay.innerText = '';
-        errorMessageDisplay.classList.add('hidden');
-
         const botDifficulty = document.getElementById("output").innerHTML;
         let authUserWhite = document.getElementById("authUserWhite").value;
         if (!authUserWhite) {
             authUserWhite = false;
         }
+
+        const alerts = document.getElementById("errorAlerts");
         const response = await this.client.createGame(authUserWhite, null, botDifficulty, (error) => {
-            errorMessageDisplay.innerText = `Error: ${error.message}`;
-            errorMessageDisplay.classList.remove('hidden');
+            const alert = this.client.createAlert("The game could not be created.", "alert-warning", true);
+            alerts.append(alert);
         });
         console.log(response);
         if (response) {
@@ -154,12 +158,9 @@ export default class UserHome extends BindingClass {
     }
 
     async search() {
-        const errorMessageDisplay = document.getElementById('error-message');
-        errorMessageDisplay.innerText = '';
-        errorMessageDisplay.classList.add('hidden');
+        const alerts = document.getElementById("errorAlerts");
         const response = await this.client.getPublicUser(document.getElementById("searchInput").value, (error) => {
-            errorMessageDisplay.innerText = "There is no user with that username.";
-            errorMessageDisplay.classList.remove('hidden');
+            alerts.append(this.client.createAlert("There is no user with that username.", "alert-info", true));
         });
         const searchResults = document.getElementById("searchResults");
         if (searchResults.children.length > 0) {
@@ -169,28 +170,34 @@ export default class UserHome extends BindingClass {
 
             const user = response.user;
             console.log(user);
-            const result = document.createElement("div");
-            const username = document.createElement("p");
-            const rating = document.createElement("p");
-            const gamesPlayed = document.createElement("p");
-            result.append(username, rating, gamesPlayed);
+
+            const userCard = document.createElement("div");
+            userCard.classList.add("card");
+
+            const username = document.createElement("div");
+            username.classList.add("card-header");
+
+            const rating = document.createElement("div");
+            rating.classList.add("card-body");
+
+            const gamesPlayed = document.createElement("div");
+            gamesPlayed.classList.add("card-body");
+            userCard.append(username, rating, gamesPlayed);
             username.innerText = user.username;
             rating.innerText = "Rating: " + user.rating;
             gamesPlayed.innerText = (user.games) ? user.games.length + " games played" : "0" + " games played";
-            searchResults.append(result);
+            searchResults.append(userCard);
         }
     }
 
     async resetAccount() {
-        const errorMessageDisplay = document.getElementById('error-message');
-        errorMessageDisplay.innerText = '';
-        errorMessageDisplay.classList.add('hidden');
         const confirm = window.confirm("Are you sure you want to reset your account?" +
                 " You will still be able to use your login, but all of your data will be erased.");
+
+        const alerts = document.getElementById("errorAlerts");
         if (confirm) {
             const response = await this.client.resetAccount((error) => {
-                errorMessageDisplay.innerText = "There is no user with that username.";
-                errorMessageDisplay.classList.remove('hidden');
+                alerts.append(this.client.createAlert("There is no user with that username", "alert-warning", true));
             });
             if (response) {
                 await this.client.logout();
@@ -224,10 +231,7 @@ export default class UserHome extends BindingClass {
     }
 
     async hideGames() {
-        const errorMessageDisplay = document.getElementById('error-message');
-        errorMessageDisplay.innerText = '';
-        errorMessageDisplay.classList.add('hidden');
-
+        const alerts = document.getElementById("errorAlerts");
         const gameCheckboxes = document.querySelectorAll("input.gameCheckbox");
         const gameIds = [];
         if (gameCheckboxes) {
@@ -239,8 +243,7 @@ export default class UserHome extends BindingClass {
         }
         if (gameIds.length > 0) {
             const response = await this.client.hideGames(gameIds, error => {
-                errorMessageDisplay.innerText = `Error: ${error.message}`;
-                errorMessageDisplay.classList.remove('hidden');
+                alerts.append(this.client.createAlert(`<strong>Error:</strong> ${error.message}`, "alert-warning", true));
             });
             console.log(response);
             if (response.data.gameIds) {

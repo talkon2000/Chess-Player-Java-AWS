@@ -24,7 +24,7 @@ export default class Header extends BindingClass {
         const currentUser = await this.client.getIdentity();
         const userInfo = this.createUserInfoForHeader(currentUser);
         if (currentUser) {
-            document.getElementById("navAccount").classList.remove("hidden");
+            document.getElementById("navAccount").parentNode.classList.remove("hidden");
         }
 
 

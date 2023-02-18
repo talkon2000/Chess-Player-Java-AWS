@@ -15,7 +15,7 @@ export default class ChessPlayerClient extends BindingClass {
     constructor(props = {}) {
         super();
 
-        const methodsToBind = ['clientLoaded', 'getIdentity', 'login', 'logout', 'getTokenOrThrow', 'createGame',
+        const methodsToBind = ['clientLoaded', 'getIdentity', 'login', 'logout', 'getTokenOrThrow', 'createGame', 'createAlert',
             'getGame', 'getAllGames', 'getNextMove', 'getPrivateUser', 'getPublicUser', 'createUser', 'resign', 'resetAccount', 'hideGames'];
         this.bindClassMethods(methodsToBind, this);
 
@@ -264,5 +264,27 @@ export default class ChessPlayerClient extends BindingClass {
         if (errorCallback) {
             errorCallback(error);
         }
+    }
+
+    /**
+     * Helper method to create a new alert element.
+     * @param text the text the alert should contain
+     * @param type the type of the alert (alert-danger, alert-success, etc)
+     * @param dismissible boolean indicating if the alert should be dismissible
+     */
+    createAlert(text, type, dismissible) {
+        const alert = document.createElement("div");
+        alert.classList.add("alert");
+        alert.classList.add(type);
+        alert.innerHTML = text;
+        if (dismissible) {
+            alert.classList.add("alert-dismissible");
+            const dismissButton = document.createElement("button");
+            dismissButton.type = "button";
+            dismissButton.classList.add("btn-close");
+            dismissButton.setAttribute("data-bs-dismiss", "alert");
+            alert.appendChild(dismissButton);
+        }
+        return alert;
     }
 }
