@@ -1,21 +1,13 @@
 .chess-board {
     border-spacing: 0;
     border-collapse: collapse;
-}
-
-.chess-board th {
-    padding: .5em;
-}
-
-.chess-board th + th {
-    border-bottom: 1px solid #000;
+    cursor: pointer;
 }
 
 .chess-board td:first-child {
     border-left: 1px solid #000;
 }
 
-.chess-board th:first-child,
 .chess-board td:last-child {
     border-right: 1px solid #000;
 }
@@ -28,21 +20,20 @@
     border-bottom: 1px solid #000;
 }
 
-.chess-board th:empty {
-    border: none;
-}
-
 .chess-board td {
     font-family: "Times New Roman", Times, serif;
-    min-width: 30px;
-    width: 30px;
-    height: 30px;
-    display:table-cell;
-    text-align:center;
-    font-size: 16px;
+    font-size: 22px;
+    min-width: 2em;
+    min-height: 2em;
+    width: 2em;
+    height: 2em;
     line-height: 0;
-    table-layout:fixed;
+    text-align: center;
+    vertical-align: center;
+    display: table-cell;
     user-select: none;
+    padding: 0;
+    margin: 0;
 }
 
 .chess-board .light {

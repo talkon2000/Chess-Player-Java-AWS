@@ -78,7 +78,7 @@ export default class UserHome extends BindingClass {
                 gameElement.notation = game.notation;
                 const table = document.createElement("table");
                 table.classList.add('chess-board');
-                table.innerHTML = "<tbody><tr><th></th><th>a</th><th>b</th><th>c</th><th>d</th><th>e</th><th>f</th><th>g</th><th>h</th></tr><tr><th>8</th><td class='light' id='a8'></td><td class='dark' id='b8'></td><td class='light' id='c8'></td><td class='dark' id='d8'></td><td class='light' id='e8'></td><td class='dark' id='f8'></td><td class='light' id='g8'></td><td class='dark' id='h8'></td></tr><tr><th>7</th><td class='dark' id='a7'> </td><td class='light' id='b7'></td><td class='dark' id='c7'></td><td class='light' id='d7'></td><td class='dark' id='e7'></td><td class='light' id='f7'></td><td class='dark' id='g7'></td><td class='light' id='h7'></td></tr><tr><th>6</th><td class='light' id='a6'></td><td class='dark' id='b6'></td><td class='light' id='c6'></td><td class='dark' id='d6'></td><td class='light' id='e6'></td><td class='dark' id='f6'></td><td class='light' id='g6'></td><td class='dark' id='h6'></td></tr><tr><th>5</th><td class='dark' id='a5'></td><td class='light' id='b5'></td><td class='dark' id='c5'></td><td class='light' id='d5'></td><td class='dark' id='e5'></td><td class='light' id='f5'></td><td class='dark' id='g5'></td><td class='light' id='h5'></td></tr><tr><th>4</th><td class='light' id='a4'></td><td class='dark' id='b4'></td><td class='light' id='c4'></td><td class='dark' id='d4'></td><td class='light' id='e4'></td><td class='dark' id='f4'></td><td class='light' id='g4'></td><td class='dark' id='h4'></td></tr><tr><th>3</th><td class='dark' id='a3'></td><td class='light' id='b3'></td><td class='dark' id='c3'></td><td class='light' id='d3'></td><td class='dark' id='e3'></td><td class='light' id='f3'></td><td class='dark' id='g3'></td><td class='light' id='h3'></td></tr><tr><th>2</th><td class='light' id='a2'></td><td class='dark' id='b2'></td><td class='light' id='c2'></td><td class='dark' id='d2'></td><td class='light' id='e2'></td><td class='dark' id='f2'></td><td class='light' id='g2'></td><td class='dark' id='h2'></td></tr><tr><th>1</th><td class='dark' id='a1'> </td><td class='light' id='b1'></td><td class='dark' id='c1'></td><td class='light' id='d1'></td><td class='dark' id='e1'></td><td class='light' id='f1'></td><td class='dark' id='g1'></td><td class='light' id='h1'></td></tr></tbody>";
+                table.innerHTML = "<tbody><tr><td class='light' id='a8'></td><td class='dark' id='b8'></td><td class='light' id='c8'></td><td class='dark' id='d8'></td><td class='light' id='e8'></td><td class='dark' id='f8'></td><td class='light' id='g8'></td><td class='dark' id='h8'></td></tr><tr><td class='dark' id='a7'> </td><td class='light' id='b7'></td><td class='dark' id='c7'></td><td class='light' id='d7'></td><td class='dark' id='e7'></td><td class='light' id='f7'></td><td class='dark' id='g7'></td><td class='light' id='h7'></td></tr><tr><td class='light' id='a6'></td><td class='dark' id='b6'></td><td class='light' id='c6'></td><td class='dark' id='d6'></td><td class='light' id='e6'></td><td class='dark' id='f6'></td><td class='light' id='g6'></td><td class='dark' id='h6'></td></tr><tr><td class='dark' id='a5'></td><td class='light' id='b5'></td><td class='dark' id='c5'></td><td class='light' id='d5'></td><td class='dark' id='e5'></td><td class='light' id='f5'></td><td class='dark' id='g5'></td><td class='light' id='h5'></td></tr><tr><td class='light' id='a4'></td><td class='dark' id='b4'></td><td class='light' id='c4'></td><td class='dark' id='d4'></td><td class='light' id='e4'></td><td class='dark' id='f4'></td><td class='light' id='g4'></td><td class='dark' id='h4'></td></tr><tr><td class='dark' id='a3'></td><td class='light' id='b3'></td><td class='dark' id='c3'></td><td class='light' id='d3'></td><td class='dark' id='e3'></td><td class='light' id='f3'></td><td class='dark' id='g3'></td><td class='light' id='h3'></td></tr><tr><td class='light' id='a2'></td><td class='dark' id='b2'></td><td class='light' id='c2'></td><td class='dark' id='d2'></td><td class='light' id='e2'></td><td class='dark' id='f2'></td><td class='light' id='g2'></td><td class='dark' id='h2'></td></tr><tr><td class='dark' id='a1'> </td><td class='light' id='b1'></td><td class='dark' id='c1'></td><td class='light' id='d1'></td><td class='dark' id='e1'></td><td class='light' id='f1'></td><td class='dark' id='g1'></td><td class='light' id='h1'></td></tr></tbody>";
                 const fen = game.notation;
                 if (game.active == "true") {
                     currentDiv.append(gameElement);
@@ -90,11 +90,25 @@ export default class UserHome extends BindingClass {
                 else {
                     const checkboxForHide = document.createElement("input");
                     checkboxForHide.type = "checkbox";
-                    checkboxForHide.classList.add('hidden');
+                    checkboxForHide.classList.add('btn-check');
+                    checkboxForHide.id = "hide-" + gameElement.id;
+                    checkboxForHide.name = checkboxForHide.id;
                     checkboxForHide.classList.add('gameCheckbox');
+                    checkboxForHide.classList.add("hidden");
+
+                    const label = document.createElement("label");
+                    label.classList.add("btn");
+                    label.classList.add("btn-outline-secondary");
+                    label.setAttribute("for", checkboxForHide.id);
+                    label.classList.add('gameCheckbox');
+                    label.innerText = "Hide game";
+                    label.classList.add("hidden");
+
                     historyDiv.append(gameElement);
                     gameElement.append(table);
+                    gameElement.append(label);
                     gameElement.append(checkboxForHide);
+
                     table.addEventListener('click', function() {
                         window.location.href = "/pastGame.html?gameId=" + table.parentElement.id;
                     });
@@ -118,11 +132,9 @@ export default class UserHome extends BindingClass {
                         continue;
                     }
                     else {
-                        let newPiece = document.createElement("p");
                         const square = document.getElementById(indexToPosition[i + b]);
-                        square.append(newPiece);
+                        square.innerHTML = notationToPieceMap[c];
                         square.removeAttribute('id');
-                        newPiece.innerHTML = notationToPieceMap[c];
                     }
                 }
                 gameElement.classList.add('game');
@@ -209,7 +221,7 @@ export default class UserHome extends BindingClass {
     toggleHidingMode() {
         const checkbox = document.getElementById("hideGames");
         const submitButton = document.getElementById("submitHide");
-        const gameCheckboxes = document.querySelectorAll("input.gameCheckbox");
+        const gameCheckboxes = document.querySelectorAll("input.gameCheckbox, label.gameCheckbox");
         console.log(gameCheckboxes);
         if (!checkbox.checked) {
             submitButton.classList.add('hidden');
