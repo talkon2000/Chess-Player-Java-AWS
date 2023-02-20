@@ -123,15 +123,6 @@ As mentioned in the problem statement, I want to implement a Player vs Player fe
 * /getPreviousGames/{userId}
 * Response: {gameIds: [gameId1, ...]}
 
-### UpdateUserEndpoint
-* Updates a user entry in the Users table, usually used to update rating (accepts '+value' or '-value' rating arguments)
-* Will not overwrite fields in the table if arguments are left blank
-* PUT
-* /users/{userId}
-* Request Body: {rating: \<rating>, username: \<username>, email: \<email>, active: \<active>}
-* Response: {user: \<user object>}
-* Might respond with an error if username or email are invalid Strings, if rating is invalid or reduced below 0, or if active is set to something other than true/false
-
 ### ResetUserEndpoint
 * Deletes a user entry in the Users table
 * DELETE

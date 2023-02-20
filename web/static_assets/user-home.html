@@ -38,15 +38,14 @@
     </nav>
 </header>
 
-<p id="error-message"></p>
 <div class="container-sm pt-5">
     <div id="errorAlerts"></div>
     <div class="row">
         <div class="col-sm-4 px-5">
-            <div class="card text-center" id="user">
-                <div class="card-header" id="username">username</div>
-                <div class="card-body" id="email">email</div>
-                <div class="card-body" id="rating">rating</div>
+            <div class="card text-center hidden" id="user">
+                <div class="card-header" id="username"></div>
+                <div class="card-body" id="email"></div>
+                <div class="card-body" id="rating"></div>
                 <button class="card-footer btn btn-danger" id="resetAccount">Reset Account</button>
             </div>
         </div>
@@ -106,6 +105,10 @@
             </div>
         </div>
         <div class="tab-pane container" id="past">
+            <div class="vertical" style="float:right;">
+                <button type="button" class="btn btn-outline-secondary hidden" data-bs-toggle="button" autocomplete="off" id="toggleHide" >Hide games</button>
+                <button type="button" class="btn btn-outline-danger hidden" disabled id="submitHide">Confirm</button>
+            </div>
             <div class="table-responsive">
                 <table class="table">
                     <tbody>
@@ -115,9 +118,6 @@
                     </tbody>
                 </table>
             </div>
-            <p>Hide games?</p>
-            <input type="checkbox" id="hideGames">
-            <button id="submitHide" class="hidden">Submit</button>
         </div>
     </div>
 </div>

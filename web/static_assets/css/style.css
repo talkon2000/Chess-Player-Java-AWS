@@ -74,3 +74,23 @@ chess-piece {
 .slider:hover {
   opacity: 1; /* Fully shown on mouse-over */
 }
+
+.overlay {
+    flex: none;
+    height: 352px;
+    width: 352px;
+    z-index: 10;
+    position: absolute;
+    opacity: 0.6;
+    background: black;
+    font-size: 8em;
+    font-family: "Times New Roman", Times, serif;
+    vertical-align: center;
+    text-align: center;
+    cursor: pointer;
+    user-select: none;
+}
+
+.transparent {
+    opacity: 0;
+}
