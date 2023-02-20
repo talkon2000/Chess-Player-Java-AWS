@@ -56,6 +56,7 @@ class ResignActivityTest {
         resignedGame.setBlackPlayerUsername("username");
         resignedGame.setWinner("white");
         resignedGame.setBotDifficulty(0);
+        resignedGame.setValidMoves("");
         when(gameDao.load("gameId")).thenReturn(game);
         when(userDao.load("username")).thenReturn(user);
 

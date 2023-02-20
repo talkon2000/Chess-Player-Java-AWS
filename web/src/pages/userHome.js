@@ -55,7 +55,7 @@ export default class UserHome extends BindingClass {
             document.getElementById("user").classList.remove("hidden");
             document.getElementById("username").innerHTML = user.user.username;
             document.getElementById("email").innerHTML = user.user.email;
-            document.getElementById("rating").innerHTML = user.user.rating;
+            document.getElementById("rating").innerHTML = "Rating: " + user.user.rating;
             this.populateGameHistory(user.user.username);
         }
     }
@@ -251,10 +251,16 @@ export default class UserHome extends BindingClass {
                 });
                 if (response.data.gameIds) {
                     response.data.gameIds.forEach(gameId => {
-                        document.querySelector(`#${gameId}`).remove();
+                        document.getElementById(gameId).remove();
                     });
                 }
             }
+        }
+        const pastGames = document.getElementById("pastGames").querySelectorAll("table.chess-board");
+        console.log(pastGames);
+        if (pastGames.length == 0) {
+            document.getElementById("toggleHide").classList.add("hidden");
+            document.getElementById("submitHide").classList.add("hidden");
         }
     }
 }

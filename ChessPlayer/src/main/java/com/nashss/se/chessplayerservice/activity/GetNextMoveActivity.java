@@ -64,8 +64,11 @@ public class GetNextMoveActivity {
 
         // Get the game from the database, then set the new move
         Game game = gameDao.load(request.getGameId());
-        if (game == null || game.getActive().equals("false")) {
+        if (game == null) {
             throw new InvalidRequestException("There is no game with that ID");
+        }
+        if (game.getActive().equals("false")) {
+            throw new InvalidRequestException("That game is inactive");
         }
 
         // Initialize stockfish

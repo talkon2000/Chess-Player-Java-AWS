@@ -89,6 +89,8 @@ public class ResignActivity {
         } else {
             throw new InvalidRequestException("Username must belong to a user playing the game");
         }
+        game.setValidMoves("");
+        gameDao.save(game);
 
         int ratingChange;
         int opponentRatingChange = 0;
@@ -114,8 +116,6 @@ public class ResignActivity {
             opponent.setRating(opponent.getRating() + opponentRatingChange);
             userDao.saveUser(opponent);
         }
-
-        gameDao.save(game);
 
         return ResignResponse.builder()
                 .withGame(game)

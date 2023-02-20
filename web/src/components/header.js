@@ -27,6 +27,9 @@ export default class Header extends BindingClass {
             document.getElementById("navAccount").parentNode.classList.remove("hidden");
         }
 
+        document.getElementById("header").addEventListener('click', () => {
+            window.location.href = "index.html";
+        });
 
         document.getElementById("currentUser").appendChild(userInfo);
     }

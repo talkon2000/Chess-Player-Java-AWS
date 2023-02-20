@@ -6,6 +6,11 @@
     --error-color: #EE3A23;
 }
 
+#header {
+    cursor: pointer;
+    display: inline;
+}
+
 .header {
     /* Flexbox: https://css-tricks.com/snippets/css/a-guide-to-flexbox/ */
     display: flex;

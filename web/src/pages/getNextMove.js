@@ -36,13 +36,18 @@ export default class GetNextMove extends BindingClass {
     }
 
     async setUpBoard() {
-        const errorMessageDisplay = document.getElementById('error-message');
+        const alerts = document.getElementById('errorAlerts');
         // Get game
         const response = await this.client.getGame(this.dataStore.get("gameId"), (error) => {
-             errorMessageDisplay.innerText = `Error: ${error.message}`;
-             errorMessageDisplay.classList.remove('hidden');
+            alerts.append(this.client.createAlert(`<strong>Error:</strong> ${error.message}`, "alert-danger"));
         });
         const game = response.game;
+        if (game.winner) {
+            document.getElementById('resign').disabled = true;
+            document.getElementById('errorAlerts').append(
+                    this.client.createAlert("This game is already over. You can find it in your games history if " +
+                    "you would like to replay it.", "alert-info"));
+        }
         const fen = game.notation;
         const validMoves = game.validMoves.split(",");
 
@@ -244,11 +249,7 @@ export default class GetNextMove extends BindingClass {
     /**
      * Submit the move to the database and draw the new move.
      */
-     async submitMove() {
-         const errorMessageDisplay = document.getElementById('error-message');
-         errorMessageDisplay.innerText = '';
-         errorMessageDisplay.classList.add('hidden');
-
+    async submitMove() {
         const gameId = this.dataStore.get("gameId");
         const obj = this.dataStore.get("move");
         let move = null;
@@ -267,10 +268,10 @@ export default class GetNextMove extends BindingClass {
         const origButtonText = submitButton.innerText;
         submitButton.innerText = 'Loading...';
 
+        const alerts = document.getElementById('errorAlerts');
         const response = await this.client.getNextMove(gameId, move, (error) => {
             submitButton.innerText = origButtonText;
-            errorMessageDisplay.innerText = `Error: ${error.message}`;
-            errorMessageDisplay.classList.remove('hidden');
+            alerts.append(this.client.createAlert(`<strong>Error:</strong> ${error.message}`, "alert-danger"));
         });
 
         if (response) {
@@ -280,12 +281,12 @@ export default class GetNextMove extends BindingClass {
             console.log(response);
             this.reloadMoves(response);
         }
-     }
+    }
 
     /**
      * Reload the board after a move
      */
-     reloadMoves(response) {
+    reloadMoves(response) {
         // Do the response move
         let engineMove = response.move;
         if (engineMove) {
@@ -331,15 +332,16 @@ export default class GetNextMove extends BindingClass {
         // Check for winner
         const winner = response.game.winner;
         if (winner) {
+            const alerts = document.getElementById('errorAlerts');
             document.getElementById('resign').disabled = true;
             if (winner == "draw") {
-                alert("The game has ended in a draw");
+                alerts.append(this.client.createAlert("The game has ended in a draw", "alert-info"));
             }
             else if (winner == "black") {
-                alert("Black has won by checkmate");
+                alerts.append(this.client.createAlert("Black has won by checkmate", "alert-info"));
             }
             else {
-                alert("White has won by checkmate");
+                alerts.append(this.client.createAlert("White has won by checkmate", "alert-info"));
             }
         }
 
@@ -364,7 +366,7 @@ export default class GetNextMove extends BindingClass {
     /**
      * Cancel a pending move
      */
-     cancel() {
+    cancel() {
         const move = this.dataStore.get("move");
         console.log(move);
         const piece = move.to.removeChild(move.to.children[0]);
@@ -391,23 +393,27 @@ export default class GetNextMove extends BindingClass {
         move.from.append(piece);
         document.getElementById('submit').disabled = true;
         document.getElementById('cancel').disabled = true;
-     }
+    }
 
-     resign() {
-        const errorMessageDisplay = document.getElementById('error-message');
-        errorMessageDisplay.innerText = '';
-        errorMessageDisplay.classList.add('hidden');
-        const response = this.client.resign(this.dataStore.get("gameId"), (error) => {
-            submitButton.innerText = origButtonText;
-            errorMessageDisplay.innerText = `Error: ${error.message}`;
-            errorMessageDisplay.classList.remove('hidden');
-        });
+    async resign() {
+        const confirm = window.confirm("Are you sure you want to resign?");
+        if (confirm) {
+            const alerts = document.getElementById('errorAlerts');
+            const response = await this.client.resign(this.dataStore.get("gameId"), (error) => {
+                submitButton.innerText = origButtonText;
+                alerts.append(this.client.createAlert(`<strong>Error:</strong> ${error.message}`, "alert-danger"));
+            });
 
-        if (response) {
-            alert("The game has ended in resignation");
-            document.getElementById('resign').disabled = true;
+            if (response) {
+                alerts.append(this.client.createAlert("The game has ended in resignation", "alert-info"));
+                document.getElementById('resign').disabled = true;
+                const collection = document.getElementsByTagName("chess-piece");
+                for (var i = 0; i < collection.length; i++) {
+                    collection[i].validMoves = [];
+                }
+            }
         }
-     }
+    }
 }
 
 
