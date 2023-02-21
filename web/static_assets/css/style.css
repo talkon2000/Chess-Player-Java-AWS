@@ -6,6 +6,11 @@
     --error-color: #EE3A23;
 }
 
+#header {
+    cursor: pointer;
+    display: inline;
+}
+
 .header {
     /* Flexbox: https://css-tricks.com/snippets/css/a-guide-to-flexbox/ */
     display: flex;
@@ -26,12 +31,6 @@
 
 .base-container {
     background-color: #5D5E5E;
-    display: flex;
-    justify-content: center;
-    margin: auto;
-    flex-direction: column;
-    align-items: center;
-    text-align: center;
 }
 
 .intro-title {
@@ -62,61 +61,18 @@
     display: none;
 }
 
-.error {
-    color: var(--error-color);
-    border: 1px solid var(--error-color);
-    padding: 8px;
-}
-
 chess-piece {
     cursor: pointer;
     user-select: none;
 }
 
-/* open source loading spinner */
-.lds-ring {
-    display: inline-block;
-    position: relative;
-    width: 160px;
-    height: 160px;
-}
-.lds-ring div {
-    box-sizing: border-box;
-    display: block;
-    position: absolute;
-    width: 128px;
-    height: 128px;
-    margin: 16px;
-    border: 16px solid #fff;
-    border-radius: 50%;
-    animation: lds-ring 1.2s cubic-bezier(0.5, 0, 0.5, 1) infinite;
-    border-color: #fff transparent transparent transparent;
-}
-.lds-ring div:nth-child(1) {
-    animation-delay: -0.45s;
-}
-.lds-ring div:nth-child(2) {
-    animation-delay: -0.3s;
-}
-.lds-ring div:nth-child(3) {
-    animation-delay: -0.15s;
-}
-@keyframes lds-ring {
-    0% {
-        transform: rotate(0deg);
-    }
-    100% {
-        transform: rotate(360deg);
-    }
-}
-
 .slider {
-  height: 25px; /* Specified height */
-  background: #d3d3d3; /* Grey background */
-  outline: none; /* Remove outline */
-  opacity: 0.7; /* Set transparency (for mouse-over effects on hover) */
-  -webkit-transition: .2s; /* 0.2 seconds transition on hover */
-  transition: opacity .2s;
+    background: #d3d3d3; /* Grey background */
+    outline: none; /* Remove outline */
+    opacity: 0.7; /* Set transparency (for mouse-over effects on hover) */
+    -webkit-transition: .2s; /* 0.2 seconds transition on hover */
+    transition: opacity .2s;
+    appearance: slider-vertical;
 }
 
 /* Mouse-over effects */
@@ -124,7 +80,23 @@ chess-piece {
   opacity: 1; /* Fully shown on mouse-over */
 }
 
-.tableFixHead {
-    overflow-x: auto; /* make the table scrollable if width is more than 400 px  */
-    width: 800px; /* gives an initial width of 200px to the table */
+.overlay {
+    flex: none;
+    height: 352px;
+    width: 352px;
+    z-index: 10;
+    position: absolute;
+    opacity: 0.6;
+    background: black;
+    font-size: 8em;
+    font-family: "Times New Roman", Times, serif;
+    vertical-align: center;
+    text-align: center;
+    cursor: pointer;
+    user-select: none;
 }
+
+.transparent {
+    opacity: 0;
+}
+

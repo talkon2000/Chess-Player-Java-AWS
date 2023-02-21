@@ -36,13 +36,18 @@ export default class GetNextMove extends BindingClass {
     }
 
     async setUpBoard() {
-        const errorMessageDisplay = document.getElementById('error-message');
+        const alerts = document.getElementById('errorAlerts');
         // Get game
         const response = await this.client.getGame(this.dataStore.get("gameId"), (error) => {
-             errorMessageDisplay.innerText = `Error: ${error.message}`;
-             errorMessageDisplay.classList.remove('hidden');
+            alerts.append(this.client.createAlert(`<strong>Error:</strong> ${error.message}`, "alert-danger"));
         });
         const game = response.game;
+        if (game.winner) {
+            document.getElementById('resign').disabled = true;
+            document.getElementById('errorAlerts').append(
+                    this.client.createAlert("This game is already over. You can find it in your games history if " +
+                    "you would like to replay it.", "alert-info"));
+        }
         const fen = game.notation;
         const validMoves = game.validMoves.split(",");
 
@@ -78,12 +83,14 @@ export default class GetNextMove extends BindingClass {
         }
 
         // set up valid moves
-        validMoves.filter(move => move != "").forEach((move) => {
-            let validFrom = move.slice(0, 2);
-            let validTo = move.slice(2, 4);
-            const fromPiece = document.getElementById(validFrom).firstElementChild;
-            fromPiece.validMoves.push(validTo);
-        });
+        if (!game.winner) {
+            validMoves.filter(move => move != "").forEach((move) => {
+                let validFrom = move.slice(0, 2);
+                let validTo = move.slice(2, 4);
+                const fromPiece = document.getElementById(validFrom).firstElementChild;
+                fromPiece.validMoves.push(validTo);
+            });
+        }
     }
 
     drag(event) {
@@ -95,10 +102,6 @@ export default class GetNextMove extends BindingClass {
             return;
         }
         const origParent = piece.parentElement;
-        piece.validMoves.forEach((validMove) => {
-            document.getElementById(validMove).classList.add("validMove");
-        });
-
 
         piece.style.position = 'absolute';
         piece.style.zIndex = 1000;
@@ -107,30 +110,31 @@ export default class GetNextMove extends BindingClass {
         // to make it positioned relative to the body
         document.body.append(piece);
 
-        // centers the piece at (pageX, pageY) coordinates
-        function moveAt(pageX, pageY) {
-            piece.style.left = pageX - piece.offsetWidth / 2 + 'px';
-            piece.style.top = pageY - piece.offsetHeight / 2 + 'px';
-        }
-
         // move our absolutely positioned piece under the pointer
-        moveAt(event.pageX, event.pageY);
-
-        // potential droppable that we're flying over right now
+        // element that we're flying over right now
         let elemBelow = null;
         function onMouseMove(event) {
-            moveAt(event.pageX, event.pageY);
+            piece.style.left = event.pageX - piece.offsetWidth / 2 + 'px';
+            piece.style.top = event.pageY - piece.offsetHeight / 2 + 'px';
             piece.hidden = true;
             elemBelow = document.elementFromPoint(event.clientX, event.clientY);
             piece.hidden = false;
         }
 
+        // Initially move piece under cursor and initialize elemBelow
+        onMouseMove(event);
+
         // (2) move the piece on mousemove
         document.addEventListener('mousemove', onMouseMove);
 
+        let origX = event.pageX;
+        let origY = event.pageY;
         // (3) drop the piece, remove unneeded handlers
         piece.onmouseup = () => {
             var captured = null;
+            if (elemBelow.nodeName == "BODY") {
+                origParent.append(piece);
+            }
             // if you drop the piece on another piece, keep track of that piece in captured
             if (elemBelow.children) {
                 captured = elemBelow.children[0];
@@ -244,11 +248,7 @@ export default class GetNextMove extends BindingClass {
     /**
      * Submit the move to the database and draw the new move.
      */
-     async submitMove() {
-         const errorMessageDisplay = document.getElementById('error-message');
-         errorMessageDisplay.innerText = '';
-         errorMessageDisplay.classList.add('hidden');
-
+    async submitMove() {
         const gameId = this.dataStore.get("gameId");
         const obj = this.dataStore.get("move");
         let move = null;
@@ -267,10 +267,10 @@ export default class GetNextMove extends BindingClass {
         const origButtonText = submitButton.innerText;
         submitButton.innerText = 'Loading...';
 
+        const alerts = document.getElementById('errorAlerts');
         const response = await this.client.getNextMove(gameId, move, (error) => {
             submitButton.innerText = origButtonText;
-            errorMessageDisplay.innerText = `Error: ${error.message}`;
-            errorMessageDisplay.classList.remove('hidden');
+            alerts.append(this.client.createAlert(`<strong>Error:</strong> ${error.message}`, "alert-danger"));
         });
 
         if (response) {
@@ -280,12 +280,12 @@ export default class GetNextMove extends BindingClass {
             console.log(response);
             this.reloadMoves(response);
         }
-     }
+    }
 
     /**
      * Reload the board after a move
      */
-     reloadMoves(response) {
+    reloadMoves(response) {
         // Do the response move
         let engineMove = response.move;
         if (engineMove) {
@@ -331,15 +331,16 @@ export default class GetNextMove extends BindingClass {
         // Check for winner
         const winner = response.game.winner;
         if (winner) {
+            const alerts = document.getElementById('errorAlerts');
             document.getElementById('resign').disabled = true;
             if (winner == "draw") {
-                alert("The game has ended in a draw");
+                alerts.append(this.client.createAlert("The game has ended in a draw", "alert-info"));
             }
             else if (winner == "black") {
-                alert("Black has won by checkmate");
+                alerts.append(this.client.createAlert("Black has won by checkmate", "alert-info"));
             }
             else {
-                alert("White has won by checkmate");
+                alerts.append(this.client.createAlert("White has won by checkmate", "alert-info"));
             }
         }
 
@@ -364,7 +365,7 @@ export default class GetNextMove extends BindingClass {
     /**
      * Cancel a pending move
      */
-     cancel() {
+    cancel() {
         const move = this.dataStore.get("move");
         console.log(move);
         const piece = move.to.removeChild(move.to.children[0]);
@@ -391,23 +392,27 @@ export default class GetNextMove extends BindingClass {
         move.from.append(piece);
         document.getElementById('submit').disabled = true;
         document.getElementById('cancel').disabled = true;
-     }
+    }
 
-     resign() {
-        const errorMessageDisplay = document.getElementById('error-message');
-        errorMessageDisplay.innerText = '';
-        errorMessageDisplay.classList.add('hidden');
-        const response = this.client.resign(this.dataStore.get("gameId"), (error) => {
-            submitButton.innerText = origButtonText;
-            errorMessageDisplay.innerText = `Error: ${error.message}`;
-            errorMessageDisplay.classList.remove('hidden');
-        });
+    async resign() {
+        const confirm = window.confirm("Are you sure you want to resign?");
+        if (confirm) {
+            const alerts = document.getElementById('errorAlerts');
+            const response = await this.client.resign(this.dataStore.get("gameId"), (error) => {
+                submitButton.innerText = origButtonText;
+                alerts.append(this.client.createAlert(`<strong>Error:</strong> ${error.message}`, "alert-danger"));
+            });
 
-        if (response) {
-            alert("The game has ended in resignation");
-            document.getElementById('resign').disabled = true;
+            if (response) {
+                alerts.append(this.client.createAlert("The game has ended in resignation", "alert-info"));
+                document.getElementById('resign').disabled = true;
+                const collection = document.getElementsByTagName("chess-piece");
+                for (var i = 0; i < collection.length; i++) {
+                    collection[i].validMoves = [];
+                }
+            }
         }
-     }
+    }
 }
 
 

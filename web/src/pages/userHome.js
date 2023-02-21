@@ -9,13 +9,25 @@ export default class UserHome extends BindingClass {
 
     constructor() {
         super();
-        this.bindClassMethods(['mount', 'loadUserData', 'populateGameHistory', 'startGame', 'checkForEnterKey', 'search', 'resetAccount','toggleHidingMode', 'hideGames'], this);
+        this.bindClassMethods(['mount', 'loadUserData', 'populateGameHistory', 'startGame', 'checkForEnterKey', 'search', 'resetAccount', 'toggleHidingMode', 'hideGames'], this);
         this.client = new ChessPlayerClient();
         this.header = new Header();
     }
 
-    mount() {
+    async mount() {
         this.header.addHeaderToPage();
+        const navAccount = document.getElementById("navAccount");
+        document.getElementById("navAccount").classList.add("active");
+
+        const alerts = document.getElementById("errorAlerts");
+        let user = await this.client.getPrivateUser();
+        if (!user) {
+            user = await this.client.createUser((error) => {
+                const alert = this.client.createAlert("Your user could not be created.", "alert-danger");
+                alerts.append(alert);
+            });
+        }
+
         var slider = document.getElementById("botDifficulty");
         var output = document.getElementById("output");
         output.innerHTML = slider.value; // Display the default slider value
@@ -28,35 +40,31 @@ export default class UserHome extends BindingClass {
         document.getElementById("submitSearch").addEventListener('click', this.search);
         document.getElementById("searchInput").addEventListener('keyup', this.checkForEnterKey);
         document.getElementById("resetAccount").addEventListener('click', this.resetAccount);
-        document.getElementById("hideGames").addEventListener('click', this.toggleHidingMode);
-        document.getElementById("submitHide").addEventListener('click', this.hideGames)
+        document.getElementById("toggleHide").addEventListener('click', this.toggleHidingMode);
+        document.getElementById("submitHide").addEventListener('click', this.hideGames);
 
         this.loadUserData();
     }
 
     async loadUserData() {
-        const errorMessageDisplay = document.getElementById('error-message');
-        errorMessageDisplay.innerText = '';
-        errorMessageDisplay.classList.add('hidden');
-
+        const alerts = document.getElementById("errorAlerts");
         const user = await this.client.getPrivateUser((error) => {
-            errorMessageDisplay.innerText = `Error: ${error.message}`;
-            errorMessageDisplay.classList.remove('hidden');
+            alerts.append(this.client.createAlert(`<strong>Error:</strong> ${error.message}`, "alert-danger"));
         });
         if (user) {
+            document.getElementById("user").classList.remove("hidden");
             document.getElementById("username").innerHTML = user.user.username;
             document.getElementById("email").innerHTML = user.user.email;
-            document.getElementById("rating").innerHTML = user.user.rating;
+            document.getElementById("rating").innerHTML = "Rating: " + user.user.rating;
             this.populateGameHistory(user.user.username);
         }
     }
 
     async populateGameHistory(username) {
-        const errorMessageDisplay = document.getElementById('error-message');
+        const alerts = document.getElementById("errorAlerts");
 
         const games = await this.client.getAllGames((error) => {
-            errorMessageDisplay.innerText = `Error: ${error.message}`;
-            errorMessageDisplay.classList.remove('hidden');
+            alerts.append(this.client.createAlert(`<strong>Error:</strong> ${error.message}`, "alert-danger"));
         });
         if (games) {
             // set up monstrosities
@@ -69,9 +77,10 @@ export default class UserHome extends BindingClass {
                 const gameElement = document.createElement("td");
                 gameElement.id = game.gameId;
                 gameElement.notation = game.notation;
+                gameElement.setAttribute("style", "position: relative;");
                 const table = document.createElement("table");
                 table.classList.add('chess-board');
-                table.innerHTML = "<tbody><tr><th></th><th>a</th><th>b</th><th>c</th><th>d</th><th>e</th><th>f</th><th>g</th><th>h</th></tr><tr><th>8</th><td class='light' id='a8'></td><td class='dark' id='b8'></td><td class='light' id='c8'></td><td class='dark' id='d8'></td><td class='light' id='e8'></td><td class='dark' id='f8'></td><td class='light' id='g8'></td><td class='dark' id='h8'></td></tr><tr><th>7</th><td class='dark' id='a7'> </td><td class='light' id='b7'></td><td class='dark' id='c7'></td><td class='light' id='d7'></td><td class='dark' id='e7'></td><td class='light' id='f7'></td><td class='dark' id='g7'></td><td class='light' id='h7'></td></tr><tr><th>6</th><td class='light' id='a6'></td><td class='dark' id='b6'></td><td class='light' id='c6'></td><td class='dark' id='d6'></td><td class='light' id='e6'></td><td class='dark' id='f6'></td><td class='light' id='g6'></td><td class='dark' id='h6'></td></tr><tr><th>5</th><td class='dark' id='a5'></td><td class='light' id='b5'></td><td class='dark' id='c5'></td><td class='light' id='d5'></td><td class='dark' id='e5'></td><td class='light' id='f5'></td><td class='dark' id='g5'></td><td class='light' id='h5'></td></tr><tr><th>4</th><td class='light' id='a4'></td><td class='dark' id='b4'></td><td class='light' id='c4'></td><td class='dark' id='d4'></td><td class='light' id='e4'></td><td class='dark' id='f4'></td><td class='light' id='g4'></td><td class='dark' id='h4'></td></tr><tr><th>3</th><td class='dark' id='a3'></td><td class='light' id='b3'></td><td class='dark' id='c3'></td><td class='light' id='d3'></td><td class='dark' id='e3'></td><td class='light' id='f3'></td><td class='dark' id='g3'></td><td class='light' id='h3'></td></tr><tr><th>2</th><td class='light' id='a2'></td><td class='dark' id='b2'></td><td class='light' id='c2'></td><td class='dark' id='d2'></td><td class='light' id='e2'></td><td class='dark' id='f2'></td><td class='light' id='g2'></td><td class='dark' id='h2'></td></tr><tr><th>1</th><td class='dark' id='a1'> </td><td class='light' id='b1'></td><td class='dark' id='c1'></td><td class='light' id='d1'></td><td class='dark' id='e1'></td><td class='light' id='f1'></td><td class='dark' id='g1'></td><td class='light' id='h1'></td></tr></tbody>";
+                table.innerHTML = "<tbody><tr><td class='light' id='a8'></td><td class='dark' id='b8'></td><td class='light' id='c8'></td><td class='dark' id='d8'></td><td class='light' id='e8'></td><td class='dark' id='f8'></td><td class='light' id='g8'></td><td class='dark' id='h8'></td></tr><tr><td class='dark' id='a7'> </td><td class='light' id='b7'></td><td class='dark' id='c7'></td><td class='light' id='d7'></td><td class='dark' id='e7'></td><td class='light' id='f7'></td><td class='dark' id='g7'></td><td class='light' id='h7'></td></tr><tr><td class='light' id='a6'></td><td class='dark' id='b6'></td><td class='light' id='c6'></td><td class='dark' id='d6'></td><td class='light' id='e6'></td><td class='dark' id='f6'></td><td class='light' id='g6'></td><td class='dark' id='h6'></td></tr><tr><td class='dark' id='a5'></td><td class='light' id='b5'></td><td class='dark' id='c5'></td><td class='light' id='d5'></td><td class='dark' id='e5'></td><td class='light' id='f5'></td><td class='dark' id='g5'></td><td class='light' id='h5'></td></tr><tr><td class='light' id='a4'></td><td class='dark' id='b4'></td><td class='light' id='c4'></td><td class='dark' id='d4'></td><td class='light' id='e4'></td><td class='dark' id='f4'></td><td class='light' id='g4'></td><td class='dark' id='h4'></td></tr><tr><td class='dark' id='a3'></td><td class='light' id='b3'></td><td class='dark' id='c3'></td><td class='light' id='d3'></td><td class='dark' id='e3'></td><td class='light' id='f3'></td><td class='dark' id='g3'></td><td class='light' id='h3'></td></tr><tr><td class='light' id='a2'></td><td class='dark' id='b2'></td><td class='light' id='c2'></td><td class='dark' id='d2'></td><td class='light' id='e2'></td><td class='dark' id='f2'></td><td class='light' id='g2'></td><td class='dark' id='h2'></td></tr><tr><td class='dark' id='a1'> </td><td class='light' id='b1'></td><td class='dark' id='c1'></td><td class='light' id='d1'></td><td class='dark' id='e1'></td><td class='light' id='f1'></td><td class='dark' id='g1'></td><td class='light' id='h1'></td></tr></tbody>";
                 const fen = game.notation;
                 if (game.active == "true") {
                     currentDiv.append(gameElement);
@@ -81,13 +90,23 @@ export default class UserHome extends BindingClass {
                     });
                 }
                 else {
-                    const checkboxForHide = document.createElement("input");
-                    checkboxForHide.type = "checkbox";
-                    checkboxForHide.classList.add('hidden');
-                    checkboxForHide.classList.add('gameCheckbox');
+                    document.getElementById("toggleHide").classList.remove("hidden");
+                    document.getElementById("submitHide").classList.remove("hidden");
+                    const overlay = document.createElement("div");
+                    overlay.classList.add("overlay");
+                    overlay.classList.add("hidden");
+                    overlay.classList.add("transparent");
+                    overlay.innerHTML = "<p>✓</p>";
+                    overlay.addEventListener("click", () => {
+                        if (overlay.classList.contains("transparent")) {
+                            overlay.classList.remove("transparent");
+                        } else {
+                            overlay.classList.add("transparent");
+                        }
+                    });
                     historyDiv.append(gameElement);
-                    gameElement.append(table);
-                    gameElement.append(checkboxForHide);
+                    gameElement.append(overlay, table);
+
                     table.addEventListener('click', function() {
                         window.location.href = "/pastGame.html?gameId=" + table.parentElement.id;
                     });
@@ -111,35 +130,28 @@ export default class UserHome extends BindingClass {
                         continue;
                     }
                     else {
-                        let newPiece = document.createElement("p");
                         const square = document.getElementById(indexToPosition[i + b]);
-                        square.append(newPiece);
+                        square.innerHTML = notationToPieceMap[c];
                         square.removeAttribute('id');
-                        newPiece.innerHTML = notationToPieceMap[c];
                     }
                 }
                 gameElement.classList.add('game');
-                console.log(gameElement);
-
             });
-        }0
+        }
     }
 
     async startGame() {
-        const errorMessageDisplay = document.getElementById('error-message');
-        errorMessageDisplay.innerText = '';
-        errorMessageDisplay.classList.add('hidden');
-
         const botDifficulty = document.getElementById("output").innerHTML;
         let authUserWhite = document.getElementById("authUserWhite").value;
         if (!authUserWhite) {
             authUserWhite = false;
         }
+
+        const alerts = document.getElementById("errorAlerts");
         const response = await this.client.createGame(authUserWhite, null, botDifficulty, (error) => {
-            errorMessageDisplay.innerText = `Error: ${error.message}`;
-            errorMessageDisplay.classList.remove('hidden');
+            const alert = this.client.createAlert("The game could not be created.", "alert-warning", true);
+            alerts.append(alert);
         });
-        console.log(response);
         if (response) {
             window.location.href = "/game.html?gameId=" + response.gameId;
         }
@@ -153,43 +165,44 @@ export default class UserHome extends BindingClass {
     }
 
     async search() {
-        const errorMessageDisplay = document.getElementById('error-message');
-        errorMessageDisplay.innerText = '';
-        errorMessageDisplay.classList.add('hidden');
+        const alerts = document.getElementById("errorAlerts");
         const response = await this.client.getPublicUser(document.getElementById("searchInput").value, (error) => {
-            errorMessageDisplay.innerText = "There is no user with that username.";
-            errorMessageDisplay.classList.remove('hidden');
+            alerts.append(this.client.createAlert("There is no user with that username.", "alert-info", true));
         });
         const searchResults = document.getElementById("searchResults");
         if (searchResults.children.length > 0) {
             searchResults.removeChild(searchResults.children[0]);
         }
         if (response) {
-
             const user = response.user;
-            console.log(user);
-            const result = document.createElement("div");
-            const username = document.createElement("p");
-            const rating = document.createElement("p");
-            const gamesPlayed = document.createElement("p");
-            result.append(username, rating, gamesPlayed);
+
+            const userCard = document.createElement("div");
+            userCard.classList.add("card");
+
+            const username = document.createElement("div");
+            username.classList.add("card-header");
+
+            const rating = document.createElement("div");
+            rating.classList.add("card-body");
+
+            const gamesPlayed = document.createElement("div");
+            gamesPlayed.classList.add("card-body");
+            userCard.append(username, rating, gamesPlayed);
             username.innerText = user.username;
             rating.innerText = "Rating: " + user.rating;
             gamesPlayed.innerText = (user.games) ? user.games.length + " games played" : "0" + " games played";
-            searchResults.append(result);
+            searchResults.append(userCard);
         }
     }
 
     async resetAccount() {
-        const errorMessageDisplay = document.getElementById('error-message');
-        errorMessageDisplay.innerText = '';
-        errorMessageDisplay.classList.add('hidden');
         const confirm = window.confirm("Are you sure you want to reset your account?" +
                 " You will still be able to use your login, but all of your data will be erased.");
+
+        const alerts = document.getElementById("errorAlerts");
         if (confirm) {
             const response = await this.client.resetAccount((error) => {
-                errorMessageDisplay.innerText = "There is no user with that username.";
-                errorMessageDisplay.classList.remove('hidden');
+                alerts.append(this.client.createAlert("There is no user with that username", "alert-warning", true));
             });
             if (response) {
                 await this.client.logout();
@@ -199,55 +212,55 @@ export default class UserHome extends BindingClass {
     }
 
     toggleHidingMode() {
-        const checkbox = document.getElementById("hideGames");
-        const submitButton = document.getElementById("submitHide");
-        const gameCheckboxes = document.querySelectorAll("input.gameCheckbox");
-        console.log(gameCheckboxes);
-        if (!checkbox.checked) {
-            submitButton.classList.add('hidden');
-            if (gameCheckboxes) {
-                gameCheckboxes.forEach(box => {
-                    box.classList.add('hidden');
-                });
-            }
+        const hidingMode = document.getElementById("toggleHide").classList.contains("active");
+        const submitHide = document.getElementById("submitHide");
+        const historyDiv = document.getElementById("pastGames");
+        const overlays = document.querySelectorAll("div.overlay");
+
+        if (!hidingMode) {
+            overlays.forEach(overlay => {
+                overlay.classList.add("hidden");
+            });
+            submitHide.disabled = true;
         }
 
-        if (checkbox.checked) {
-            submitButton.classList.remove('hidden');
-            if (gameCheckboxes) {
-                gameCheckboxes.forEach(box => {
-                    box.classList.remove('hidden');
-                });
-            }
+        if (hidingMode) {
+            overlays.forEach(overlay => {
+                overlay.classList.remove("hidden");
+            });
+            submitHide.disabled = false;
         }
     }
 
     async hideGames() {
-        const errorMessageDisplay = document.getElementById('error-message');
-        errorMessageDisplay.innerText = '';
-        errorMessageDisplay.classList.add('hidden');
-
-        const gameCheckboxes = document.querySelectorAll("input.gameCheckbox");
+        const alerts = document.getElementById("errorAlerts");
+        const overlays = document.querySelectorAll("div.overlay:not(.transparent)");
         const gameIds = [];
-        if (gameCheckboxes) {
-            gameCheckboxes.forEach(box => {
-                if (box.checked) {
-                    gameIds.push(box.parentElement.id);
-                }
+        if (overlays) {
+            overlays.forEach(overlay => {
+                gameIds.push(overlay.parentElement.id);
             });
         }
         if (gameIds.length > 0) {
-            const response = await this.client.hideGames(gameIds, error => {
-                errorMessageDisplay.innerText = `Error: ${error.message}`;
-                errorMessageDisplay.classList.remove('hidden');
-            });
-            console.log(response);
-            if (response.data.gameIds) {
-                response.data.gameIds.forEach(gameId => {
-                console.log(gameId);
-                    document.querySelector(`#${gameId}`).remove();
+
+            const confirm = window.confirm("Are you sure you want to hide these games? This will permanently remove them" +
+                                            "from your account, but the rating gain/loss will still be reflected.");
+            if (confirm) {
+                const response = await this.client.hideGames(gameIds, error => {
+                    alerts.append(this.client.createAlert(`<strong>Error:</strong> ${error.message}`, "alert-warning", true));
                 });
+                if (response.data.gameIds) {
+                    response.data.gameIds.forEach(gameId => {
+                        document.getElementById(gameId).remove();
+                    });
+                }
             }
+        }
+        const pastGames = document.getElementById("pastGames").querySelectorAll("table.chess-board");
+        console.log(pastGames);
+        if (pastGames.length == 0) {
+            document.getElementById("toggleHide").classList.add("hidden");
+            document.getElementById("submitHide").classList.add("hidden");
         }
     }
 }
@@ -260,4 +273,4 @@ const main = async () => {
     userHome.mount();
 };
 
-window.addEventListener('DOMContentLoaded', main);
+window.addEventListener('load', main);

@@ -24,38 +24,40 @@ export default class GetNextMove extends BindingClass {
 
         let url = new URL(window.location.href);
         let gameId = url.searchParams.get("gameId");
-        const errorMessageDisplay = document.getElementById('error-message');
+        const alerts = document.getElementById('errorAlerts');
         // Get game
         const response = await this.client.getGame(gameId, (error) => {
-             errorMessageDisplay.innerText = `Error: ${error.message}`;
-             errorMessageDisplay.classList.remove('hidden');
+             alerts.append(this.client.createAlert(`<strong>Error:</strong> ${error.message}`, "alert-danger"));
         });
 
-        const game = response.game;
+        if (response) {
+            const game = response.game;
 
-        if (game.active != "false") {
-             errorMessageDisplay.innerText = `Error: Cannot replay a game that is still active`;
-             errorMessageDisplay.classList.remove('hidden');
-             return;
+            if (game.active != "false") {
+                 alerts.append(this.client.createAlert("<strong>Error:</strong> Cannot replay a game that is still active", "alert-danger"));
+                 return;
+            }
+
+            alerts.append(this.client.createAlert("Welcome to replay mode! You can replay your game move for move " +
+                    "by clicking the buttons underneath the board, or by using your arrow keys.", "alert-info", true));
+
+            document.getElementById('forward').addEventListener('click', this.forward);
+            window.addEventListener('keyup', (event) => {
+                if (event.keyCode == '39') {
+                    this.forward();
+                }
+            });
+
+            document.getElementById('back').addEventListener('click', this.back);
+            window.addEventListener('keyup', (event) => {
+                if (event.keyCode == '37') {
+                    this.back();
+                }
+            });
+
+            this.dataStore.set("moves", game.moves.split(" "));
+            this.dataStore.set("currentMove", -1);
         }
-
-
-        document.getElementById('forward').addEventListener('click', this.forward);
-        window.addEventListener('keyup', (event) => {
-            if (event.keyCode == '39') {
-                this.forward();
-            }
-        });
-
-        document.getElementById('back').addEventListener('click', this.back);
-        window.addEventListener('keyup', (event) => {
-            if (event.keyCode == '37') {
-                this.back();
-            }
-        });
-
-        this.dataStore.set("moves", game.moves.split(" "));
-        this.dataStore.set("currentMove", -1);
     }
 
     /**
@@ -111,10 +113,6 @@ export default class GetNextMove extends BindingClass {
         var captured = null, promoted = null, castled = null;
 
         if (move) {
-             const errorMessageDisplay = document.getElementById('error-message');
-             errorMessageDisplay.innerText = '';
-             errorMessageDisplay.classList.add('hidden');
-
             let from = document.getElementById(move.slice(0, 2));
             let to = document.getElementById(move.slice(2, 4));
             if (to.firstElementChild) {

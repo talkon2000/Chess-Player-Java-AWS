@@ -20,10 +20,7 @@ export default class LandingPage extends BindingClass {
       */
     async mount() {
         this.header.addHeaderToPage();
-        const currentUser = await this.client.getIdentity();
-        if (currentUser) {
-            window.location.href = "user-home.html";
-        }
+        document.getElementById("navHome").classList.add("active");
     }
 }
 
