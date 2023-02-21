@@ -111,12 +111,12 @@ public class GetNextMoveActivity {
 
         stockfish.stopEngine();
 
-        // Save the new notation to the database before returning
-        gameDao.save(game);
 
         // If the game is over, edit the user(s) rating scores
         // If expected Score is above .5, you are expected to either win or draw
         if (game.getWinner() != null) {
+            game.setValidMoves("");
+
             User white;
             User black;
             String winner = game.getWinner();
@@ -140,7 +140,16 @@ public class GetNextMoveActivity {
                     (int) ChessUtils.calculateRatingForWhite(white.getRating(), black.getRating(), winner));
             black.setRating(black.getRating() +
                     (int) ChessUtils.calculateRatingForBlack(white.getRating(), black.getRating(), winner));
+            if (white.getUsername() != null) {
+                userDao.saveUser(white);
+            }
+            if (black.getUsername() != null) {
+                userDao.saveUser(black);
+            }
         }
+
+        // Save the new notation to the database before returning
+        gameDao.save(game);
 
         return GetNextMoveResponse.builder()
                 .withGame(game)

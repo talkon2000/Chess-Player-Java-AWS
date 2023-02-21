@@ -83,12 +83,14 @@ export default class GetNextMove extends BindingClass {
         }
 
         // set up valid moves
-        validMoves.filter(move => move != "").forEach((move) => {
-            let validFrom = move.slice(0, 2);
-            let validTo = move.slice(2, 4);
-            const fromPiece = document.getElementById(validFrom).firstElementChild;
-            fromPiece.validMoves.push(validTo);
-        });
+        if (!game.winner) {
+            validMoves.filter(move => move != "").forEach((move) => {
+                let validFrom = move.slice(0, 2);
+                let validTo = move.slice(2, 4);
+                const fromPiece = document.getElementById(validFrom).firstElementChild;
+                fromPiece.validMoves.push(validTo);
+            });
+        }
     }
 
     drag(event) {
@@ -100,10 +102,6 @@ export default class GetNextMove extends BindingClass {
             return;
         }
         const origParent = piece.parentElement;
-        piece.validMoves.forEach((validMove) => {
-            document.getElementById(validMove).classList.add("validMove");
-        });
-
 
         piece.style.position = 'absolute';
         piece.style.zIndex = 1000;
@@ -112,30 +110,31 @@ export default class GetNextMove extends BindingClass {
         // to make it positioned relative to the body
         document.body.append(piece);
 
-        // centers the piece at (pageX, pageY) coordinates
-        function moveAt(pageX, pageY) {
-            piece.style.left = pageX - piece.offsetWidth / 2 + 'px';
-            piece.style.top = pageY - piece.offsetHeight / 2 + 'px';
-        }
-
         // move our absolutely positioned piece under the pointer
-        moveAt(event.pageX, event.pageY);
-
-        // potential droppable that we're flying over right now
+        // element that we're flying over right now
         let elemBelow = null;
         function onMouseMove(event) {
-            moveAt(event.pageX, event.pageY);
+            piece.style.left = event.pageX - piece.offsetWidth / 2 + 'px';
+            piece.style.top = event.pageY - piece.offsetHeight / 2 + 'px';
             piece.hidden = true;
             elemBelow = document.elementFromPoint(event.clientX, event.clientY);
             piece.hidden = false;
         }
 
+        // Initially move piece under cursor and initialize elemBelow
+        onMouseMove(event);
+
         // (2) move the piece on mousemove
         document.addEventListener('mousemove', onMouseMove);
 
+        let origX = event.pageX;
+        let origY = event.pageY;
         // (3) drop the piece, remove unneeded handlers
         piece.onmouseup = () => {
             var captured = null;
+            if (elemBelow.nodeName == "BODY") {
+                origParent.append(piece);
+            }
             // if you drop the piece on another piece, keep track of that piece in captured
             if (elemBelow.children) {
                 captured = elemBelow.children[0];
