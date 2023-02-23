@@ -42,6 +42,9 @@
     <div id="errorAlerts"></div>
     <div class="row">
         <div class="col-sm-4 px-5">
+            <div class="spinner-border text-primary" id="userSpinner" role="status">
+                <span class="visually-hidden">Loading...</span>
+            </div>
             <div class="card text-center hidden" id="user">
                 <div class="card-header" id="username"></div>
                 <div class="card-body" id="email"></div>
@@ -57,10 +60,8 @@
                     <p id="output"></p>
                 </div>
                 <div class="vertical" style="justify-content: center;">
-                    <input type="checkbox" id="authUserWhite" value="true" checked>
-                    <label for="authUserWhite">Play as white</label>
                     <a>
-                        <button type="button" class="btn btn-secondary" id="start">Start new game</button>
+                        <button type="button" class="btn btn-secondary" id="start"> Start new game</button>
                     </a>
                 </div>
             </div>
@@ -71,7 +72,7 @@
                     <label for="searchInput">Search by username</label>
                     <input type="text" class="mx-2" id="searchInput" value="">
                 </div>
-                <button type="button" class="btn btn-secondary" style="height:60%; margin-top:auto" id="submitSearch">Go</button>
+                <button type="button" class="btn btn-secondary" style="height:60%; margin-top:auto" id="submitSearch"> Go</button>
             </div>
                 <div class="pt-3 px-5" id="searchResults">
 
@@ -90,6 +91,10 @@
             <a class="nav-link" data-bs-toggle="tab" href="#past">History</a>
         </li>
     </ul>
+
+    <div class="spinner-border text-primary" id="gameSpinner" role="status">
+        <span class="visually-hidden">Loading...</span>
+    </div>
 
     <!-- Defines tab contents -->
     <div class="tab-content">

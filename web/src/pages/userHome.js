@@ -58,6 +58,8 @@ export default class UserHome extends BindingClass {
             document.getElementById("rating").innerHTML = "Rating: " + user.user.rating;
             this.populateGameHistory(user.user.username);
         }
+        const spinner = document.getElementById("userSpinner");
+        spinner.remove();
     }
 
     async populateGameHistory(username) {
@@ -138,14 +140,21 @@ export default class UserHome extends BindingClass {
                 gameElement.classList.add('game');
             });
         }
+        document.getElementById("gameSpinner").remove();
     }
 
     async startGame() {
+        const startButton = document.getElementById("start");
+        startButton.disabled = true;
+        const spinner = document.createElement("span");
+        spinner.classList.add("spinner-border");
+        spinner.classList.add("spinner-border-sm");
+        spinner.setAttribute("role", "status");
+        spinner.setAttribute("aria-hidden", "true");
+        spinner.id = "startGameSpinner";
+        startButton.prepend(spinner);
         const botDifficulty = document.getElementById("output").innerHTML;
-        let authUserWhite = document.getElementById("authUserWhite").value;
-        if (!authUserWhite) {
-            authUserWhite = false;
-        }
+        let authUserWhite = true;
 
         const alerts = document.getElementById("errorAlerts");
         const response = await this.client.createGame(authUserWhite, null, botDifficulty, (error) => {
@@ -155,6 +164,8 @@ export default class UserHome extends BindingClass {
         if (response) {
             window.location.href = "/game.html?gameId=" + response.gameId;
         }
+        startButton.removeChild(spinner);
+        startButton.disabled = false;
     }
 
     checkForEnterKey(event) {
@@ -165,6 +176,15 @@ export default class UserHome extends BindingClass {
     }
 
     async search() {
+        const searchButton = document.getElementById("submitSearch");
+        submitSearch.disabled = true;
+        const spinner = document.createElement("span");
+        spinner.classList.add("spinner-border");
+        spinner.classList.add("spinner-border-sm");
+        spinner.setAttribute("role", "status");
+        spinner.setAttribute("aria-hidden", "true");
+        spinner.id = "searchSpinner";
+        searchButton.prepend(spinner);
         const alerts = document.getElementById("errorAlerts");
         const response = await this.client.getPublicUser(document.getElementById("searchInput").value, (error) => {
             alerts.append(this.client.createAlert("There is no user with that username.", "alert-info", true));
@@ -193,11 +213,23 @@ export default class UserHome extends BindingClass {
             gamesPlayed.innerText = (user.games) ? user.games.length + " games played" : "0" + " games played";
             searchResults.append(userCard);
         }
+        submitSearch.removeChild(spinner);
+        submitSearch.disabled = false;
     }
 
     async resetAccount() {
         const confirm = window.confirm("Are you sure you want to reset your account?" +
                 " You will still be able to use your login, but all of your data will be erased.");
+
+        const resetButton = document.getElementById("resetAccount");
+        resetButton.disabled = true;
+        const spinner = document.createElement("span");
+        spinner.classList.add("spinner-border");
+        spinner.classList.add("spinner-border-sm");
+        spinner.setAttribute("role", "status");
+        spinner.setAttribute("aria-hidden", "true");
+        spinner.id = "resetSpinner";
+        resetButton.prepend(spinner);
 
         const alerts = document.getElementById("errorAlerts");
         if (confirm) {
@@ -209,6 +241,8 @@ export default class UserHome extends BindingClass {
                 window.location.href = '/index.html';
             }
         }
+        resetButton.removeChild(spinner);
+        resetButton.disabled = false;
     }
 
     toggleHidingMode() {
@@ -233,6 +267,16 @@ export default class UserHome extends BindingClass {
     }
 
     async hideGames() {
+        const hideButton = document.getElementById("submitHide");
+        submitHide.disabled = true;
+        const spinner = document.createElement("span");
+        spinner.classList.add("spinner-border");
+        spinner.classList.add("spinner-border-sm");
+        spinner.setAttribute("role", "status");
+        spinner.setAttribute("aria-hidden", "true");
+        spinner.id = "hideSpinner";
+        hideButton.prepend(spinner);
+
         const alerts = document.getElementById("errorAlerts");
         const overlays = document.querySelectorAll("div.overlay:not(.transparent)");
         const gameIds = [];
@@ -262,6 +306,8 @@ export default class UserHome extends BindingClass {
             document.getElementById("toggleHide").classList.add("hidden");
             document.getElementById("submitHide").classList.add("hidden");
         }
+        hideButton.removeChild(spinner);
+        hideButton.disabled = false;
     }
 }
 

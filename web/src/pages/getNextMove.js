@@ -37,10 +37,13 @@ export default class GetNextMove extends BindingClass {
 
     async setUpBoard() {
         const alerts = document.getElementById('errorAlerts');
+        const alert = this.client.createAlert("Preparing game", "alert-info");
+        alerts.append(alert);
         // Get game
         const response = await this.client.getGame(this.dataStore.get("gameId"), (error) => {
             alerts.append(this.client.createAlert(`<strong>Error:</strong> ${error.message}`, "alert-danger"));
         });
+        alerts.removeChild(alert);
         const game = response.game;
         if (game.winner) {
             document.getElementById('resign').disabled = true;
@@ -258,14 +261,20 @@ export default class GetNextMove extends BindingClass {
         else {
             move = obj.from.id + obj.to.id;
         }
-        console.log(obj);
-
-        console.log(gameId);
-        console.log(move);
 
         const submitButton = document.getElementById('submit');
+        const cancelButton = document.getElementById('cancel');
+        submitButton.disabled = true;
+        cancelButton.disabled = true;
         const origButtonText = submitButton.innerText;
-        submitButton.innerText = 'Loading...';
+        submitButton.innerText = ' Loading...';
+        const spinner = document.createElement("span");
+        spinner.classList.add("spinner-border");
+        spinner.classList.add("spinner-border-sm");
+        spinner.setAttribute("role", "status");
+        spinner.setAttribute("aria-hidden", "true");
+        spinner.id = "submitSpinner";
+        submitButton.prepend(spinner);
 
         const alerts = document.getElementById('errorAlerts');
         const response = await this.client.getNextMove(gameId, move, (error) => {
@@ -280,6 +289,11 @@ export default class GetNextMove extends BindingClass {
             console.log(response);
             this.reloadMoves(response);
         }
+        else {
+            submitButton.disabled = false;
+            cancelButton.disabled = false;
+        }
+        submitButton.removeChild(spinner);
     }
 
     /**
@@ -396,6 +410,18 @@ export default class GetNextMove extends BindingClass {
 
     async resign() {
         const confirm = window.confirm("Are you sure you want to resign?");
+
+        const resignButton = document.getElementById('resign');
+        const origButtonText = resignButton.innerText;
+        resignButton.innerText = ' Loading...';
+        const spinner = document.createElement("span");
+        spinner.classList.add("spinner-border");
+        spinner.classList.add("spinner-border-sm");
+        spinner.setAttribute("role", "status");
+        spinner.setAttribute("aria-hidden", "true");
+        spinner.id = "resignSpinner";
+        resignButton.prepend(spinner);
+
         if (confirm) {
             const alerts = document.getElementById('errorAlerts');
             const response = await this.client.resign(this.dataStore.get("gameId"), (error) => {
@@ -412,6 +438,8 @@ export default class GetNextMove extends BindingClass {
                 }
             }
         }
+        resignButton.innerText = origButtonText;
+        resignButton.removeChild(spinner);
     }
 }
 

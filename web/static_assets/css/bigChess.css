@@ -44,9 +44,9 @@
 .chess-board td {
     font-family: "Times New Roman", Times, serif;
     padding-top: 6.25%;
-    padding-bottom:6.25%;
+    padding-bottom: 6.25%;
     width: 2em;
-    text-align:center;
+    text-align: center;
     font-size: 48px;
     line-height: 0;
     user-select: none;
