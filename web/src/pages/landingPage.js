@@ -1,7 +1,5 @@
-import ChessPlayerClient from '../api/chessPlayerClient';
 import Header from '../components/header';
 import BindingClass from '../utils/bindingClass';
-import DataStore from '../utils/DataStore';
 
 /**
  * The component that handles the landing page logic
@@ -12,7 +10,6 @@ export default class LandingPage extends BindingClass {
             super();
             this.bindClassMethods(['mount'], this);
             this.header = new Header();
-            this.client = new ChessPlayerClient();
     }
 
      /**
