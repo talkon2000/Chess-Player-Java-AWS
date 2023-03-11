@@ -287,7 +287,7 @@ export default class UserHome extends BindingClass {
         }
         if (gameIds.length > 0) {
 
-            const confirm = window.confirm("Are you sure you want to hide these games? This will permanently remove them" +
+            const confirm = window.confirm("Are you sure you want to hide these games? This will permanently remove them " +
                                             "from your account, but the rating gain/loss will still be reflected.");
             if (confirm) {
                 const response = await this.client.hideGames(gameIds, error => {
