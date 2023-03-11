@@ -62,6 +62,7 @@ The Chess Player Client is a full-stack project that enables people to play Ches
 more. Interfaces with the Stockfish 15 chess engine.
 Back-end built in Java utilizing AWS Lambda, API Gateway, and DynamoDB. Front-end built in JavaScript and BootStrap 5. Also uses
 AWS Cognito to allow users a unique login to keep track of games played, rating, etc
+
 [![Product Name Screen Shot][product-screenshot]]()
 
 ### Features
